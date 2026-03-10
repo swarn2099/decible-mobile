@@ -114,21 +114,21 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ADD-01 through ADD-12 | Phase 2 | Pending |
-| TAB-01 through TAB-03 | Phase 2 | Pending |
-| NAV-01 through NAV-03 | Phase 2 | Pending |
-| CHK-01 through CHK-10 | Phase 3 | Pending |
-| ANIM-01 through ANIM-03 | Phase 3 | Pending |
-| PASS-01 through PASS-08 | Phase 4 | Pending |
-| SHR-01 through SHR-06 | Phase 5 | Pending |
-| ART-01, ART-02 | Phase 5 | Pending |
-| POL-01, POL-02 | Phase 5 | Pending |
+| ADD-01 through ADD-12 | Phase 2 — Add Flow | Pending |
+| TAB-01 through TAB-03 | Phase 2 — Add Flow | Pending |
+| NAV-01 through NAV-03 | Phase 2 — Add Flow | Pending |
+| CHK-01 through CHK-10 | Phase 3 — Check-In | Pending |
+| ANIM-01 through ANIM-03 | Phase 3 — Check-In | Pending |
+| PASS-01 through PASS-08 | Phase 4 — Passport Redesign | Pending |
+| SHR-01 through SHR-06 | Phase 5 — Share + Polish | Pending |
+| ART-01, ART-02 | Phase 5 — Share + Polish | Pending |
+| POL-01, POL-02 | Phase 5 — Share + Polish | Pending |
 
 **Coverage:**
-- v1 requirements: 44 total
-- Mapped to phases: 44
+- v1 requirements: 49 total
+- Mapped to phases: 49
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-10*
-*Last updated: 2026-03-10 after initialization*
+*Last updated: 2026-03-10 — traceability confirmed against ROADMAP.md phases 2-5*
