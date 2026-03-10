@@ -66,15 +66,17 @@ type SocialCountsResponse = {
   followers_count: number;
 };
 
-export function useSocialCounts() {
+export function useSocialCounts(fanId?: string) {
   const user = useAuthStore((s) => s.user);
+  const targetId = fanId ?? user?.id;
 
   return useQuery<SocialCountsResponse>({
-    queryKey: ["socialCounts", user?.id],
+    queryKey: ["socialCounts", targetId],
     queryFn: async () => {
-      return apiCall<SocialCountsResponse>("/mobile/social-counts");
+      const params = fanId ? `?fan_id=${fanId}` : "";
+      return apiCall<SocialCountsResponse>(`/mobile/social-counts${params}`);
     },
     staleTime: 5 * 60 * 1000,
-    enabled: !!user?.id,
+    enabled: !!targetId,
   });
 }

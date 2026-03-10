@@ -1,0 +1,461 @@
+import { useEffect, useRef, useState } from "react";
+import { View, Text, Pressable, Modal, Image } from "react-native";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withDelay,
+  withTiming,
+  withSequence,
+  runOnJS,
+  interpolateColor,
+  useDerivedValue,
+  useAnimatedReaction,
+} from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { BlurView } from "expo-blur";
+import { Check } from "lucide-react-native";
+import { useThemeColors } from "@/constants/colors";
+import { TIER_COLORS, TIER_LABELS, calculateTier, type TierName } from "@/hooks/useCollection";
+import { WaxSeal } from "./WaxSeal";
+
+type ConfirmationModalProps = {
+  visible: boolean;
+  type: "collect" | "discover";
+  performer: {
+    name: string;
+    photo_url: string | null;
+  };
+  result: {
+    scan_count: number;
+    current_tier: TierName;
+    tierUp: boolean;
+    alreadyDone: boolean;
+  };
+  onShare: () => void;
+  onDismiss: () => void;
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+export function ConfirmationModal({
+  visible,
+  type,
+  performer,
+  result,
+  onShare,
+  onDismiss,
+}: ConfirmationModalProps) {
+  const colors = useThemeColors();
+  const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Shared values for animations
+  const stampScale = useSharedValue(0.3);
+  const stampTranslateY = useSharedValue(-100);
+  const ringScale = useSharedValue(0);
+  const ringOpacity = useSharedValue(0.5);
+  const tierBadgeScale = useSharedValue(0);
+  const textOpacity = useSharedValue(0);
+  const buttonsOpacity = useSharedValue(0);
+  // Confetti particles for tier-up
+  const confettiOpacity = useSharedValue(0);
+  // Wax seal color transition for tier-up (0 = previous tier color, 1 = current tier color)
+  const sealColorProgress = useSharedValue(result.tierUp ? 0 : 1);
+
+  const triggerHaptic = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+  };
+
+  const triggerTierUpHaptic = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  useEffect(() => {
+    if (visible) {
+      // Reset values
+      stampScale.value = 0.3;
+      stampTranslateY.value = -100;
+      ringScale.value = 0;
+      ringOpacity.value = 0.5;
+      tierBadgeScale.value = 0;
+      textOpacity.value = 0;
+      buttonsOpacity.value = 0;
+      confettiOpacity.value = 0;
+      sealColorProgress.value = result.tierUp ? 0 : 1;
+
+      // Stamp slam animation with bounce-back overshoot
+      stampScale.value = withSequence(
+        withSpring(1.05, { damping: 12, stiffness: 180 }),
+        withSpring(1, { damping: 14, stiffness: 200 })
+      );
+      stampTranslateY.value = withSpring(0, { damping: 12, stiffness: 180 }, (finished) => {
+        if (finished) {
+          runOnJS(triggerHaptic)();
+        }
+      });
+
+      // Ink ring expands after stamp lands (~300ms delay)
+      ringScale.value = withDelay(300, withTiming(2, { duration: 600 }));
+      ringOpacity.value = withDelay(300, withTiming(0, { duration: 600 }));
+
+      // Text fades in
+      textOpacity.value = withDelay(400, withTiming(1, { duration: 300 }));
+
+      // Tier badge scales in after stamp (300ms delay)
+      tierBadgeScale.value = withDelay(500, withSpring(1, { damping: 10, stiffness: 200 }));
+
+      // Buttons fade in last
+      buttonsOpacity.value = withDelay(700, withTiming(1, { duration: 300 }));
+
+      // Confetti + wax seal color transition for tier-up
+      if (result.tierUp) {
+        confettiOpacity.value = withDelay(600, withSequence(
+          withTiming(1, { duration: 200 }),
+          withDelay(1500, withTiming(0, { duration: 500 }))
+        ));
+        // Wax seal transitions from previous tier color to current tier color
+        sealColorProgress.value = withDelay(600, withTiming(1, { duration: 600 }));
+        // Second haptic on tier-up after confetti appears (~800ms)
+        setTimeout(() => {
+          triggerTierUpHaptic();
+        }, 800);
+      }
+
+      // Auto-dismiss after 5 seconds
+      dismissTimer.current = setTimeout(() => {
+        onDismiss();
+      }, 5000);
+    }
+
+    return () => {
+      if (dismissTimer.current) {
+        clearTimeout(dismissTimer.current);
+        dismissTimer.current = null;
+      }
+    };
+  }, [visible]);
+
+  const stampStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: stampScale.value },
+      { translateY: stampTranslateY.value },
+    ],
+  }));
+
+  const ringStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: ringScale.value }],
+    opacity: ringOpacity.value,
+  }));
+
+  const tierBadgeStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: tierBadgeScale.value }],
+  }));
+
+  const textStyle = useAnimatedStyle(() => ({
+    opacity: textOpacity.value,
+  }));
+
+  const buttonsStyle = useAnimatedStyle(() => ({
+    opacity: buttonsOpacity.value,
+  }));
+
+  const confettiStyle = useAnimatedStyle(() => ({
+    opacity: confettiOpacity.value,
+  }));
+
+  const tierColor = TIER_COLORS[result.current_tier];
+  const tierLabel = TIER_LABELS[result.current_tier];
+
+  // Compute the previous tier color for the seal color transition animation
+  const prevTierColor = result.tierUp
+    ? TIER_COLORS[calculateTier(Math.max(result.scan_count - 1, 0))]
+    : tierColor;
+
+  // Animated seal color: interpolates from previous tier color -> current tier color on tier-up
+  const animatedSealColor = useDerivedValue(() =>
+    interpolateColor(sealColorProgress.value, [0, 1], [prevTierColor, tierColor])
+  );
+
+  // Bridge Reanimated derived value to React state so WaxSeal (non-animated SVG) can consume it
+  const [sealColor, setSealColor] = useState(result.tierUp ? prevTierColor : tierColor);
+  useAnimatedReaction(
+    () => animatedSealColor.value,
+    (color) => {
+      runOnJS(setSealColor)(color);
+    }
+  );
+  const dateString = new Date().toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const handleInteraction = () => {
+    // User interacted — clear auto-dismiss
+    if (dismissTimer.current) {
+      clearTimeout(dismissTimer.current);
+      dismissTimer.current = null;
+    }
+  };
+
+  if (!visible) return null;
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onDismiss}
+    >
+      <Pressable
+        style={{ flex: 1 }}
+        onPress={() => {
+          handleInteraction();
+          onDismiss();
+        }}
+      >
+        <BlurView
+          intensity={40}
+          tint="dark"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0,0,0,0.85)",
+          }}
+        >
+          <Pressable
+            onPress={handleInteraction}
+            style={{ alignItems: "center", width: "100%", paddingHorizontal: 32 }}
+          >
+            {/* Confetti particles for tier-up */}
+            {result.tierUp && (
+              <Animated.View
+                style={[
+                  confettiStyle,
+                  {
+                    position: "absolute",
+                    top: "15%",
+                    left: 0,
+                    right: 0,
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    paddingHorizontal: 40,
+                  },
+                ]}
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      width: 6 + (i % 3) * 3,
+                      height: 6 + (i % 3) * 3,
+                      borderRadius: 3,
+                      backgroundColor: [
+                        colors.pink,
+                        colors.purple,
+                        colors.yellow,
+                        colors.teal,
+                        colors.blue,
+                      ][i % 5],
+                      transform: [
+                        { rotate: `${i * 30}deg` },
+                        { translateY: (i % 4) * 15 },
+                      ],
+                    }}
+                  />
+                ))}
+              </Animated.View>
+            )}
+
+            {/* Stamp press — artist photo */}
+            <View style={{ alignItems: "center", marginBottom: 24 }}>
+              {/* Ink ring expanding behind the stamp */}
+              <Animated.View
+                style={[
+                  ringStyle,
+                  {
+                    position: "absolute",
+                    width: 120,
+                    height: 120,
+                    borderRadius: 60,
+                    borderWidth: 3,
+                    borderColor: tierColor,
+                  },
+                ]}
+              />
+
+              <Animated.View style={stampStyle}>
+                {performer.photo_url ? (
+                  <Image
+                    source={{ uri: performer.photo_url }}
+                    style={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: 60,
+                      borderWidth: 2,
+                      borderColor: "rgba(255,255,255,0.2)",
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: 60,
+                      borderWidth: 2,
+                      borderColor: "rgba(255,255,255,0.2)",
+                      backgroundColor: colors.card,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: colors.white,
+                        fontFamily: "Poppins_700Bold",
+                        fontSize: 36,
+                      }}
+                    >
+                      {getInitials(performer.name)}
+                    </Text>
+                  </View>
+                )}
+              </Animated.View>
+            </View>
+
+            {/* Text content */}
+            <Animated.View style={[textStyle, { alignItems: "center", gap: 6 }]}>
+              {result.alreadyDone ? (
+                <>
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <Check size={24} color={colors.teal} />
+                    <Text
+                      style={{
+                        color: colors.white,
+                        fontFamily: "Poppins_700Bold",
+                        fontSize: 22,
+                      }}
+                    >
+                      Already in your passport
+                    </Text>
+                  </View>
+                </>
+              ) : (
+                <Text
+                  style={{
+                    color: colors.white,
+                    fontFamily: "Poppins_700Bold",
+                    fontSize: 24,
+                  }}
+                >
+                  {type === "collect" ? "Collected!" : "Discovered!"}
+                </Text>
+              )}
+
+              <Text
+                style={{
+                  color: colors.white,
+                  fontFamily: "Poppins_600SemiBold",
+                  fontSize: 18,
+                }}
+              >
+                {performer.name}
+              </Text>
+
+              <Text
+                style={{
+                  color: colors.gray,
+                  fontFamily: "Poppins_400Regular",
+                  fontSize: 14,
+                }}
+              >
+                {dateString}
+              </Text>
+
+              {/* Tier-up celebration */}
+              {result.tierUp && !result.alreadyDone && (
+                <Text
+                  style={{
+                    color: tierColor,
+                    fontFamily: "Poppins_700Bold",
+                    fontSize: 16,
+                    marginTop: 8,
+                  }}
+                >
+                  {tierLabel} Unlocked!
+                </Text>
+              )}
+            </Animated.View>
+
+            {/* Tier badge — wax seal */}
+            {!result.alreadyDone && (
+              <Animated.View style={[tierBadgeStyle, { marginTop: 20, alignItems: "center" }]}>
+                <WaxSeal
+                  tier={result.current_tier}
+                  scanCount={type === "collect" ? result.scan_count : 0}
+                  size={80}
+                  colorOverride={sealColor}
+                />
+              </Animated.View>
+            )}
+
+            {/* Action buttons */}
+            <Animated.View style={[buttonsStyle, { width: "100%", marginTop: 32, gap: 12 }]}>
+              {!result.alreadyDone && (
+                <Pressable
+                  onPress={() => {
+                    handleInteraction();
+                    onShare();
+                  }}
+                  style={{
+                    borderRadius: 16,
+                    paddingVertical: 14,
+                    alignItems: "center",
+                    overflow: "hidden",
+                    backgroundColor: colors.purple,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: colors.white,
+                      fontFamily: "Poppins_700Bold",
+                      fontSize: 16,
+                    }}
+                  >
+                    Share
+                  </Text>
+                </Pressable>
+              )}
+
+              <Pressable
+                onPress={() => {
+                  handleInteraction();
+                  onDismiss();
+                }}
+                style={{ alignItems: "center", paddingVertical: 12 }}
+              >
+                <Text
+                  style={{
+                    color: colors.gray,
+                    fontFamily: "Poppins_500Medium",
+                    fontSize: 16,
+                  }}
+                >
+                  Done
+                </Text>
+              </Pressable>
+            </Animated.View>
+          </Pressable>
+        </BlurView>
+      </Pressable>
+    </Modal>
+  );
+}

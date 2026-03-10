@@ -1,22 +1,31 @@
 {
   "expo": {
-    "name": "decibel-mobile",
-    "slug": "decibel-mobile",
+    "name": "Decibel",
+    "slug": "decibel",
     "version": "1.0.0",
+    "scheme": "decibel",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0B0B0F"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.decibel.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Decibel uses your location to detect when you're at a live show so you can collect the performing artists.",
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": ["instagram-stories", "instagram"]
+      }
     },
     "android": {
+      "package": "com.decibel.app",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#0B0B0F",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -24,7 +33,25 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image",
+      "expo-secure-store",
+      "expo-linking",
+      "expo-location",
+      "expo-notifications",
+      "expo-haptics"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "44471fff-8ba1-46a0-9901-bdaf6ebef534"
+      }
+    },
+    "owner": "swarn2099"
   }
 }
