@@ -23,10 +23,49 @@ Same app, same data, two lenses. Every Stamp requires a live performer — no li
 ~/decibel/                 — Next.js backend API (Vercel, decible.live)
 ```
 
-**Mobile app:** React Native + Expo
-**Backend API:** Next.js on Vercel at decible.live/api
+**Mobile app:** React Native + Expo (~/decibel-mobile)
+**Backend API:** Next.js on Vercel at decible.live/api (~/decibel)
 **Database:** Supabase
 **VM:** DigitalOcean 159.203.108.156 (scrapers, cron jobs)
+
+### Backend API Routes
+
+The API routes live in `~/decibel/pages/api/` (Next.js Pages Router). This is a SEPARATE project from the mobile app. When the mobile app needs a new API endpoint, you create it in `~/decibel/pages/api/`.
+
+**Existing endpoints you can call from mobile:**
+- `/api/collect` — POST, collects an artist (verified/location)
+- `/api/discover` — POST, discovers an artist (online)
+- `/api/mobile/add-artist` — POST, adds a new artist from search
+- `/api/mobile/activity-feed` — GET, social feed
+- `/api/mobile/passport` — GET, passport data with collections
+- `/api/mobile/badges` — GET, fan's earned badges
+- `/api/mobile/leaderboard` — GET, fan/performer rankings
+- `/api/mobile/search-users` — GET, search fans by name
+- `/api/mobile/social-counts` — GET, following/followers counts
+- `/api/mobile/follow` — POST/DELETE, follow/unfollow
+- `/api/mobile/artist-stats` — GET, fan count + founder info
+- `/api/mobile/spotify/import` — POST, Spotify OAuth import
+- `/api/passport/share-card` — GET, generates share card PNG
+- `/api/leaderboard/share-card` — GET, generates leaderboard share card PNG
+- `/api/social/collection-card` — POST, generates collection share card
+
+**New endpoints to create (per PRD v5):**
+- `/api/mobile/validate-artist-link` — POST, parse Spotify/Apple Music/SoundCloud link, fetch artist info, check eligibility (1M Spotify / 100K SoundCloud threshold)
+- `/api/mobile/check-in` — POST, check in at venue, create stamps for all lineup artists
+- `/api/mobile/tag-performer` — POST, user tags a performer at a venue when no lineup found
+- `/api/mobile/search-artists` — GET, search Decibel artists by name (for Home search bar)
+- `/api/mobile/artist-fans` — GET, list of fans for an artist (founder at top)
+- `/api/share-card/founder` — GET, generates founder share card PNG
+- `/api/share-card/passport` — GET, generates passport share card PNG
+
+**When creating new API endpoints:**
+1. Create the file in `~/decibel/pages/api/mobile/` (or appropriate path)
+2. Use Supabase server client for DB access (service role key, not anon key)
+3. Authenticate requests using the Bearer token from the mobile app (Supabase JWT)
+4. Deploy with `cd ~/decibel && vercel --prod` or push to GitHub (auto-deploys)
+5. Test the endpoint with curl before wiring up the mobile app
+
+**Do NOT recreate endpoints that already exist.** Check ~/decibel/pages/api/ first.
 
 ---
 
