@@ -1,7 +1,6 @@
 import { create } from "zustand";
-import { MMKV } from "react-native-mmkv";
+import { mmkv } from "@/lib/storage";
 
-const searchStorage = new MMKV({ id: "search-storage" });
 const RECENT_SEARCHES_KEY = "recent_searches";
 const MAX_RECENT = 5;
 
@@ -13,7 +12,7 @@ interface SearchState {
 
 export const useSearchStore = create<SearchState>((set) => ({
   recentSearches: JSON.parse(
-    searchStorage.getString(RECENT_SEARCHES_KEY) ?? "[]"
+    mmkv.getString(RECENT_SEARCHES_KEY) ?? "[]"
   ),
   addRecentSearch: (term: string) => {
     set((state) => {
@@ -21,12 +20,12 @@ export const useSearchStore = create<SearchState>((set) => ({
         0,
         MAX_RECENT
       );
-      searchStorage.set(RECENT_SEARCHES_KEY, JSON.stringify(deduped));
+      mmkv.set(RECENT_SEARCHES_KEY, JSON.stringify(deduped));
       return { recentSearches: deduped };
     });
   },
   clearRecentSearches: () => {
-    searchStorage.delete(RECENT_SEARCHES_KEY);
+    mmkv.delete(RECENT_SEARCHES_KEY);
     set({ recentSearches: [] });
   },
 }));

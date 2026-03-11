@@ -1,25 +1,23 @@
-import { MMKV } from "react-native-mmkv";
-
 /**
- * MMKV instance dedicated to TanStack Query cache persistence.
- * Separate from the Supabase auth storage to avoid key collisions.
+ * In-memory storage shim replacing MMKV while debugging native crash.
+ * TODO: restore MMKV once crash is resolved.
  */
-export const queryCacheStorage = new MMKV({
-  id: "tanstack-query-cache",
-});
+const store = new Map<string, string>();
 
-/**
- * Synchronous persister adapter for @tanstack/react-query-persist-client.
- * Falls back to simple MMKV get/set if the persist-client package isn't available.
- */
+export const queryCacheStorage = {
+  getString: (key: string): string | undefined => store.get(key),
+  set: (key: string, value: string) => store.set(key, value),
+  delete: (key: string) => store.delete(key),
+};
+
 export const mmkvPersister = {
   getItem: (key: string): string | null => {
-    return queryCacheStorage.getString(key) ?? null;
+    return store.get(key) ?? null;
   },
   setItem: (key: string, value: string): void => {
-    queryCacheStorage.set(key, value);
+    store.set(key, value);
   },
   removeItem: (key: string): void => {
-    queryCacheStorage.delete(key);
+    store.delete(key);
   },
 };

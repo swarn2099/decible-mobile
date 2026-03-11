@@ -1,7 +1,5 @@
 import { create } from "zustand";
-import { MMKV } from "react-native-mmkv";
-
-const locationStorage = new MMKV({ id: "location-storage" });
+import { mmkv } from "@/lib/storage";
 
 const DISMISSED_KEY = "dismissed_event_ids";
 const EXPLANATION_KEY = "has_shown_explanation";
@@ -25,7 +23,7 @@ interface LocationState {
 }
 
 function loadDismissed(): string[] {
-  const raw = locationStorage.getString(DISMISSED_KEY);
+  const raw = mmkv.getString(DISMISSED_KEY);
   if (!raw) return [];
   try {
     return JSON.parse(raw) as string[];
@@ -41,7 +39,7 @@ export const useLocationStore = create<LocationState>((set, get) => ({
     const current = get().dismissedEventIds;
     if (current.includes(eventId)) return;
     const updated = [...current, eventId];
-    locationStorage.set(DISMISSED_KEY, JSON.stringify(updated));
+    mmkv.set(DISMISSED_KEY, JSON.stringify(updated));
     set({ dismissedEventIds: updated });
   },
 
@@ -50,21 +48,21 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   },
 
   clearDismissed: () => {
-    locationStorage.delete(DISMISSED_KEY);
+    mmkv.delete(DISMISSED_KEY);
     set({ dismissedEventIds: [] });
   },
 
-  hasShownExplanation: locationStorage.getBoolean(EXPLANATION_KEY) ?? false,
+  hasShownExplanation: mmkv.getBoolean(EXPLANATION_KEY) ?? false,
 
   setExplanationShown: () => {
-    locationStorage.set(EXPLANATION_KEY, true);
+    mmkv.set(EXPLANATION_KEY, true);
     set({ hasShownExplanation: true });
   },
 
-  permissionDenied: locationStorage.getBoolean(PERMISSION_DENIED_KEY) ?? false,
+  permissionDenied: mmkv.getBoolean(PERMISSION_DENIED_KEY) ?? false,
 
   setPermissionDenied: (denied: boolean) => {
-    locationStorage.set(PERMISSION_DENIED_KEY, denied);
+    mmkv.set(PERMISSION_DENIED_KEY, denied);
     set({ permissionDenied: denied });
   },
 }));
