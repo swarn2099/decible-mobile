@@ -1,51 +1,169 @@
 import { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  ActivityIndicator,
+  ScrollView,
+  Keyboard,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Music, MapPin } from "lucide-react-native";
+import { Music, MapPin, X } from "lucide-react-native";
+import * as Clipboard from "expo-clipboard";
 import { useThemeColors } from "@/constants/colors";
+import { useValidateArtistLink } from "@/hooks/useValidateArtistLink";
+import { ArtistPreviewCard } from "@/components/add/ArtistPreviewCard";
 
 type AddMode = "artist" | "show";
 
 function AddArtistView() {
   const colors = useThemeColors();
+  const [pastedUrl, setPastedUrl] = useState("");
+  const validateMutation = useValidateArtistLink();
+
+  async function handlePaste() {
+    if (validateMutation.isPending) return;
+    Keyboard.dismiss();
+    const text = await Clipboard.getStringAsync();
+    if (text) {
+      setPastedUrl(text);
+      validateMutation.mutate({ url: text });
+    }
+  }
+
+  function handleSubmitUrl() {
+    if (!pastedUrl.trim() || validateMutation.isPending) return;
+    Keyboard.dismiss();
+    validateMutation.mutate({ url: pastedUrl.trim() });
+  }
+
+  function handleReset() {
+    setPastedUrl("");
+    validateMutation.reset();
+  }
 
   return (
-    <View style={styles.modeContent}>
-      <View
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{ paddingTop: 16, paddingBottom: 16 }}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Paste area */}
+      <TouchableOpacity
+        onPress={handlePaste}
+        disabled={validateMutation.isPending}
+        activeOpacity={0.7}
         style={[
           styles.pasteArea,
           {
             backgroundColor: colors.inputBg,
-            borderColor: colors.inputBorder,
+            borderColor: validateMutation.isError
+              ? colors.pink
+              : colors.inputBorder,
           },
         ]}
       >
-        <Music size={32} color={colors.textTertiary} />
-        <Text
-          style={{
-            fontSize: 15,
-            fontFamily: "Poppins_500Medium",
-            color: colors.textSecondary,
-            textAlign: "center",
-            marginTop: 12,
-          }}
-        >
-          Paste a Spotify, Apple Music, or SoundCloud link...
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "Poppins_400Regular",
-            color: colors.textTertiary,
-            textAlign: "center",
-            marginTop: 8,
-            paddingHorizontal: 24,
-          }}
-        >
-          Be the first to add an artist to Decibel and earn the Founder badge
-        </Text>
-      </View>
-    </View>
+        {validateMutation.isPending ? (
+          <ActivityIndicator color={colors.pink} size="large" />
+        ) : (
+          <>
+            <Music size={32} color={colors.textTertiary} />
+            <Text
+              style={{
+                fontSize: 15,
+                fontFamily: "Poppins_500Medium",
+                color: colors.textSecondary,
+                textAlign: "center",
+                marginTop: 12,
+              }}
+            >
+              Tap to paste a link
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Poppins_400Regular",
+                color: colors.textTertiary,
+                textAlign: "center",
+                marginTop: 4,
+              }}
+            >
+              Spotify · Apple Music · SoundCloud
+            </Text>
+          </>
+        )}
+      </TouchableOpacity>
+
+      {/* Manual URL input */}
+      {!validateMutation.isSuccess && (
+        <View style={styles.inputRow}>
+          <TextInput
+            value={pastedUrl}
+            onChangeText={setPastedUrl}
+            onSubmitEditing={handleSubmitUrl}
+            placeholder="or type / paste a link here..."
+            placeholderTextColor={colors.textTertiary}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="url"
+            returnKeyType="go"
+            editable={!validateMutation.isPending}
+            style={[
+              styles.urlInput,
+              {
+                backgroundColor: colors.inputBg,
+                borderColor: colors.inputBorder,
+                color: colors.text,
+              },
+            ]}
+          />
+          {pastedUrl.length > 0 && (
+            <TouchableOpacity
+              onPress={handleReset}
+              style={styles.clearButton}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <X size={16} color={colors.textTertiary} />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+
+      {/* Error state */}
+      {validateMutation.isError && (
+        <View style={[styles.errorBanner, { backgroundColor: colors.pink + "22" }]}>
+          <Text style={[styles.errorText, { color: colors.pink }]}>
+            {validateMutation.error?.message ?? "Something went wrong. Check the link and try again."}
+          </Text>
+          <TouchableOpacity onPress={handleReset} style={styles.retryButton}>
+            <Text style={[styles.retryText, { color: colors.pink }]}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Preview card */}
+      {validateMutation.isSuccess && validateMutation.data && (
+        <>
+          <ArtistPreviewCard
+            result={validateMutation.data}
+            onAdd={() => console.log("Add flow — wired in Plan 02-03")}
+            onDiscover={() => console.log("Discover flow — wired in Plan 02-03")}
+            isLoading={false}
+          />
+
+          {/* Clear / search again */}
+          <TouchableOpacity onPress={handleReset} style={styles.searchAgainRow}>
+            <X size={14} color={colors.textTertiary} />
+            <Text style={[styles.searchAgainText, { color: colors.textTertiary }]}>
+              Search a different artist
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </ScrollView>
   );
 }
 
@@ -60,6 +178,7 @@ function ImAtAShowView() {
           {
             backgroundColor: colors.inputBg,
             borderColor: colors.inputBorder,
+            opacity: 0.6,
           },
         ]}
       >
@@ -87,6 +206,14 @@ function ImAtAShowView() {
         >
           We'll detect your location and find tonight's lineup
         </Text>
+        <View
+          style={[
+            styles.comingSoonBadge,
+            { backgroundColor: colors.purple + "33", borderColor: colors.purple + "55" },
+          ]}
+        >
+          <Text style={[styles.comingSoonText, { color: colors.purple }]}>Coming soon</Text>
+        </View>
       </View>
     </View>
   );
@@ -222,5 +349,66 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: "center",
     justifyContent: "center",
+    minHeight: 160,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 12,
+    gap: 8,
+  },
+  urlInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 13,
+    fontFamily: "Poppins_400Regular",
+  },
+  clearButton: {
+    padding: 8,
+  },
+  errorBanner: {
+    borderRadius: 10,
+    padding: 14,
+    marginTop: 12,
+    gap: 8,
+  },
+  errorText: {
+    fontSize: 13,
+    fontFamily: "Poppins_500Medium",
+    lineHeight: 18,
+  },
+  retryButton: {
+    alignSelf: "flex-start",
+  },
+  retryText: {
+    fontSize: 13,
+    fontFamily: "Poppins_600SemiBold",
+    textDecorationLine: "underline",
+  },
+  searchAgainRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  searchAgainText: {
+    fontSize: 13,
+    fontFamily: "Poppins_400Regular",
+  },
+  comingSoonBadge: {
+    marginTop: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  comingSoonText: {
+    fontSize: 12,
+    fontFamily: "Poppins_600SemiBold",
   },
 });
