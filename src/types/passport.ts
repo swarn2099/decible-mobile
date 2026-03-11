@@ -24,6 +24,7 @@ export interface PassportTimelineEntry {
     photo_url: string | null;
     genres: string[];
     city: string;
+    platform_url: string | null; // first non-null of spotify_url / soundcloud_url / apple_music_url
   };
   venue: { name: string } | null;
   event_date: string | null;
@@ -33,6 +34,7 @@ export interface PassportTimelineEntry {
   scan_count: number | null;
   current_tier: string | null;
   is_founder?: boolean;
+  fan_count: number; // total collection entries for this performer
 }
 
 export interface CollectionStamp extends PassportTimelineEntry {
