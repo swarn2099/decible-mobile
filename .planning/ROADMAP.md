@@ -62,12 +62,12 @@ Plans:
   4. Check-in after midnight correctly matches the same-night event (not the next UTC day)
   5. Rubber stamp animation slams down with haptic feedback on check-in completion, revealing venue, date, and artist
   6. "I'm at a Show" mode on the + tab initiates the check-in flow (TAB-03)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Backend — check-in route, tag-performer route, user_tagged_events table, UTC date fix
-- [ ] 03-02: Client — useVenueDetection hook, GPS permission screen, venue confirmation, Scenario A screen
-- [ ] 03-03: Client — Scenario B (tag DJ), StampAnimation component (Lottie + haptics in Modal)
+- [ ] 03-01-PLAN.md — Backend: check-in route, tag-performer route, user_tagged_events table, UTC date fix
+- [ ] 03-02-PLAN.md — Client: fix useVenueDetection column bug, GPS accuracy guard, CheckInWizard, VenueScanStep, LineupStep
+- [ ] 03-03-PLAN.md — Client: TagPerformerStep (Scenario B), StampAnimationModal (Lottie + haptics), wire complete flow
 
 ### Phase 4: Passport Redesign
 **Goal**: The Passport tab becomes a visual identity artifact with distinct Finds and Stamps aesthetics
