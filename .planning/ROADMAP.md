@@ -95,7 +95,7 @@ Plans:
   3. "Save to Photos" works with proper media library permission handling on both iOS and Android
   4. Artist profile fan count is tappable and navigates to a fans list with Founder at top (gold), then Collected (pink), then Discovered (purple)
   5. All scrollable screens have bottom padding for the floating tab bar; full dark and light mode QA passes with no hardcoded colors
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 05-01: Backend — /api/share-card/founder and /api/share-card/passport routes (next/og ImageResponse)
