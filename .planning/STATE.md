@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 4 plans verified
-last_updated: "2026-03-11T02:51:37.497Z"
+stopped_at: Completed 04-passport-redesign-01-PLAN.md
+last_updated: "2026-03-11T03:04:42.378Z"
 last_activity: "2026-03-11 — Completed Plan 02-02: paste-to-preview flow, ArtistPreviewCard, URL parser tests."
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 67
 ---
 
@@ -56,6 +56,7 @@ Progress: [███████░░░] 67%
 | Phase 03-check-in P01 | 19 | 2 tasks | 4 files |
 | Phase 03-check-in P02 | 30 | 2 tasks | 11 files |
 | Phase 03-check-in P03 | 12 | 3 tasks | 5 files |
+| Phase 04-passport-redesign P01 | 25 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Progress: [███████░░░] 67%
 - [Phase 03-check-in]: Lottie placeholder used — no LottieFiles.com access from VM; Reanimated provides primary slam animation
 - [Phase 03-check-in]: TagPerformerStep uses two internal sub-states rather than separate files — keeps the component cohesive
 - [Phase 03-check-in]: ArtistPreviewCard reused from Add flow with separate Tag & Check In CTA button below it
+- [Phase 04-passport-redesign]: FindsGrid uses flexWrap View (not FlatList) inside Animated.ScrollView to prevent nested VirtualizedList console warnings
+- [Phase 04-passport-redesign]: platform_url coalesced server-side from spotify/soundcloud/apple_music — mobile receives single field
+- [Phase 04-passport-redesign]: fan_count uses total collection entries (not distinct fans) — sufficient for v1 display per plan spec
 
 ### Pending Todos
 
@@ -95,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T02:51:37.491Z
-Stopped at: Phase 4 plans verified
-Resume file: .planning/phases/04-passport-redesign/04-01-PLAN.md
+Last session: 2026-03-11T03:04:42.371Z
+Stopped at: Completed 04-passport-redesign-01-PLAN.md
+Resume file: None

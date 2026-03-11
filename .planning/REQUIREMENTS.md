@@ -47,9 +47,9 @@
 
 ### Passport Redesign
 
-- [ ] **PASS-01**: Finds section displays 2x3 artist card grid with hero photo, name, badge, fan count, "Listen" button
-- [ ] **PASS-02**: Founded cards have gold border glow; Discovered cards have purple border
-- [ ] **PASS-03**: "View All [X] Finds" link below grid opens scrollable full collection
+- [x] **PASS-01**: Finds section displays 2x3 artist card grid with hero photo, name, badge, fan count, "Listen" button
+- [x] **PASS-02**: Founded cards have gold border glow; Discovered cards have purple border
+- [x] **PASS-03**: "View All [X] Finds" link below grid opens scrollable full collection
 - [ ] **PASS-04**: Stamps section has paper grain texture background with analog passport aesthetic
 - [ ] **PASS-05**: Each stamp rotated slightly (-3° to +3°, deterministic by stamp ID)
 - [ ] **PASS-06**: Stamp shows venue name (prominent), date (monospace), artist name(s)
