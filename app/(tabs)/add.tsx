@@ -18,6 +18,7 @@ import { useValidateArtistLink } from "@/hooks/useValidateArtistLink";
 import { useAddArtist } from "@/hooks/useAddArtist";
 import { useDiscoverArtist } from "@/hooks/useDiscoverArtist";
 import { ArtistPreviewCard } from "@/components/add/ArtistPreviewCard";
+import { CheckInWizard } from "@/components/checkin/CheckInWizard";
 
 type AddMode = "artist" | "show";
 
@@ -217,57 +218,6 @@ function AddArtistView() {
   );
 }
 
-function ImAtAShowView() {
-  const colors = useThemeColors();
-
-  return (
-    <View style={styles.modeContent}>
-      <View
-        style={[
-          styles.pasteArea,
-          {
-            backgroundColor: colors.inputBg,
-            borderColor: colors.inputBorder,
-            opacity: 0.6,
-          },
-        ]}
-      >
-        <MapPin size={32} color={colors.textTertiary} />
-        <Text
-          style={{
-            fontSize: 15,
-            fontFamily: "Poppins_500Medium",
-            color: colors.textSecondary,
-            textAlign: "center",
-            marginTop: 12,
-          }}
-        >
-          Check in at a venue to stamp your passport
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "Poppins_400Regular",
-            color: colors.textTertiary,
-            textAlign: "center",
-            marginTop: 8,
-            paddingHorizontal: 24,
-          }}
-        >
-          We'll detect your location and find tonight's lineup
-        </Text>
-        <View
-          style={[
-            styles.comingSoonBadge,
-            { backgroundColor: colors.purple + "33", borderColor: colors.purple + "55" },
-          ]}
-        >
-          <Text style={[styles.comingSoonText, { color: colors.purple }]}>Coming soon</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
 
 export default function AddScreen() {
   const colors = useThemeColors();
@@ -357,7 +307,11 @@ export default function AddScreen() {
         </View>
 
         {/* Content */}
-        {mode === "artist" ? <AddArtistView /> : <ImAtAShowView />}
+        {mode === "artist" ? (
+          <AddArtistView />
+        ) : (
+          <CheckInWizard onBack={() => setMode("artist")} />
+        )}
       </View>
 
       {/* Bottom padding for tab bar */}
@@ -386,10 +340,6 @@ const styles = StyleSheet.create({
   toggleText: {
     fontSize: 14,
     fontFamily: "Poppins_600SemiBold",
-  },
-  modeContent: {
-    flex: 1,
-    paddingTop: 16,
   },
   pasteArea: {
     borderWidth: 2,
@@ -449,16 +399,5 @@ const styles = StyleSheet.create({
   searchAgainText: {
     fontSize: 13,
     fontFamily: "Poppins_400Regular",
-  },
-  comingSoonBadge: {
-    marginTop: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  comingSoonText: {
-    fontSize: 12,
-    fontFamily: "Poppins_600SemiBold",
   },
 });
