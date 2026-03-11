@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Decibel",
-    "slug": "decibel",
+    "slug": "decibel-mobile",
     "version": "1.0.0",
     "scheme": "decibel",
     "orientation": "portrait",
@@ -19,7 +19,12 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Decibel uses your location to detect when you're at a live show so you can collect the performing artists.",
         "ITSAppUsesNonExemptEncryption": false,
-        "LSApplicationQueriesSchemes": ["instagram-stories", "instagram"]
+        "LSApplicationQueriesSchemes": [
+          "instagram-stories",
+          "instagram",
+          "instagram-stories",
+          "instagram"
+        ]
       }
     },
     "android": {
@@ -30,7 +35,13 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -41,10 +52,8 @@
       "expo-font",
       "expo-image",
       "expo-secure-store",
-      "expo-linking",
       "expo-location",
-      "expo-notifications",
-      "expo-haptics"
+      "expo-notifications"
     ],
     "extra": {
       "router": {},
@@ -52,6 +61,12 @@
         "projectId": "44471fff-8ba1-46a0-9901-bdaf6ebef534"
       }
     },
-    "owner": "swarn2099"
+    "owner": "swarn2099",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/44471fff-8ba1-46a0-9901-bdaf6ebef534"
+    }
   }
 }
