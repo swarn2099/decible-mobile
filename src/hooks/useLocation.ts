@@ -48,13 +48,18 @@ export function useLocation() {
   const getCurrentPosition = useCallback(async (): Promise<{
     latitude: number;
     longitude: number;
+    accuracy: number | null;
   } | null> => {
     if (permissionStatus !== "granted") return null;
     try {
       const loc = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
-      return { latitude: loc.coords.latitude, longitude: loc.coords.longitude };
+      return {
+        latitude: loc.coords.latitude,
+        longitude: loc.coords.longitude,
+        accuracy: loc.coords.accuracy,
+      };
     } catch {
       return null;
     }

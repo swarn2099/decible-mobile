@@ -47,10 +47,33 @@ export type Venue = {
   name: string;
   slug: string;
   address: string | null;
-  lat: number | null;
-  lng: number | null;
-  geofence_radius: number | null;
+  city: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  geofence_radius_meters: number | null;
 };
+
+export type StampData = {
+  performer_id: string;
+  performer_name: string;
+  performer_photo: string | null;
+  venue_name: string;
+  event_date: string;
+};
+
+export type WizardStep =
+  | { type: 'idle' }
+  | { type: 'scanning' }
+  | { type: 'no_venues' }
+  | { type: 'gps_weak' }
+  | { type: 'venue_select'; venues: (ActiveVenueEvent & { distance: number })[] }
+  | { type: 'venue_confirm'; event: ActiveVenueEvent }
+  | { type: 'lineup'; event: ActiveVenueEvent }
+  | { type: 'no_lineup'; event: ActiveVenueEvent }
+  | { type: 'tag_performer'; event: ActiveVenueEvent }
+  | { type: 'no_music_dismiss' }
+  | { type: 'already_checked_in'; stamps: StampData[] }
+  | { type: 'stamp'; stamps: StampData[] };
 
 export type ActiveVenueEvent = {
   venue: Venue;

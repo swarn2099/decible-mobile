@@ -10,7 +10,7 @@ const DEFAULT_GEOFENCE_RADIUS = 200; // meters
 /**
  * Haversine distance between two lat/lng points in meters.
  */
-function haversineDistance(
+export function haversineDistance(
   lat1: number,
   lng1: number,
   lat2: number,
@@ -27,11 +27,11 @@ function haversineDistance(
 }
 
 /**
- * Get today's date in YYYY-MM-DD format.
+ * Get today's date in YYYY-MM-DD using LOCAL timezone (not UTC).
+ * This prevents the UTC midnight bug where a 1am show lands on the wrong day.
  */
 function todayDate(): string {
-  const now = new Date();
-  return now.toISOString().slice(0, 10);
+  return new Date().toLocaleDateString('en-CA');
 }
 
 type VenueDetectionOptions = {
@@ -55,19 +55,19 @@ export function useVenueDetection({ enabled = true }: VenueDetectionOptions = {}
 
       const { latitude, longitude } = position;
 
-      // Fetch all venues (small Chicago-only set)
+      // Fetch all venues (small Chicago-only set) — use correct DB column names
       const { data: venues, error: venueError } = await supabase
         .from("venues")
-        .select("id, name, slug, address, lat, lng, geofence_radius");
+        .select("id, name, slug, address, city, latitude, longitude, geofence_radius_meters");
 
       if (venueError || !venues) return [];
 
       // Filter to venues within geofence radius
       const nearbyVenues: (Venue & { distance: number })[] = [];
       for (const v of venues) {
-        if (v.lat == null || v.lng == null) continue;
-        const dist = haversineDistance(latitude, longitude, v.lat, v.lng);
-        const radius = v.geofence_radius ?? DEFAULT_GEOFENCE_RADIUS;
+        if (v.latitude == null || v.longitude == null) continue;
+        const dist = haversineDistance(latitude, longitude, v.latitude, v.longitude);
+        const radius = v.geofence_radius_meters ?? DEFAULT_GEOFENCE_RADIUS;
         if (dist <= radius) {
           nearbyVenues.push({ ...v, distance: dist } as Venue & { distance: number });
         }
@@ -89,7 +89,37 @@ export function useVenueDetection({ enabled = true }: VenueDetectionOptions = {}
           .eq("venue_id", venue.id)
           .eq("event_date", today);
 
-        if (eventError || !events || events.length === 0) continue;
+        if (eventError || !events || events.length === 0) {
+          // No scraped events — check user_tagged_events for crowdsourced performers
+          const { data: tagged } = await supabase
+            .from("user_tagged_events")
+            .select("performer_id, performers(id, name, slug, photo_url)")
+            .eq("venue_id", venue.id)
+            .eq("event_date", today);
+
+          if (tagged && tagged.length > 0) {
+            const taggedPerformers: Pick<Performer, "id" | "name" | "slug" | "photo_url">[] = [];
+            for (const row of tagged) {
+              const p = row.performers as unknown as Pick<
+                Performer,
+                "id" | "name" | "slug" | "photo_url"
+              > | null;
+              if (p && !taggedPerformers.some((existing) => existing.id === p.id)) {
+                taggedPerformers.push(p);
+              }
+            }
+            if (taggedPerformers.length > 0) {
+              results.push({
+                venue,
+                performers: taggedPerformers,
+                eventId: `crowdsourced-${venue.id}-${today}`,
+                eventDate: today,
+                distance: venue.distance,
+              });
+            }
+          }
+          continue;
+        }
 
         // Group performers from all events at this venue
         const performers: Pick<Performer, "id" | "name" | "slug" | "photo_url">[] = [];
