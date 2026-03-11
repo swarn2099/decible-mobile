@@ -158,7 +158,7 @@ export default function SearchScreen() {
               No results found
             </Text>
           }
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
         />
       )}
     </SafeAreaView>

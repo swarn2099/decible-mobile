@@ -164,7 +164,7 @@ export function StampAnimationModal({
                   width: 100,
                   height: 100,
                   borderRadius: 50,
-                  backgroundColor: "#FF4D6A",
+                  backgroundColor: colors.pink,
                 },
               ]}
             />
@@ -180,11 +180,11 @@ export function StampAnimationModal({
                 colorFilters={[
                   {
                     keypath: "ink_ring",
-                    color: "#FF4D6A",
+                    color: colors.pink,
                   },
                   {
                     keypath: "stamp_circle",
-                    color: "#FF4D6A",
+                    color: colors.pink,
                   },
                 ]}
               />
@@ -244,7 +244,7 @@ export function StampAnimationModal({
             <Pressable
               onPress={onViewPassport}
               style={({ pressed }) => ({
-                backgroundColor: "#FF4D6A",
+                backgroundColor: colors.pink,
                 borderRadius: 16,
                 paddingVertical: 16,
                 alignItems: "center",

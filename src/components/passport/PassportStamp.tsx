@@ -48,7 +48,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
 
   const glowStyle = colors.isDark
     ? {
-        shadowColor: "#FF4D6A",
+        shadowColor: colors.pink,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.35,
         shadowRadius: 10,
@@ -63,7 +63,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           cx={cx}
           cy={cy}
           r={outerR}
-          stroke="#FF4D6A"
+          stroke={colors.pink}
           strokeWidth={2}
           strokeDasharray="4 3"
           fill="none"
@@ -75,7 +75,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           cx={cx}
           cy={cy}
           r={innerR}
-          stroke="#FF4D6A"
+          stroke={colors.pink}
           strokeWidth={0.5}
           fill="none"
           opacity={0.4}
@@ -89,7 +89,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           fontFamily="Poppins-SemiBold, Poppins_600SemiBold, sans-serif"
           fontWeight="600"
           fontSize={8}
-          fill="#FF4D6A"
+          fill={colors.pink}
         >
           {venueName}
         </SvgText>
@@ -102,7 +102,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           fontFamily={monoFont}
           fontWeight="bold"
           fontSize={10}
-          fill="#FF4D6A"
+          fill={colors.pink}
         >
           {dateLabel}
         </SvgText>
@@ -114,7 +114,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           textAnchor="middle"
           fontFamily="Poppins-Medium, Poppins_500Medium, sans-serif"
           fontSize={7}
-          fill="#FF4D6A"
+          fill={colors.pink}
           opacity={0.8}
         >
           {artistName}

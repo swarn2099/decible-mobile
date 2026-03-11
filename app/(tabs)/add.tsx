@@ -17,18 +17,58 @@ import { useThemeColors } from "@/constants/colors";
 import { useValidateArtistLink } from "@/hooks/useValidateArtistLink";
 import { useAddArtist } from "@/hooks/useAddArtist";
 import { useDiscoverArtist } from "@/hooks/useDiscoverArtist";
+import { useFounderShareCard } from "@/hooks/useShareCard";
+import { useAuthStore } from "@/stores/authStore";
 import { ArtistPreviewCard } from "@/components/add/ArtistPreviewCard";
 import { CheckInWizard } from "@/components/checkin/CheckInWizard";
+import { ConfirmationModal } from "@/components/collection/ConfirmationModal";
+import { ShareSheet } from "@/components/passport/ShareSheet";
+import type { TierName } from "@/hooks/useCollection";
 
 type AddMode = "artist" | "show";
+
+type CelebrationState = {
+  visible: boolean;
+  type: "founded" | "discover" | "collect";
+  performerName: string;
+  performerPhoto: string | null;
+  result: {
+    scan_count: number;
+    current_tier: TierName;
+    tierUp: boolean;
+    alreadyDone: boolean;
+  };
+};
+
+const DEFAULT_CELEBRATION: CelebrationState = {
+  visible: false,
+  type: "collect",
+  performerName: "",
+  performerPhoto: null,
+  result: {
+    scan_count: 1,
+    current_tier: "network",
+    tierUp: false,
+    alreadyDone: false,
+  },
+};
 
 function AddArtistView() {
   const colors = useThemeColors();
   const router = useRouter();
+  const user = useAuthStore((s) => s.user);
   const [pastedUrl, setPastedUrl] = useState("");
   const validateMutation = useValidateArtistLink();
   const addMutation = useAddArtist();
   const discoverMutation = useDiscoverArtist();
+  const founderShareCard = useFounderShareCard();
+
+  const [celebration, setCelebration] = useState<CelebrationState>(DEFAULT_CELEBRATION);
+  const [shareCardUri, setShareCardUri] = useState<string | null>(null);
+  const [shareSheetVisible, setShareSheetVisible] = useState(false);
+  const [pendingSlug, setPendingSlug] = useState<string | null>(null);
+
+  const fanSlug = user?.email?.split("@")[0] ?? "user";
 
   async function handlePaste() {
     if (validateMutation.isPending) return;
@@ -51,6 +91,8 @@ function AddArtistView() {
     validateMutation.reset();
     addMutation.reset();
     discoverMutation.reset();
+    setShareCardUri(null);
+    setPendingSlug(null);
   }
 
   function handleAdd() {
@@ -71,7 +113,34 @@ function AddArtistView() {
       },
       {
         onSuccess: (result) => {
-          router.push(`/artist/${result.performer.slug}`);
+          const celebType: "founded" | "collect" = result.is_founder ? "founded" : "collect";
+          setPendingSlug(result.performer.slug);
+
+          // Fire-and-forget: pre-generate share card for founded
+          if (result.is_founder) {
+            setShareCardUri(null);
+            founderShareCard
+              .generate({
+                artistName: result.performer.name,
+                artistPhoto: artist.photo_url,
+                fanSlug,
+              })
+              .then((uri) => setShareCardUri(uri))
+              .catch(() => setShareCardUri(null));
+          }
+
+          setCelebration({
+            visible: true,
+            type: celebType,
+            performerName: result.performer.name,
+            performerPhoto: artist.photo_url,
+            result: {
+              scan_count: 1,
+              current_tier: "network",
+              tierUp: false,
+              alreadyDone: result.already_exists,
+            },
+          });
           setPastedUrl("");
           validateMutation.reset();
         },
@@ -87,7 +156,19 @@ function AddArtistView() {
       { performerId: existing.id },
       {
         onSuccess: (result) => {
-          router.push(`/artist/${result.performer.slug}`);
+          setPendingSlug(result.performer.slug);
+          setCelebration({
+            visible: true,
+            type: "discover",
+            performerName: result.performer.name,
+            performerPhoto: null,
+            result: {
+              scan_count: 0,
+              current_tier: "network",
+              tierUp: false,
+              alreadyDone: false,
+            },
+          });
           setPastedUrl("");
           validateMutation.reset();
         },
@@ -95,126 +176,173 @@ function AddArtistView() {
     );
   }
 
+  function handleCelebrationDismiss() {
+    const slug = pendingSlug;
+    setCelebration(DEFAULT_CELEBRATION);
+    setShareCardUri(null);
+    setPendingSlug(null);
+    if (slug) {
+      router.push(`/artist/${slug}`);
+    }
+  }
+
+  function handleShare() {
+    // Cancel auto-dismiss; open share sheet
+    setCelebration((prev) => ({ ...prev, visible: false }));
+    setShareSheetVisible(true);
+  }
+
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ paddingTop: 16, paddingBottom: 16 }}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Paste area */}
-      <TouchableOpacity
-        onPress={handlePaste}
-        disabled={validateMutation.isPending}
-        activeOpacity={0.7}
-        style={[
-          styles.pasteArea,
-          {
-            backgroundColor: colors.inputBg,
-            borderColor: validateMutation.isError
-              ? colors.pink
-              : colors.inputBorder,
-          },
-        ]}
+    <>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: 100 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        {validateMutation.isPending ? (
-          <ActivityIndicator color={colors.pink} size="large" />
-        ) : (
+        {/* Paste area */}
+        <TouchableOpacity
+          onPress={handlePaste}
+          disabled={validateMutation.isPending}
+          activeOpacity={0.7}
+          style={[
+            styles.pasteArea,
+            {
+              backgroundColor: colors.inputBg,
+              borderColor: validateMutation.isError
+                ? colors.pink
+                : colors.inputBorder,
+            },
+          ]}
+        >
+          {validateMutation.isPending ? (
+            <ActivityIndicator color={colors.pink} size="large" />
+          ) : (
+            <>
+              <Music size={32} color={colors.textTertiary} />
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontFamily: "Poppins_500Medium",
+                  color: colors.textSecondary,
+                  textAlign: "center",
+                  marginTop: 12,
+                }}
+              >
+                Tap to paste a link
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Poppins_400Regular",
+                  color: colors.textTertiary,
+                  textAlign: "center",
+                  marginTop: 4,
+                }}
+              >
+                Spotify · Apple Music · SoundCloud
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Manual URL input */}
+        {!validateMutation.isSuccess && (
+          <View style={styles.inputRow}>
+            <TextInput
+              value={pastedUrl}
+              onChangeText={setPastedUrl}
+              onSubmitEditing={handleSubmitUrl}
+              placeholder="or type / paste a link here..."
+              placeholderTextColor={colors.textTertiary}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+              returnKeyType="go"
+              editable={!validateMutation.isPending}
+              style={[
+                styles.urlInput,
+                {
+                  backgroundColor: colors.inputBg,
+                  borderColor: colors.inputBorder,
+                  color: colors.text,
+                },
+              ]}
+            />
+            {pastedUrl.length > 0 && (
+              <TouchableOpacity
+                onPress={handleReset}
+                style={styles.clearButton}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <X size={16} color={colors.textTertiary} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+
+        {/* Error state */}
+        {validateMutation.isError && (
+          <View style={[styles.errorBanner, { backgroundColor: colors.pink + "22" }]}>
+            <Text style={[styles.errorText, { color: colors.pink }]}>
+              {validateMutation.error?.message ?? "Something went wrong. Check the link and try again."}
+            </Text>
+            <TouchableOpacity onPress={handleReset} style={styles.retryButton}>
+              <Text style={[styles.retryText, { color: colors.pink }]}>Try Again</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Preview card */}
+        {validateMutation.isSuccess && validateMutation.data && (
           <>
-            <Music size={32} color={colors.textTertiary} />
-            <Text
-              style={{
-                fontSize: 15,
-                fontFamily: "Poppins_500Medium",
-                color: colors.textSecondary,
-                textAlign: "center",
-                marginTop: 12,
-              }}
-            >
-              Tap to paste a link
-            </Text>
-            <Text
-              style={{
-                fontSize: 12,
-                fontFamily: "Poppins_400Regular",
-                color: colors.textTertiary,
-                textAlign: "center",
-                marginTop: 4,
-              }}
-            >
-              Spotify · Apple Music · SoundCloud
-            </Text>
+            <ArtistPreviewCard
+              result={validateMutation.data}
+              onAdd={handleAdd}
+              onDiscover={handleDiscover}
+              isLoading={addMutation.isPending || discoverMutation.isPending}
+            />
+
+            {/* Clear / search again */}
+            <TouchableOpacity onPress={handleReset} style={styles.searchAgainRow}>
+              <X size={14} color={colors.textTertiary} />
+              <Text style={[styles.searchAgainText, { color: colors.textTertiary }]}>
+                Search a different artist
+              </Text>
+            </TouchableOpacity>
           </>
         )}
-      </TouchableOpacity>
+      </ScrollView>
 
-      {/* Manual URL input */}
-      {!validateMutation.isSuccess && (
-        <View style={styles.inputRow}>
-          <TextInput
-            value={pastedUrl}
-            onChangeText={setPastedUrl}
-            onSubmitEditing={handleSubmitUrl}
-            placeholder="or type / paste a link here..."
-            placeholderTextColor={colors.textTertiary}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            returnKeyType="go"
-            editable={!validateMutation.isPending}
-            style={[
-              styles.urlInput,
-              {
-                backgroundColor: colors.inputBg,
-                borderColor: colors.inputBorder,
-                color: colors.text,
-              },
-            ]}
-          />
-          {pastedUrl.length > 0 && (
-            <TouchableOpacity
-              onPress={handleReset}
-              style={styles.clearButton}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <X size={16} color={colors.textTertiary} />
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+      {/* Post-found celebration modal */}
+      <ConfirmationModal
+        visible={celebration.visible}
+        type={celebration.type}
+        performer={{
+          name: celebration.performerName,
+          photo_url: celebration.performerPhoto,
+        }}
+        result={celebration.result}
+        shareCardUri={shareCardUri}
+        onShare={handleShare}
+        onDismiss={handleCelebrationDismiss}
+      />
 
-      {/* Error state */}
-      {validateMutation.isError && (
-        <View style={[styles.errorBanner, { backgroundColor: colors.pink + "22" }]}>
-          <Text style={[styles.errorText, { color: colors.pink }]}>
-            {validateMutation.error?.message ?? "Something went wrong. Check the link and try again."}
-          </Text>
-          <TouchableOpacity onPress={handleReset} style={styles.retryButton}>
-            <Text style={[styles.retryText, { color: colors.pink }]}>Try Again</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Preview card */}
-      {validateMutation.isSuccess && validateMutation.data && (
-        <>
-          <ArtistPreviewCard
-            result={validateMutation.data}
-            onAdd={handleAdd}
-            onDiscover={handleDiscover}
-            isLoading={addMutation.isPending || discoverMutation.isPending}
-          />
-
-          {/* Clear / search again */}
-          <TouchableOpacity onPress={handleReset} style={styles.searchAgainRow}>
-            <X size={14} color={colors.textTertiary} />
-            <Text style={[styles.searchAgainText, { color: colors.textTertiary }]}>
-              Search a different artist
-            </Text>
-          </TouchableOpacity>
-        </>
-      )}
-    </ScrollView>
+      {/* Share sheet */}
+      <ShareSheet
+        visible={shareSheetVisible}
+        onClose={() => {
+          setShareSheetVisible(false);
+          const slug = pendingSlug;
+          setPendingSlug(null);
+          if (slug) {
+            router.push(`/artist/${slug}`);
+          }
+        }}
+        imageUri={shareCardUri}
+        isGenerating={founderShareCard.isLoading}
+      />
+    </>
   );
 }
 

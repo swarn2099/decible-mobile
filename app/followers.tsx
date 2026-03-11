@@ -84,7 +84,7 @@ export default function FollowersScreen() {
               No followers yet
             </Text>
           }
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
         />
       )}
     </SafeAreaView>

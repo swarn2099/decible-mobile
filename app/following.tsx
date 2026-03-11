@@ -84,7 +84,7 @@ export default function FollowingScreen() {
               Not following anyone yet
             </Text>
           }
-          contentContainerStyle={{ paddingBottom: 40 }}
+          contentContainerStyle={{ paddingBottom: 100 }}
         />
       )}
     </SafeAreaView>

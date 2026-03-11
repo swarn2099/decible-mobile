@@ -389,7 +389,7 @@ export default function UserProfileScreen() {
           />
         )}
         ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </SafeAreaView>
   );
