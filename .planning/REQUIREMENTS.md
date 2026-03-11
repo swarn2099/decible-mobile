@@ -41,9 +41,9 @@
 
 ### Stamp Animation
 
-- [ ] **ANIM-01**: Rubber stamp visual slams down on check-in with Lottie animation
-- [ ] **ANIM-02**: Haptic feedback (medium impact) on stamp contact
-- [ ] **ANIM-03**: Ink spread effect on impact, stamp lifts to reveal venue + date + artist
+- [x] **ANIM-01**: Rubber stamp visual slams down on check-in with Lottie animation
+- [x] **ANIM-02**: Haptic feedback (medium impact) on stamp contact
+- [x] **ANIM-03**: Ink spread effect on impact, stamp lifts to reveal venue + date + artist
 
 ### Passport Redesign
 
