@@ -1,7 +1,9 @@
 import { View, Text, Pressable, TouchableOpacity, Linking, Platform } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
+import { Star, Compass, Headphones } from "lucide-react-native";
 import { useThemeColors, Colors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
 
@@ -32,22 +34,22 @@ export function FindCard({ stamp, cardWidth }: Props) {
   const router = useRouter();
   const colors = useThemeColors();
 
-  const cardHeight = cardWidth * 1.4;
-  const photoHeight = cardHeight * 0.6;
+  // 3:4 aspect ratio
+  const cardHeight = cardWidth * 1.33;
   const gradientColors = getGradientForName(stamp.performer.name);
 
   const isFounder = stamp.is_founder === true;
-  const glowColor = isFounder ? colors.gold : colors.purple;
+  const borderColor = isFounder ? colors.gold : colors.purple;
 
   const shadowStyle = Platform.select({
     ios: {
-      shadowColor: glowColor,
-      shadowOpacity: isFounder ? 0.6 : 0.5,
-      shadowRadius: isFounder ? 8 : 6,
-      shadowOffset: { width: 0, height: 0 },
+      shadowColor: borderColor,
+      shadowOpacity: colors.isDark ? (isFounder ? 0.5 : 0.4) : 0.25,
+      shadowRadius: colors.isDark ? 8 : 6,
+      shadowOffset: { width: 0, height: colors.isDark ? 0 : 3 },
     },
     android: {
-      elevation: 4,
+      elevation: 6,
     },
   });
 
@@ -61,94 +63,168 @@ export function FindCard({ stamp, cardWidth }: Props) {
     }
   };
 
+  const genres = stamp.performer.genres?.slice(0, 2) ?? [];
+
   return (
     <Pressable
       onPress={handleCardPress}
       style={{
         width: cardWidth,
         height: cardHeight,
-        borderRadius: 12,
-        backgroundColor: colors.card,
-        borderColor: glowColor,
-        borderWidth: 1.5,
+        borderRadius: 16,
+        borderColor: borderColor,
+        borderWidth: 2,
         overflow: "hidden",
         ...shadowStyle,
       }}
     >
-      {/* Hero photo */}
-      <View style={{ height: photoHeight, overflow: "hidden" }}>
-        {stamp.performer.photo_url ? (
-          <Image
-            source={{ uri: stamp.performer.photo_url }}
-            style={{ width: "100%", height: "100%" }}
-            contentFit="cover"
-          />
-        ) : (
-          <LinearGradient
-            colors={gradientColors}
-            style={{ width: "100%", height: "100%" }}
-          />
-        )}
-      </View>
+      {/* Full-bleed photo or gradient fallback */}
+      {stamp.performer.photo_url ? (
+        <Image
+          source={{ uri: stamp.performer.photo_url }}
+          style={{ width: "100%", height: "100%", position: "absolute" }}
+          contentFit="cover"
+        />
+      ) : (
+        <LinearGradient
+          colors={gradientColors}
+          style={{ width: "100%", height: "100%", position: "absolute" }}
+        />
+      )}
 
-      {/* Info section */}
+      {/* Genre pills — top area */}
+      {genres.length > 0 && (
+        <View
+          style={{
+            position: "absolute",
+            top: 8,
+            left: 8,
+            right: 8,
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 4,
+          }}
+        >
+          {genres.map((genre) => (
+            <View
+              key={genre}
+              style={{
+                backgroundColor: "rgba(0,0,0,0.45)",
+                borderRadius: 8,
+                paddingHorizontal: 7,
+                paddingVertical: 2,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 9,
+                  fontFamily: "Poppins_500Medium",
+                  color: "rgba(255,255,255,0.9)",
+                }}
+                numberOfLines={1}
+              >
+                {genre}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Bottom frosted glass overlay */}
       <View
         style={{
-          flex: 1,
-          paddingHorizontal: 8,
-          paddingTop: 6,
-          paddingBottom: 8,
-          justifyContent: "space-between",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
         }}
       >
-        <View>
-          <Text
+        {/* Dark gradient fade into blur */}
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.6)"]}
+          style={{ height: 24 }}
+        />
+        <View
+          style={{
+            backgroundColor: "rgba(0,0,0,0.55)",
+            paddingHorizontal: 10,
+            paddingTop: 2,
+            paddingBottom: 10,
+          }}
+        >
+          {/* Artist name + badge */}
+          <View
             style={{
-              fontSize: 13,
-              fontFamily: "Poppins_600SemiBold",
-              color: colors.text,
-              lineHeight: 18,
-            }}
-            numberOfLines={1}
-          >
-            {stamp.performer.name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 11,
-              fontFamily: "Poppins_400Regular",
-              color: colors.textSecondary,
-              lineHeight: 16,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
             }}
           >
-            {stamp.fan_count} fan{stamp.fan_count !== 1 ? "s" : ""}
-          </Text>
-        </View>
+            {isFounder ? (
+              <Star size={12} color="#FFD700" fill="#FFD700" />
+            ) : (
+              <Compass size={12} color="#9B6DFF" />
+            )}
+            <Text
+              style={{
+                fontSize: 15,
+                fontFamily: "Poppins_600SemiBold",
+                color: "#FFFFFF",
+                flex: 1,
+              }}
+              numberOfLines={1}
+            >
+              {stamp.performer.name}
+            </Text>
+          </View>
 
-        {/* Listen button */}
-        {stamp.performer.platform_url ? (
-          <TouchableOpacity
-            onPress={handleListenPress}
-            activeOpacity={0.8}
+          {/* Fan count + Listen button row */}
+          <View
             style={{
-              backgroundColor: colors.pink,
-              borderRadius: 20,
-              paddingVertical: 4,
-              paddingHorizontal: 10,
-              alignSelf: "flex-start",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: 3,
             }}
           >
             <Text
               style={{
-                fontSize: 11,
-                fontFamily: "Poppins_600SemiBold",
-                color: "#FFFFFF",
+                fontSize: 12,
+                fontFamily: "Poppins_400Regular",
+                color: "rgba(255,255,255,0.7)",
               }}
             >
-              Listen
+              {stamp.fan_count} fan{stamp.fan_count !== 1 ? "s" : ""}
             </Text>
-          </TouchableOpacity>
-        ) : null}
+
+            {stamp.performer.platform_url ? (
+              <TouchableOpacity
+                onPress={handleListenPress}
+                activeOpacity={0.8}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 3,
+                  backgroundColor: Colors.pink,
+                  borderRadius: 12,
+                  paddingVertical: 3,
+                  paddingHorizontal: 8,
+                }}
+              >
+                <Headphones size={10} color="#FFFFFF" />
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontFamily: "Poppins_600SemiBold",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  Listen
+                </Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </View>
       </View>
     </Pressable>
   );
