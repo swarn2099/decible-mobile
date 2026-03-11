@@ -14,6 +14,7 @@ import {
 import { Image } from "expo-image";
 import NetInfo from "@react-native-community/netinfo";
 
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { useAuthStore } from "@/stores/authStore";
@@ -126,11 +127,13 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <RootNavigator />
-        <StatusBar style="auto" />
-      </AuthProvider>
-    </QueryProvider>
+    <ErrorBoundary>
+      <QueryProvider>
+        <AuthProvider>
+          <RootNavigator />
+          <StatusBar style="auto" />
+        </AuthProvider>
+      </QueryProvider>
+    </ErrorBoundary>
   );
 }
