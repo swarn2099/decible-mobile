@@ -4,8 +4,8 @@
  */
 
 export type ParsedArtistUrl = {
-  platform: "spotify" | "soundcloud" | "instagram" | "mixcloud";
-  artistId: string; // Spotify ID, SoundCloud/Mixcloud username, or Instagram handle
+  platform: "spotify" | "spotify_short" | "soundcloud" | "apple_music" | "instagram" | "mixcloud";
+  artistId: string; // Spotify ID, SoundCloud/Mixcloud username, Instagram handle, Apple Music numeric ID, or full URL for spotify_short
 };
 
 /**
@@ -40,6 +40,24 @@ export function parseArtistUrl(url: string): ParsedArtistUrl | null {
   // Clean pathname: remove trailing slashes and get segments
   const pathname = parsed.pathname.replace(/\/+$/, "");
   const segments = pathname.split("/").filter(Boolean);
+
+  // spotify.link short URLs — backend must resolve the redirect
+  if (hostname === "spotify.link") {
+    return { platform: "spotify_short", artistId: trimmed };
+  }
+
+  // Apple Music: music.apple.com/us/artist/{name}/{id} or itunes.apple.com/...
+  if (hostname === "music.apple.com" || hostname === "itunes.apple.com") {
+    const artistIdx = segments.indexOf("artist");
+    if (artistIdx >= 0) {
+      // Prefer the numeric ID after the name segment (index + 2), fall back to index + 1
+      const idSegment = segments[artistIdx + 2] || segments[artistIdx + 1];
+      if (idSegment) {
+        return { platform: "apple_music", artistId: idSegment };
+      }
+    }
+    return null;
+  }
 
   // Spotify: https://open.spotify.com/artist/{id}
   if (hostname === "open.spotify.com") {
