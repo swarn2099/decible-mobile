@@ -106,6 +106,7 @@ export function useArtistEvents(performerId: string | undefined) {
 type ArtistStatsResponse = {
   fanCount: number;
   founder: FounderInfo | null;
+  userStatus: "founded" | "collected" | "discovered" | "none";
 };
 
 export function useArtistFanCount(performerId: string | undefined) {
@@ -140,41 +141,10 @@ export function useMyArtistStatus(performerId: string | undefined) {
   return useQuery<"founded" | "collected" | "discovered" | "none">({
     queryKey: ["myArtistStatus", performerId],
     queryFn: async () => {
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser();
-      if (!currentUser?.email) return "none";
-
-      // Look up fan record by email to get the correct fan table ID
-      const { data: fanRecord } = await supabase
-        .from("fans")
-        .select("id")
-        .eq("email", currentUser.email)
-        .maybeSingle();
-
-      // Fallback to auth UID if fan lookup fails (RLS or missing record)
-      const fanId = fanRecord?.id ?? currentUser.id;
-
-      // Check founder badge
-      const { data: founder } = await supabase
-        .from("founder_badges")
-        .select("id")
-        .eq("fan_id", fanId)
-        .eq("performer_id", performerId!)
-        .maybeSingle();
-      if (founder) return "founded";
-
-      // Check collection
-      const { data: collection } = await supabase
-        .from("collections")
-        .select("verified")
-        .eq("fan_id", fanId)
-        .eq("performer_id", performerId!)
-        .maybeSingle();
-      if (collection?.verified) return "collected";
-      if (collection) return "discovered";
-
-      return "none";
+      const data = await apiCall<ArtistStatsResponse>(
+        `/mobile/artist-stats?performerId=${performerId}`
+      );
+      return data.userStatus ?? "none";
     },
     staleTime: 5 * 60 * 1000,
     enabled: !!performerId,
