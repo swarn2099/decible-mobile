@@ -6,7 +6,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
-import { Disc, ChevronRight } from "lucide-react-native";
+import { Disc } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useThemeColors } from "@/constants/colors";
 import { useAuthStore } from "@/stores/authStore";
@@ -20,7 +20,7 @@ import {
 } from "@/hooks/useShareCard";
 import { PassportHeader } from "@/components/passport/PassportHeader";
 import { StatsBar } from "@/components/passport/StatsBar";
-import { CollectionStamp } from "@/components/passport/CollectionStamp";
+import { StampsSection } from "@/components/passport/StampsSection";
 import { FindsGrid } from "@/components/passport/FindsGrid";
 import { BadgeGrid } from "@/components/passport/BadgeGrid";
 import { BadgeDetailModal } from "@/components/passport/BadgeDetailModal";
@@ -31,7 +31,6 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { apiCall } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
-import type { CollectionStamp as CollectionStampType } from "@/types/passport";
 import type { BadgeWithStatus } from "@/types/badges";
 
 const VISIBLE_STAMPS = 6;
@@ -117,13 +116,6 @@ export default function PassportScreen() {
       scrollY.value = event.contentOffset.y;
     },
   });
-
-  const handleStampPress = useCallback(
-    (stamp: CollectionStampType) => {
-      router.push(`/artist/${stamp.performer.slug}`);
-    },
-    [router]
-  );
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -339,43 +331,7 @@ export default function PassportScreen() {
         </View>
 
         {stamps.length > 0 ? (
-          <>
-            <View style={{ gap: 8 }}>
-              {visibleStamps.map((stamp) => (
-                <CollectionStamp
-                  key={stamp.id}
-                  stamp={stamp}
-                  onPress={handleStampPress}
-                />
-              ))}
-            </View>
-            {stamps.length > 5 && (
-              <TouchableOpacity
-                onPress={() => router.push("/collection")}
-                activeOpacity={0.7}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 4,
-                  paddingVertical: 14,
-                  marginHorizontal: 16,
-                  marginTop: 4,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontFamily: "Poppins_600SemiBold",
-                    color: colors.pink,
-                  }}
-                >
-                  View All {stamps.length} Stamps
-                </Text>
-                <ChevronRight size={16} color={colors.pink} />
-              </TouchableOpacity>
-            )}
-          </>
+          <StampsSection stamps={visibleStamps} totalCount={stamps.length} />
         ) : (
           <EmptyState
             icon={<Disc size={32} color={colors.lightGray} />}
