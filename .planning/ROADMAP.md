@@ -35,7 +35,7 @@ Plans:
 ### Phase 2: Add Flow
 **Goal**: Users can discover and claim underground artists by pasting a streaming link
 **Depends on**: Phase 1
-**Requirements**: ADD-01, ADD-02, ADD-03, ADD-04, ADD-05, ADD-06, ADD-07, ADD-08, ADD-09, ADD-10, ADD-11, ADD-12, TAB-01, TAB-02, TAB-03, NAV-01, NAV-02, NAV-03
+**Requirements**: ADD-01, ADD-02, ADD-03, ADD-04, ADD-05, ADD-06, ADD-07, ADD-08, ADD-09, ADD-10, ADD-11, ADD-12, TAB-01, TAB-02, NAV-01, NAV-02, NAV-03
 **Success Criteria** (what must be TRUE):
   1. User can paste a Spotify, Apple Music, or SoundCloud artist URL and see the artist's name, image, and listener/follower count before confirming
   2. App rejects artists over the eligibility threshold (1M Spotify listeners / 100K SoundCloud followers) with the artist card visible and a clear rejection message
@@ -46,19 +46,22 @@ Plans:
 
 Plans:
 - [ ] 02-01: Backend — validate-artist-link endpoint (Spotify + SoundCloud + Apple Music eligibility gate)
-- [ ] 02-02: Client — urlParser.ts port, + tab mode toggle, paste screen, artist preview card
-- [ ] 02-03: Client — found/discover confirmation, navigation wiring, NAV-01 search bar relocation
+- [ ] 02-02: Client — urlParser.ts port + tests, + tab mode toggle, paste screen, artist preview card
+- [ ] 02-03: Client — multi-platform add support, found/discover confirmation, navigation wiring, NAV search bar
+
+**Note:** TAB-03 ("I'm at a Show" initiates check-in flow) is deferred to Phase 3 where the full check-in flow is built. Phase 2 implements TAB-01/TAB-02 (mode toggle + placeholder state).
 
 ### Phase 3: Check-In
 **Goal**: Users can check in at a live show and create Stamps proving they were there
 **Depends on**: Phase 2
-**Requirements**: CHK-01, CHK-02, CHK-03, CHK-04, CHK-05, CHK-06, CHK-07, CHK-08, CHK-09, CHK-10, ANIM-01, ANIM-02, ANIM-03
+**Requirements**: TAB-03, CHK-01, CHK-02, CHK-03, CHK-04, CHK-05, CHK-06, CHK-07, CHK-08, CHK-09, CHK-10, ANIM-01, ANIM-02, ANIM-03
 **Success Criteria** (what must be TRUE):
   1. User at a known venue with a lineup sees that venue confirmed, taps Check In, and all lineup artists appear as Stamps in their Passport immediately
   2. User at a known venue with no lineup can tag a performer via link paste and receive a Stamp for that performer
   3. GPS permission rationale screen appears before location is requested, and low-accuracy GPS shows a contextual error instead of silently failing
   4. Check-in after midnight correctly matches the same-night event (not the next UTC day)
   5. Rubber stamp animation slams down with haptic feedback on check-in completion, revealing venue, date, and artist
+  6. "I'm at a Show" mode on the + tab initiates the check-in flow (TAB-03)
 **Plans**: TBD
 
 Plans:
