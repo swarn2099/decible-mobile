@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
 import { House, Plus, Ticket } from "lucide-react-native";
 import type { LucideIcon } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,104 +17,75 @@ const TAB_CONFIG: {
   { name: "passport", title: "Passport", Icon: Ticket },
 ];
 
-function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export const TAB_BAR_HEIGHT = 50;
+
+function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const activeColor = colors.pink;
   const inactiveColor = colors.isDark
-    ? "rgba(255,255,255,0.55)"
-    : "rgba(0,0,0,0.45)";
+    ? "rgba(255,255,255,0.4)"
+    : "rgba(0,0,0,0.35)";
 
   return (
     <View
-      style={[styles.tabBarContainer, { bottom: insets.bottom + 8 }]}
-      pointerEvents="box-none"
+      style={[
+        styles.tabBar,
+        {
+          paddingBottom: insets.bottom,
+          backgroundColor: colors.isDark ? "#15151C" : "#FFFFFF",
+          borderTopColor: colors.isDark
+            ? "rgba(255,255,255,0.06)"
+            : "rgba(0,0,0,0.06)",
+        },
+      ]}
     >
-      <BlurView
-        intensity={40}
-        tint={colors.isDark ? "dark" : "light"}
-        style={[
-          styles.pill,
-          {
-            backgroundColor: colors.isDark
-              ? "rgba(11, 11, 15, 0.88)"
-              : "rgba(245, 245, 247, 0.92)",
-            borderColor: colors.isDark
-              ? "rgba(255,255,255,0.08)"
-              : "rgba(0,0,0,0.06)",
-            shadowColor: colors.isDark
-              ? "rgba(0,0,0,0.5)"
-              : "rgba(0,0,0,0.15)",
-          },
-        ]}
-      >
-        {state.routes.map((route, index) => {
-          const config = TAB_CONFIG.find((t) => t.name === route.name);
-          if (!config) return null;
+      {state.routes.map((route, index) => {
+        const config = TAB_CONFIG.find((t) => t.name === route.name);
+        if (!config) return null;
 
-          const isFocused = state.index === index;
-          const color = config.isCenter
-            ? "#FFFFFF"
-            : isFocused
-            ? activeColor
-            : inactiveColor;
+        const isFocused = state.index === index;
+        const isCenter = config.isCenter;
+        const color = isFocused ? activeColor : inactiveColor;
+        const iconSize = isCenter ? 28 : 22;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: route.key,
+            canPreventDefault: true,
+          });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
-
-          if (config.isCenter) {
-            return (
-              <TouchableOpacity
-                key={route.key}
-                accessibilityRole="button"
-                accessibilityState={isFocused ? { selected: true } : {}}
-                onPress={onPress}
-                activeOpacity={0.7}
-                style={styles.centerTab}
-              >
-                <View
-                  style={[
-                    styles.centerButton,
-                    {
-                      backgroundColor: colors.pink,
-                      shadowColor: colors.pink,
-                    },
-                  ]}
-                >
-                  <Plus size={26} color="#FFFFFF" strokeWidth={2.5} />
-                </View>
-              </TouchableOpacity>
-            );
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
           }
+        };
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              accessibilityRole="button"
-              accessibilityState={isFocused ? { selected: true } : {}}
-              onPress={onPress}
-              activeOpacity={0.7}
-              style={styles.tab}
+        return (
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            onPress={onPress}
+            activeOpacity={0.7}
+            style={styles.tab}
+          >
+            <config.Icon
+              size={iconSize}
+              color={isCenter ? activeColor : color}
+              strokeWidth={isFocused ? 2.5 : 2}
+            />
+            <Text
+              style={[
+                styles.label,
+                { color: isCenter ? activeColor : color },
+              ]}
             >
-              <config.Icon
-                size={22}
-                color={color}
-                strokeWidth={isFocused ? 2.5 : 2}
-              />
-              <Text style={[styles.label, { color }]}>{config.title}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </BlurView>
+              {config.title}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
@@ -123,7 +93,7 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 export default function TabLayout() {
   return (
     <Tabs
-      tabBar={(props) => <FloatingTabBar {...props} />}
+      tabBar={(props) => <BottomTabBar {...props} />}
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" options={{ title: "Home" }} />
@@ -134,46 +104,17 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBarContainer: {
-    position: "absolute",
-    left: 16,
-    right: 16,
-    alignItems: "center",
-  },
-  pill: {
+  tabBar: {
     flexDirection: "row",
-    borderRadius: 28,
-    height: 56,
-    width: "100%",
-    borderWidth: 1,
-    overflow: "hidden",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 8,
+    borderTopWidth: 0.5,
+    height: TAB_BAR_HEIGHT,
   },
   tab: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 2,
-  },
-  centerTab: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  centerButton: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: -24,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 10,
+    paddingTop: 6,
   },
   label: {
     fontSize: 10,

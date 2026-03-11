@@ -195,7 +195,7 @@ export default function PassportScreen() {
             onRefresh={handleRefresh}
           />
         }
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
       >
         <PassportHeader
           displayName={fanProfile?.name ?? null}

@@ -181,7 +181,7 @@ export default function HomeScreen() {
                 <ActivityIndicator color={colors.pink} />
               </View>
             )}
-            <View style={{ height: 100 }} />
+            <View style={{ height: 20 }} />
           </>
         }
         onEndReached={handleLoadMoreFeed}

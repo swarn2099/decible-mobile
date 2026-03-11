@@ -196,7 +196,7 @@ function AddArtistView() {
     <>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: 100 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: 20 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -443,7 +443,7 @@ export default function AddScreen() {
       </View>
 
       {/* Bottom padding for tab bar */}
-      <View style={{ height: 100 }} />
+      <View style={{ height: 20 }} />
     </SafeAreaView>
   );
 }
