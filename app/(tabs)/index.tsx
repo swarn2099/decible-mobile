@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from "react-native";
 import Svg, {
   Defs,
   LinearGradient as SvgLinearGradient,
@@ -69,7 +69,7 @@ export default function HomeScreen() {
 
   const ListHeader = (
     <>
-      {/* Top bar: Search | DECIBEL | Map */}
+      {/* Top bar: Map | DECIBEL | Search */}
       <View
         style={{
           flexDirection: "row",
@@ -80,6 +80,25 @@ export default function HomeScreen() {
           paddingHorizontal: 20,
         }}
       >
+        <Pressable
+          onPress={() => Alert.alert("Coming Soon", "Map & Events view is on the way!")}
+          hitSlop={12}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            backgroundColor: colors.card,
+            borderWidth: 1,
+            borderColor: colors.cardBorder,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Map size={20} color={colors.textSecondary} />
+        </Pressable>
+
+        <GradientTitle />
+
         <Pressable
           onPress={() => router.push("/search")}
           hitSlop={12}
@@ -95,25 +114,6 @@ export default function HomeScreen() {
           }}
         >
           <Search size={20} color={colors.textSecondary} />
-        </Pressable>
-
-        <GradientTitle />
-
-        <Pressable
-          onPress={() => {}}
-          hitSlop={12}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: colors.card,
-            borderWidth: 1,
-            borderColor: colors.cardBorder,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Map size={20} color={colors.textSecondary} />
         </Pressable>
       </View>
 
