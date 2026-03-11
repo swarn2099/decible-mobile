@@ -24,7 +24,7 @@
 
 - [x] **TAB-01**: + tab shows two modes: "Add an Artist" and "I'm at a Show"
 - [x] **TAB-02**: "Add an Artist" mode shows a paste field with placeholder text for supported platforms
-- [ ] **TAB-03**: "I'm at a Show" mode initiates the check-in flow
+- [x] **TAB-03**: "I'm at a Show" mode initiates the check-in flow
 
 ### Check-In Flow
 
@@ -32,12 +32,12 @@
 - [x] **CHK-02**: Scenario B: GPS matches known venue, no lineup → user asked "Is there live music?" → Yes → link-paste to tag performer → Stamp created
 - [ ] **CHK-03**: Scenario C: GPS matches no venue → user asked "Is there live music?" → Yes → enter venue name + tag performer → venue added to DB → Stamp created
 - [x] **CHK-04**: "No live music" option results in zero stamps (no stamp without live performer)
-- [ ] **CHK-05**: GPS permission rationale screen shown before requesting location
-- [ ] **CHK-06**: Venue match confirmation: "You're at [Venue Name]" with address and distance
+- [x] **CHK-05**: GPS permission rationale screen shown before requesting location
+- [x] **CHK-06**: Venue match confirmation: "You're at [Venue Name]" with address and distance
 - [x] **CHK-07**: Check-in uses client local date (not UTC) to match events correctly for late-night shows
-- [ ] **CHK-08**: GPS accuracy read from coords; graceful handling when accuracy exceeds 200m
+- [x] **CHK-08**: GPS accuracy read from coords; graceful handling when accuracy exceeds 200m
 - [x] **CHK-09**: user_tagged_events table stores tagged performers; visible to other users checking in same venue/night
-- [ ] **CHK-10**: Stamp appears in passport immediately after check-in (optimistic UI update)
+- [x] **CHK-10**: Stamp appears in passport immediately after check-in (optimistic UI update)
 
 ### Stamp Animation
 
