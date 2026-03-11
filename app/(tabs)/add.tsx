@@ -12,16 +12,22 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Music, MapPin, X } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
+import { useRouter } from "expo-router";
 import { useThemeColors } from "@/constants/colors";
 import { useValidateArtistLink } from "@/hooks/useValidateArtistLink";
+import { useAddArtist } from "@/hooks/useAddArtist";
+import { useDiscoverArtist } from "@/hooks/useDiscoverArtist";
 import { ArtistPreviewCard } from "@/components/add/ArtistPreviewCard";
 
 type AddMode = "artist" | "show";
 
 function AddArtistView() {
   const colors = useThemeColors();
+  const router = useRouter();
   const [pastedUrl, setPastedUrl] = useState("");
   const validateMutation = useValidateArtistLink();
+  const addMutation = useAddArtist();
+  const discoverMutation = useDiscoverArtist();
 
   async function handlePaste() {
     if (validateMutation.isPending) return;
@@ -42,6 +48,50 @@ function AddArtistView() {
   function handleReset() {
     setPastedUrl("");
     validateMutation.reset();
+    addMutation.reset();
+    discoverMutation.reset();
+  }
+
+  function handleAdd() {
+    const artist = validateMutation.data?.artist;
+    if (!artist) return;
+
+    addMutation.mutate(
+      {
+        platform: artist.platform,
+        spotifyId: artist.spotify_id,
+        soundcloudUsername: artist.soundcloud_username,
+        appleMusicUrl: artist.apple_music_url,
+        name: artist.name,
+        photoUrl: artist.photo_url,
+        genres: artist.genres,
+        followers: artist.follower_count ?? 0,
+        monthlyListeners: artist.monthly_listeners ?? undefined,
+      },
+      {
+        onSuccess: (result) => {
+          router.push(`/artist/${result.performer.slug}`);
+          setPastedUrl("");
+          validateMutation.reset();
+        },
+      }
+    );
+  }
+
+  function handleDiscover() {
+    const existing = validateMutation.data?.existing_performer;
+    if (!existing) return;
+
+    discoverMutation.mutate(
+      { performerId: existing.id },
+      {
+        onSuccess: (result) => {
+          router.push(`/artist/${result.performer.slug}`);
+          setPastedUrl("");
+          validateMutation.reset();
+        },
+      }
+    );
   }
 
   return (
@@ -149,9 +199,9 @@ function AddArtistView() {
         <>
           <ArtistPreviewCard
             result={validateMutation.data}
-            onAdd={() => console.log("Add flow — wired in Plan 02-03")}
-            onDiscover={() => console.log("Discover flow — wired in Plan 02-03")}
-            isLoading={false}
+            onAdd={handleAdd}
+            onDiscover={handleDiscover}
+            isLoading={addMutation.isPending || discoverMutation.isPending}
           />
 
           {/* Clear / search again */}
