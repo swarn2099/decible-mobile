@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-add-flow 02-01-PLAN.md
-last_updated: "2026-03-11T00:32:04.348Z"
+stopped_at: Completed 02-add-flow 02-02-PLAN.md
+last_updated: "2026-03-11T00:38:28.895Z"
 last_activity: 2026-03-10 — Roadmap created. Phase 1 already complete and deployed.
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
   percent: 33
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 ## Current Position
 
 Phase: 2 of 5 (Add Flow)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-10 — Roadmap created. Phase 1 already complete and deployed.
+Plan: 2 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-11 — Completed Plan 02-02: paste-to-preview flow, ArtistPreviewCard, URL parser tests.
 
-Progress: [███░░░░░░░] 33%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [███░░░░░░░] 33%
 
 *Updated after each plan completion*
 | Phase 02-add-flow P01 | 30 | 2 tasks | 2 files |
+| Phase 02-add-flow P02 | 8 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 02-add-flow]: null from scrapeMonthlyListeners passes through as eligible=true (unverified underground assumed per PRD)
 - [Phase 02-add-flow]: validate-artist-link requires auth before platform detection to prevent unauthenticated artist probing
 - [Phase 02-add-flow]: Apple Music defaults to eligible when no Spotify name match found (per PRD fallback rule)
+- [Phase 02-add-flow]: ImAtAShowView shown as placeholder with Coming soon badge — check-in flow is Phase 3
+- [Phase 02-add-flow]: onAdd/onDiscover stubbed as console.log — actual actions wired in Plan 02-03
 
 ### Pending Todos
 
@@ -79,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T00:32:04.342Z
-Stopped at: Completed 02-add-flow 02-01-PLAN.md
+Last session: 2026-03-11T00:38:28.889Z
+Stopped at: Completed 02-add-flow 02-02-PLAN.md
 Resume file: None

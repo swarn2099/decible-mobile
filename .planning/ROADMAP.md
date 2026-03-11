@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 (complete) → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 1/1 | Complete | 2026-03-10 |
-| 2. Add Flow | 1/3 | In Progress|  |
+| 2. Add Flow | 2/3 | In Progress|  |
 | 3. Check-In | 0/3 | Not started | - |
 | 4. Passport Redesign | 0/2 | Not started | - |
 | 5. Share + Polish | 0/3 | Not started | - |

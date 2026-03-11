@@ -10,20 +10,20 @@
 - [x] **ADD-01**: User can paste a Spotify artist URL and see the artist's name, image, and monthly listener count
 - [x] **ADD-02**: User can paste an Apple Music artist URL and see the artist's name and image
 - [x] **ADD-03**: User can paste a SoundCloud artist URL and see the artist's name, image, and follower count
-- [ ] **ADD-04**: App rejects URLs from unsupported platforms with message: "Paste a Spotify, Apple Music, or SoundCloud artist link"
-- [ ] **ADD-05**: App handles URL variants (with/without https, www, m. subdomain, short links like spotify.link)
+- [x] **ADD-04**: App rejects URLs from unsupported platforms with message: "Paste a Spotify, Apple Music, or SoundCloud artist link"
+- [x] **ADD-05**: App handles URL variants (with/without https, www, m. subdomain, short links like spotify.link)
 - [x] **ADD-06**: App rejects artists over 1M Spotify monthly listeners with eligibility message and artist card
 - [x] **ADD-07**: App rejects SoundCloud artists over 100K followers with eligibility message
 - [x] **ADD-08**: Apple Music artists are cross-referenced on Spotify; if not found, default to eligible
 - [x] **ADD-09**: If artist already on Decibel, user sees "Discover" button (or existing status if already found/discovered)
 - [ ] **ADD-10**: If artist NOT on Decibel, user sees "Add + Found" button and becomes the one-of-one Founder
-- [ ] **ADD-11**: Loading state shown during link validation and artist fetch
+- [x] **ADD-11**: Loading state shown during link validation and artist fetch
 - [x] **ADD-12**: Spotify scraper returns null (not 0) on failure; null treated as "unverified" not "eligible"
 
 ### Add Tab UI
 
-- [ ] **TAB-01**: + tab shows two modes: "Add an Artist" and "I'm at a Show"
-- [ ] **TAB-02**: "Add an Artist" mode shows a paste field with placeholder text for supported platforms
+- [x] **TAB-01**: + tab shows two modes: "Add an Artist" and "I'm at a Show"
+- [x] **TAB-02**: "Add an Artist" mode shows a paste field with placeholder text for supported platforms
 - [ ] **TAB-03**: "I'm at a Show" mode initiates the check-in flow
 
 ### Check-In Flow
