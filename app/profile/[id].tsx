@@ -38,7 +38,7 @@ function getGradientForName(name: string): [string, string] {
   ];
 }
 
-type UserProfile = {
+type UserProfileResponse = {
   fan: {
     id: string;
     name: string | null;
@@ -47,14 +47,14 @@ type UserProfile = {
     created_at: string;
   };
   collections: CollectionStampType[];
-  is_following: boolean;
+  is_following?: boolean;
 };
 
 function useUserProfile(fanId: string) {
-  return useQuery<UserProfile>({
+  return useQuery<UserProfileResponse>({
     queryKey: ["userProfile", fanId],
     queryFn: async () => {
-      return apiCall<UserProfile>(`/mobile/passport?fan_id=${fanId}&page=0`);
+      return apiCall<UserProfileResponse>(`/mobile/passport?fan_id=${fanId}&page=0`);
     },
     enabled: !!fanId,
   });
