@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-03-PLAN.md — fans list sectioned, QA pass on colors and bottom padding
-last_updated: "2026-03-11T07:05:29.780Z"
+stopped_at: Completed 05-02-PLAN.md — celebration flow, founder share card, passport share v2
+last_updated: "2026-03-11T07:05:45.592Z"
 last_activity: "2026-03-11 — Completed Plan 02-02: paste-to-preview flow, ArtistPreviewCard, URL parser tests."
 progress:
   total_phases: 5
@@ -60,6 +60,7 @@ Progress: [███████░░░] 67%
 | Phase 04-passport-redesign P02 | 20 | 2 tasks | 6 files |
 | Phase 05-share-polish P01 | 5 | 2 tasks | 2 files |
 | Phase 05-share-polish P03 | 10 | 3 tasks | 10 files |
+| Phase 05-share-polish P02 | 15 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Progress: [███████░░░] 67%
 - [Phase 05-share-polish]: Share card routes are public GET endpoints (no auth) — shareable by design
 - [Phase 05-share-polish]: topPhotos query param is comma-separated URLs (max 4); empty cells render as gradient placeholder divs
 - [Phase 05-share-polish]: Kept PassportCoverAnimation dark leather hex constants — passport cover is dark-by-design, not theme-adaptive
+- [Phase 05-share-polish]: founded type uses gold star text character (fontSize 64) not WaxSeal — simpler, no SVG dependency
+- [Phase 05-share-polish]: share card pre-generated fire-and-forget on add success; nil shareCardUri shows generating state in ShareSheet
+- [Phase 05-share-polish]: ConfirmationModal hides itself when Share tapped, then ShareSheet opens — prevents double modal stack
 
 ### Pending Todos
 
@@ -107,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T07:05:21.926Z
-Stopped at: Completed 05-03-PLAN.md — fans list sectioned, QA pass on colors and bottom padding
+Last session: 2026-03-11T07:05:45.585Z
+Stopped at: Completed 05-02-PLAN.md — celebration flow, founder share card, passport share v2
 Resume file: None
