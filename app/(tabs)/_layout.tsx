@@ -32,20 +32,20 @@ function FloatingTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <BlurView
-        intensity={25}
+        intensity={40}
         tint={colors.isDark ? "dark" : "light"}
         style={[
           styles.pill,
           {
             backgroundColor: colors.isDark
-              ? "rgba(11, 11, 15, 0.72)"
-              : "rgba(245, 245, 247, 0.72)",
+              ? "rgba(11, 11, 15, 0.88)"
+              : "rgba(245, 245, 247, 0.92)",
             borderColor: colors.isDark
               ? "rgba(255,255,255,0.08)"
               : "rgba(0,0,0,0.06)",
             shadowColor: colors.isDark
-              ? "rgba(0,0,0,0.3)"
-              : "rgba(0,0,0,0.1)",
+              ? "rgba(0,0,0,0.5)"
+              : "rgba(0,0,0,0.15)",
           },
         ]}
       >
