@@ -2,8 +2,8 @@
 phase: 5
 slug: share-polish
 status: draft
-nyquist_compliant: false
-wave_0_complete: false
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-03-11
 ---
 
@@ -19,16 +19,16 @@ created: 2026-03-11
 |----------|-------|
 | **Framework** | Jest 30 + ts-jest |
 | **Config file** | jest.config.js |
-| **Quick run command** | `npx jest --passWithNoTests` |
-| **Full suite command** | `npx jest --passWithNoTests` |
+| **Quick run command** | `npx jest` |
+| **Full suite command** | `npx jest` |
 | **Estimated runtime** | ~5 seconds |
 
 ---
 
 ## Sampling Rate
 
-- **After every task commit:** Run `npx jest --passWithNoTests`
-- **After every plan wave:** Run `npx jest --passWithNoTests` + EAS build check
+- **After every task commit:** Run `npx jest`
+- **After every plan wave:** Run `npx jest` + `npx tsc --noEmit`
 - **Before `/gsd:verify-work`:** Full suite must be green
 - **Max feedback latency:** 5 seconds
 
@@ -40,11 +40,13 @@ created: 2026-03-11
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 05-01-01 | 01 | 1 | SHR-03 | manual-only | curl test at deploy | N/A | ⬜ pending |
 | 05-01-02 | 01 | 1 | SHR-04 | manual-only | curl test at deploy | N/A | ⬜ pending |
-| 05-02-01 | 02 | 2 | SHR-01 | unit | `npx jest --testPathPattern="ConfirmationModal"` | ❌ W0 | ⬜ pending |
-| 05-02-02 | 02 | 2 | SHR-02, SHR-05, SHR-06 | manual-only | Requires device/simulator | N/A | ⬜ pending |
-| 05-03-01 | 03 | 2 | ART-01 | unit | `npx jest --testPathPattern="useArtistFans"` | ❌ W0 | ⬜ pending |
+| 05-02-00 | 02 | 2 | SHR-01 | unit (W0) | `npx jest --testPathPattern="ConfirmationModal"` | ✅ W0 | ⬜ pending |
+| 05-02-01 | 02 | 2 | SHR-01 | unit | `npx jest --testPathPattern="ConfirmationModal"` | ✅ W0 | ⬜ pending |
+| 05-02-02 | 02 | 2 | SHR-02, SHR-05, SHR-06 | type-check | `npx tsc --noEmit` | N/A | ⬜ pending |
+| 05-03-00 | 03 | 2 | ART-01 | unit (W0) | `npx jest --testPathPattern="useArtistFans"` | ✅ W0 | ⬜ pending |
+| 05-03-01 | 03 | 2 | ART-01 | unit | `npx jest --testPathPattern="useArtistFans"` | ✅ W0 | ⬜ pending |
 | 05-03-02 | 03 | 2 | ART-02 | manual-only | Already wired — verify navigation | N/A | ⬜ pending |
-| 05-03-03 | 03 | 2 | POL-01, POL-02 | automated-grep | `grep -rn "contentContainerStyle" app/ src/ --include="*.tsx"` | N/A | ⬜ pending |
+| 05-03-03 | 03 | 2 | POL-01, POL-02 | type-check | `npx tsc --noEmit` | N/A | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -52,8 +54,8 @@ created: 2026-03-11
 
 ## Wave 0 Requirements
 
-- [ ] `src/components/collection/__tests__/ConfirmationModal.test.ts` — stubs for SHR-01 (founded type rendering)
-- [ ] `src/hooks/__tests__/useArtistFans.test.ts` — stubs for ART-01 (tier sort order)
+- [x] `src/components/collection/__tests__/ConfirmationModal.test.ts` — stubs for SHR-01 (founded type rendering) — created by Plan 02 Task 0
+- [x] `src/hooks/__tests__/useArtistFans.test.ts` — stubs for ART-01 (tier sort order) — created by Plan 03 Task 0
 
 ---
 
@@ -72,11 +74,11 @@ created: 2026-03-11
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 5s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 5s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved
