@@ -60,8 +60,8 @@
 
 - [ ] **SHR-01**: Post-found celebration: confetti animation, gold badge reveal (Founded) or purple compass (Discovered), haptic
 - [ ] **SHR-02**: Share prompt after founding: "Share your claim?" with Instagram Stories, Messages, Copy Link, Save to Photos
-- [ ] **SHR-03**: Founder share card generated server-side as PNG (artist photo, "FOUNDED BY [username]", Decibel branding)
-- [ ] **SHR-04**: Passport share card generated server-side as PNG (stats, top artist photos, branding)
+- [x] **SHR-03**: Founder share card generated server-side as PNG (artist photo, "FOUNDED BY [username]", Decibel branding)
+- [x] **SHR-04**: Passport share card generated server-side as PNG (stats, top artist photos, branding)
 - [ ] **SHR-05**: Native OS share sheet used for all sharing
 - [ ] **SHR-06**: "Save to Photos" works with proper media library permission handling
 
