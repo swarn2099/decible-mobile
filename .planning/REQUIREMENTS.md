@@ -16,7 +16,7 @@
 - [x] **ADD-07**: App rejects SoundCloud artists over 100K followers with eligibility message
 - [x] **ADD-08**: Apple Music artists are cross-referenced on Spotify; if not found, default to eligible
 - [x] **ADD-09**: If artist already on Decibel, user sees "Discover" button (or existing status if already found/discovered)
-- [ ] **ADD-10**: If artist NOT on Decibel, user sees "Add + Found" button and becomes the one-of-one Founder
+- [x] **ADD-10**: If artist NOT on Decibel, user sees "Add + Found" button and becomes the one-of-one Founder
 - [x] **ADD-11**: Loading state shown during link validation and artist fetch
 - [x] **ADD-12**: Spotify scraper returns null (not 0) on failure; null treated as "unverified" not "eligible"
 
@@ -67,9 +67,9 @@
 
 ### Home & Navigation
 
-- [ ] **NAV-01**: Search bar relocated to Home screen top bar (search icon → full search screen)
-- [ ] **NAV-02**: Home search queries existing Decibel artists and users only
-- [ ] **NAV-03**: Activity feed shows both Find cards and Stamp cards with appropriate accents
+- [x] **NAV-01**: Search bar relocated to Home screen top bar (search icon → full search screen)
+- [x] **NAV-02**: Home search queries existing Decibel artists and users only
+- [x] **NAV-03**: Activity feed shows both Find cards and Stamp cards with appropriate accents
 
 ### Artist Profile
 

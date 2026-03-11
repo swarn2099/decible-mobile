@@ -11,7 +11,7 @@ Phase 1 delivered the scaffold — 3-tab nav, feeds, profiles, passport shell. P
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Scaffold** - 3-tab navigation, activity feed, artist/user profiles, passport shell, dark/light theme (COMPLETE)
-- [ ] **Phase 2: Add Flow** - Link-paste artist discovery with eligibility gating, + tab modes, search bar relocation
+- [x] **Phase 2: Add Flow** - Link-paste artist discovery with eligibility gating, + tab modes, search bar relocation (completed 2026-03-11)
 - [ ] **Phase 3: Check-In** - GPS venue detection, stamp creation (Scenarios A+B), rubber stamp animation
 - [ ] **Phase 4: Passport Redesign** - Finds grid (digital aesthetic) + Stamps section (analog passport aesthetic)
 - [ ] **Phase 5: Share + Polish** - Founder/passport share cards, post-found celebration, artist fans list, QA pass
@@ -110,7 +110,7 @@ Phases execute in numeric order: 1 (complete) → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 1/1 | Complete | 2026-03-10 |
-| 2. Add Flow | 2/3 | In Progress|  |
+| 2. Add Flow | 3/3 | Complete   | 2026-03-11 |
 | 3. Check-In | 0/3 | Not started | - |
 | 4. Passport Redesign | 0/2 | Not started | - |
 | 5. Share + Polish | 0/3 | Not started | - |

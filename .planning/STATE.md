@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 02-add-flow 02-02-PLAN.md
-last_updated: "2026-03-11T00:38:28.895Z"
-last_activity: 2026-03-10 — Roadmap created. Phase 1 already complete and deployed.
+status: executing
+stopped_at: Completed 02-add-flow 02-03-PLAN.md
+last_updated: "2026-03-11T00:56:26.916Z"
+last_activity: "2026-03-11 — Completed Plan 02-02: paste-to-preview flow, ArtistPreviewCard, URL parser tests."
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 33
+  completed_plans: 3
+  percent: 67
 ---
 
 # Project State
@@ -52,6 +52,7 @@ Progress: [███████░░░] 67%
 *Updated after each plan completion*
 | Phase 02-add-flow P01 | 30 | 2 tasks | 2 files |
 | Phase 02-add-flow P02 | 8 | 3 tasks | 7 files |
+| Phase 02-add-flow P03 | 45 | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,8 @@ Progress: [███████░░░] 67%
 - [Phase 02-add-flow]: Apple Music defaults to eligible when no Spotify name match found (per PRD fallback rule)
 - [Phase 02-add-flow]: ImAtAShowView shown as placeholder with Coming soon badge — check-in flow is Phase 3
 - [Phase 02-add-flow]: onAdd/onDiscover stubbed as console.log — actual actions wired in Plan 02-03
+- [Phase 02-add-flow]: Remove expo-linking and expo-haptics from app.json plugins — no app.plugin.js in either, was breaking EAS config resolution
+- [Phase 02-add-flow]: app.json slug changed from 'decibel' to 'decibel-mobile' to match EAS project registry
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-11T00:38:28.889Z
-Stopped at: Completed 02-add-flow 02-02-PLAN.md
+Last session: 2026-03-11T00:56:26.910Z
+Stopped at: Completed 02-add-flow 02-03-PLAN.md
 Resume file: None
