@@ -79,11 +79,11 @@ Plans:
   3. Stamps section has a paper grain texture background with each stamp rotated slightly (deterministic per stamp ID), showing venue name prominently, date in monospace, and artist name(s)
   4. "View All Finds" and "View All Stamps" links open scrollable full collection screens
   5. Dark mode shows leather texture with stamp glow; light mode shows cream texture without glow
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Finds grid — 2x3 artist cards, badge borders, tap navigation, "View All" screen
-- [ ] 04-02: Stamps section — paper grain texture, per-stamp rotation, analog typography, dark/light variants
+- [ ] 04-01-PLAN.md — Finds grid: API update (platform_url + fan_count), FindCard + FindsGrid components, route migration, View All Finds screen
+- [ ] 04-02-PLAN.md — Stamps section: texture assets, PassportStamp SVG component, StampsSection with textured background, View All Stamps screen
 
 ### Phase 5: Share + Polish
 **Goal**: Users can share their finds and the app passes full QA for public launch
