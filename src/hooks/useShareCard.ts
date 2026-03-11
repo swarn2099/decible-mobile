@@ -2,8 +2,10 @@ import { useState, useCallback } from "react";
 import { File, Paths } from "expo-file-system";
 import * as Clipboard from "expo-clipboard";
 
-const API_BASE = "https://decibel-three.vercel.app/api/passport/share-card";
+const API_BASE = "https://decible.live/api/passport/share-card";
 const PUBLIC_BASE = "https://decible.live/u";
+const FOUNDER_CARD_BASE = "https://decible.live/api/share-card/founder";
+const PASSPORT_CARD_V2_BASE = "https://decible.live/api/share-card/passport";
 
 // ---------- Types ----------
 
@@ -40,6 +42,20 @@ type BadgeShareParams = {
   icon: string;
   rarity: string;
   description: string;
+};
+
+type FounderShareParams = {
+  artistName: string;
+  artistPhoto: string | null;
+  fanSlug: string;
+};
+
+type PassportShareV2Params = {
+  name: string;
+  artistsFound: number;
+  showsAttended: number;
+  venues: number;
+  topPhotos: string[];
 };
 
 // ---------- Helper: download image to cache ----------
@@ -145,6 +161,74 @@ export function useBadgeShareCard() {
       return uri;
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to generate card";
+      setState({ isLoading: false, error: msg });
+      throw err;
+    }
+  }, []);
+
+  return { generate, ...state };
+}
+
+export function useFounderShareCard() {
+  const [state, setState] = useState<ShareCardState>({
+    isLoading: false,
+    error: null,
+  });
+
+  const generate = useCallback(async (params: FounderShareParams): Promise<string> => {
+    setState({ isLoading: true, error: null });
+    try {
+      const qs = new URLSearchParams({
+        artistName: params.artistName,
+        fanSlug: params.fanSlug,
+      });
+      if (params.artistPhoto) qs.set("artistPhoto", params.artistPhoto);
+
+      const url = `${FOUNDER_CARD_BASE}?${qs.toString()}`;
+      const uri = await downloadShareCard(
+        url,
+        `founder-${params.fanSlug}-${Date.now()}`
+      );
+      setState({ isLoading: false, error: null });
+      return uri;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to generate founder card";
+      setState({ isLoading: false, error: msg });
+      throw err;
+    }
+  }, []);
+
+  return { generate, ...state };
+}
+
+export function usePassportShareCardV2() {
+  const [state, setState] = useState<ShareCardState>({
+    isLoading: false,
+    error: null,
+  });
+
+  const generate = useCallback(async (params: PassportShareV2Params): Promise<string> => {
+    setState({ isLoading: true, error: null });
+    try {
+      const qs = new URLSearchParams({
+        name: params.name,
+        artistsFound: String(params.artistsFound),
+        showsAttended: String(params.showsAttended),
+        venues: String(params.venues),
+      });
+      if (params.topPhotos.length > 0) {
+        qs.set("topPhotos", params.topPhotos.join(","));
+      }
+
+      const url = `${PASSPORT_CARD_V2_BASE}?${qs.toString()}`;
+      const uri = await downloadShareCard(
+        url,
+        `passport-v2-${Date.now()}`
+      );
+      setState({ isLoading: false, error: null });
+      return uri;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to generate passport card";
       setState({ isLoading: false, error: msg });
       throw err;
     }
