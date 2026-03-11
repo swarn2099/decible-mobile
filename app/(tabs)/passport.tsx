@@ -14,7 +14,7 @@ import { usePassportStats, usePassportCollections } from "@/hooks/usePassport";
 import { useFanBadges } from "@/hooks/useBadges";
 import { useSocialCounts } from "@/hooks/useUserSearch";
 import {
-  usePassportShareCard,
+  usePassportShareCardV2,
   useArtistShareCard,
   useBadgeShareCard,
 } from "@/hooks/useShareCard";
@@ -96,7 +96,7 @@ export default function PassportScreen() {
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();
 
-  const passportShare = usePassportShareCard();
+  const passportShare = usePassportShareCardV2();
 
   const collections = collectionPages?.pages.flat() ?? [];
 
@@ -139,22 +139,19 @@ export default function PassportScreen() {
     setShareSheetVisible(true);
 
     try {
-      const artistNames = collections
-        .filter((c) => c.verified)
-        .map((c) => c.performer.name)
-        .filter((name, idx, arr) => arr.indexOf(name) === idx)
-        .slice(0, 3);
+      // Collect top 4 artist photo URLs (finds first, then stamps)
+      const topPhotos = collections
+        .map((c) => c.performer?.photo_url ?? null)
+        .filter((url): url is string => !!url)
+        .filter((url, idx, arr) => arr.indexOf(url) === idx)
+        .slice(0, 4);
 
       const uri = await passportShare.generate({
         name: displayName,
-        artists: stats.totalArtists,
-        shows: stats.totalShows,
+        artistsFound: finds.length,
+        showsAttended: stamps.length,
         venues: stats.uniqueVenues,
-        cities: stats.uniqueCities,
-        streak: stats.currentStreak,
-        genre: stats.favoriteGenre,
-        topArtists: artistNames,
-        slug: fanSlug,
+        topPhotos,
       });
       setShareImageUri(uri);
     } catch {
@@ -162,7 +159,7 @@ export default function PassportScreen() {
     } finally {
       setIsGeneratingCard(false);
     }
-  }, [stats, fanProfile, fanSlug, collections, passportShare]);
+  }, [stats, fanProfile, fanSlug, collections, finds, stamps, passportShare]);
 
   const isLoading = statsLoading || collectionsLoading;
   const isError = statsError || collectionsError;

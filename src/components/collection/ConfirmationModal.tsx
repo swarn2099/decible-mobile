@@ -21,7 +21,7 @@ import { WaxSeal } from "./WaxSeal";
 
 type ConfirmationModalProps = {
   visible: boolean;
-  type: "collect" | "discover";
+  type: "collect" | "discover" | "founded";
   performer: {
     name: string;
     photo_url: string | null;
@@ -32,6 +32,7 @@ type ConfirmationModalProps = {
     tierUp: boolean;
     alreadyDone: boolean;
   };
+  shareCardUri?: string | null;
   onShare: () => void;
   onDismiss: () => void;
 };
@@ -50,6 +51,7 @@ export function ConfirmationModal({
   type,
   performer,
   result,
+  shareCardUri,
   onShare,
   onDismiss,
 }: ConfirmationModalProps) {
@@ -64,13 +66,25 @@ export function ConfirmationModal({
   const tierBadgeScale = useSharedValue(0);
   const textOpacity = useSharedValue(0);
   const buttonsOpacity = useSharedValue(0);
-  // Confetti particles for tier-up
+  // Confetti particles
   const confettiOpacity = useSharedValue(0);
+  // Gold star scale for founded type
+  const goldStarScale = useSharedValue(0);
   // Wax seal color transition for tier-up (0 = previous tier color, 1 = current tier color)
   const sealColorProgress = useSharedValue(result.tierUp ? 0 : 1);
 
+  // Determine haptic and confetti behavior based on type
+  const isFounded = type === "founded";
+  const isDiscover = type === "discover";
+
   const triggerHaptic = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    if (isFounded) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    } else if (isDiscover) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
   };
 
   const triggerTierUpHaptic = () => {
@@ -88,6 +102,7 @@ export function ConfirmationModal({
       textOpacity.value = 0;
       buttonsOpacity.value = 0;
       confettiOpacity.value = 0;
+      goldStarScale.value = 0;
       sealColorProgress.value = result.tierUp ? 0 : 1;
 
       // Stamp slam animation with bounce-back overshoot
@@ -108,24 +123,39 @@ export function ConfirmationModal({
       // Text fades in
       textOpacity.value = withDelay(400, withTiming(1, { duration: 300 }));
 
-      // Tier badge scales in after stamp (300ms delay)
-      tierBadgeScale.value = withDelay(500, withSpring(1, { damping: 10, stiffness: 200 }));
-
-      // Buttons fade in last
-      buttonsOpacity.value = withDelay(700, withTiming(1, { duration: 300 }));
-
-      // Confetti + wax seal color transition for tier-up
-      if (result.tierUp) {
+      if (isFounded || isDiscover) {
+        // Gold star / compass badge scales in
+        goldStarScale.value = withDelay(500, withSpring(1, { damping: 8, stiffness: 200 }));
+        // Confetti always shows for founded (20 particles), discover (10 particles)
         confettiOpacity.value = withDelay(600, withSequence(
           withTiming(1, { duration: 200 }),
-          withDelay(1500, withTiming(0, { duration: 500 }))
+          withDelay(1800, withTiming(0, { duration: 500 }))
         ));
-        // Wax seal transitions from previous tier color to current tier color
-        sealColorProgress.value = withDelay(600, withTiming(1, { duration: 600 }));
-        // Second haptic on tier-up after confetti appears (~800ms)
-        setTimeout(() => {
-          triggerTierUpHaptic();
-        }, 800);
+        // Share button fades in after 1.5s
+        buttonsOpacity.value = withDelay(1500, withTiming(1, { duration: 400 }));
+        // Extra haptic for founded after confetti appears
+        if (isFounded) {
+          setTimeout(() => {
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          }, 700);
+        }
+      } else {
+        // collect path: tier badge wax seal
+        tierBadgeScale.value = withDelay(500, withSpring(1, { damping: 10, stiffness: 200 }));
+        // Buttons fade in last
+        buttonsOpacity.value = withDelay(700, withTiming(1, { duration: 300 }));
+
+        // Confetti + wax seal color transition for tier-up
+        if (result.tierUp) {
+          confettiOpacity.value = withDelay(600, withSequence(
+            withTiming(1, { duration: 200 }),
+            withDelay(1500, withTiming(0, { duration: 500 }))
+          ));
+          sealColorProgress.value = withDelay(600, withTiming(1, { duration: 600 }));
+          setTimeout(() => {
+            triggerTierUpHaptic();
+          }, 800);
+        }
       }
 
       // Auto-dismiss after 5 seconds
@@ -156,6 +186,10 @@ export function ConfirmationModal({
 
   const tierBadgeStyle = useAnimatedStyle(() => ({
     transform: [{ scale: tierBadgeScale.value }],
+  }));
+
+  const goldStarStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: goldStarScale.value }],
   }));
 
   const textStyle = useAnimatedStyle(() => ({
@@ -191,6 +225,7 @@ export function ConfirmationModal({
       runOnJS(setSealColor)(color);
     }
   );
+
   const dateString = new Date().toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -204,6 +239,32 @@ export function ConfirmationModal({
       dismissTimer.current = null;
     }
   };
+
+  // Determine ring color and confetti colors
+  const ringColor = isFounded ? colors.yellow : isDiscover ? colors.purple : tierColor;
+
+  // Confetti particle colors: founded = all 5 accents (20 particles), discover = purple-dominant (10)
+  const confettiColors = isFounded
+    ? [colors.pink, colors.purple, colors.yellow, colors.teal, colors.blue]
+    : isDiscover
+    ? [colors.purple, colors.purple, colors.pink, colors.blue, colors.purple]
+    : [colors.pink, colors.purple, colors.yellow, colors.teal, colors.blue];
+
+  const confettiCount = isFounded ? 20 : isDiscover ? 10 : 12;
+
+  // Share button color
+  const shareButtonBg = isFounded ? colors.yellow : isDiscover ? colors.purple : colors.purple;
+  const shareButtonTextColor = isFounded ? "#000000" : "#FFFFFF";
+  const shareButtonLabel = isFounded ? "Share Your Find" : "Share";
+
+  // Title text
+  const titleText = isFounded
+    ? "Founded!"
+    : isDiscover
+    ? "Discovered!"
+    : type === "collect"
+    ? "Collected!"
+    : "Done!";
 
   if (!visible) return null;
 
@@ -235,8 +296,8 @@ export function ConfirmationModal({
             onPress={handleInteraction}
             style={{ alignItems: "center", width: "100%", paddingHorizontal: 32 }}
           >
-            {/* Confetti particles for tier-up */}
-            {result.tierUp && (
+            {/* Confetti particles */}
+            {(isFounded || isDiscover || result.tierUp) && (
               <Animated.View
                 style={[
                   confettiStyle,
@@ -251,20 +312,14 @@ export function ConfirmationModal({
                   },
                 ]}
               >
-                {Array.from({ length: 12 }).map((_, i) => (
+                {Array.from({ length: confettiCount }).map((_, i) => (
                   <View
                     key={i}
                     style={{
                       width: 6 + (i % 3) * 3,
                       height: 6 + (i % 3) * 3,
                       borderRadius: 3,
-                      backgroundColor: [
-                        colors.pink,
-                        colors.purple,
-                        colors.yellow,
-                        colors.teal,
-                        colors.blue,
-                      ][i % 5],
+                      backgroundColor: confettiColors[i % confettiColors.length],
                       transform: [
                         { rotate: `${i * 30}deg` },
                         { translateY: (i % 4) * 15 },
@@ -287,7 +342,7 @@ export function ConfirmationModal({
                     height: 120,
                     borderRadius: 60,
                     borderWidth: 3,
-                    borderColor: tierColor,
+                    borderColor: ringColor,
                   },
                 ]}
               />
@@ -301,7 +356,7 @@ export function ConfirmationModal({
                       height: 120,
                       borderRadius: 60,
                       borderWidth: 2,
-                      borderColor: "rgba(255,255,255,0.2)",
+                      borderColor: isFounded ? colors.yellow : "rgba(255,255,255,0.2)",
                     }}
                   />
                 ) : (
@@ -311,7 +366,7 @@ export function ConfirmationModal({
                       height: 120,
                       borderRadius: 60,
                       borderWidth: 2,
-                      borderColor: "rgba(255,255,255,0.2)",
+                      borderColor: isFounded ? colors.yellow : "rgba(255,255,255,0.2)",
                       backgroundColor: colors.card,
                       justifyContent: "center",
                       alignItems: "center",
@@ -351,12 +406,12 @@ export function ConfirmationModal({
               ) : (
                 <Text
                   style={{
-                    color: colors.white,
+                    color: isFounded ? colors.yellow : colors.white,
                     fontFamily: "Poppins_700Bold",
                     fontSize: 24,
                   }}
                 >
-                  {type === "collect" ? "Collected!" : "Discovered!"}
+                  {titleText}
                 </Text>
               )}
 
@@ -380,8 +435,8 @@ export function ConfirmationModal({
                 {dateString}
               </Text>
 
-              {/* Tier-up celebration */}
-              {result.tierUp && !result.alreadyDone && (
+              {/* Tier-up celebration (collect path only) */}
+              {result.tierUp && !result.alreadyDone && !isFounded && !isDiscover && (
                 <Text
                   style={{
                     color: tierColor,
@@ -395,16 +450,43 @@ export function ConfirmationModal({
               )}
             </Animated.View>
 
-            {/* Tier badge — wax seal */}
+            {/* Badge: founded = gold star, discover = compass emoji, collect = wax seal */}
             {!result.alreadyDone && (
-              <Animated.View style={[tierBadgeStyle, { marginTop: 20, alignItems: "center" }]}>
-                <WaxSeal
-                  tier={result.current_tier}
-                  scanCount={type === "collect" ? result.scan_count : 0}
-                  size={80}
-                  colorOverride={sealColor}
-                />
-              </Animated.View>
+              <>
+                {isFounded && (
+                  <Animated.View style={[goldStarStyle, { marginTop: 20, alignItems: "center" }]}>
+                    <Text style={{ fontSize: 64, color: colors.yellow }}>★</Text>
+                  </Animated.View>
+                )}
+                {isDiscover && (
+                  <Animated.View style={[goldStarStyle, { marginTop: 20, alignItems: "center" }]}>
+                    <View
+                      style={{
+                        width: 80,
+                        height: 80,
+                        borderRadius: 40,
+                        backgroundColor: `${colors.purple}33`,
+                        borderWidth: 2,
+                        borderColor: colors.purple,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text style={{ fontSize: 36 }}>🧭</Text>
+                    </View>
+                  </Animated.View>
+                )}
+                {!isFounded && !isDiscover && (
+                  <Animated.View style={[tierBadgeStyle, { marginTop: 20, alignItems: "center" }]}>
+                    <WaxSeal
+                      tier={result.current_tier}
+                      scanCount={type === "collect" ? result.scan_count : 0}
+                      size={80}
+                      colorOverride={sealColor}
+                    />
+                  </Animated.View>
+                )}
+              </>
             )}
 
             {/* Action buttons */}
@@ -420,17 +502,17 @@ export function ConfirmationModal({
                     paddingVertical: 14,
                     alignItems: "center",
                     overflow: "hidden",
-                    backgroundColor: colors.purple,
+                    backgroundColor: shareButtonBg,
                   }}
                 >
                   <Text
                     style={{
-                      color: colors.white,
+                      color: shareButtonTextColor,
                       fontFamily: "Poppins_700Bold",
                       fontSize: 16,
                     }}
                   >
-                    Share
+                    {shareButtonLabel}
                   </Text>
                 </Pressable>
               )}
