@@ -2,10 +2,10 @@ import { useState, useCallback } from "react";
 import { File, Paths } from "expo-file-system";
 import * as Clipboard from "expo-clipboard";
 
-const API_BASE = "https://decible.live/api/passport/share-card";
+const API_BASE = "https://decibel-three.vercel.app/api/passport/share-card";
 const PUBLIC_BASE = "https://decible.live/u";
-const FOUNDER_CARD_BASE = "https://decible.live/api/share-card/founder";
-const PASSPORT_CARD_V2_BASE = "https://decible.live/api/share-card/passport";
+const FOUNDER_CARD_BASE = "https://decibel-three.vercel.app/api/share-card/founder";
+const PASSPORT_CARD_V2_BASE = "https://decibel-three.vercel.app/api/share-card/passport";
 
 // ---------- Types ----------
 
