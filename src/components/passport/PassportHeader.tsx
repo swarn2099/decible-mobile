@@ -2,6 +2,7 @@ import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Settings } from "lucide-react-native";
+import { useRouter } from "expo-router";
 import Animated, {
   useAnimatedStyle,
   interpolate,
@@ -31,14 +32,58 @@ function getGradientForName(name: string): [string, string] {
   ];
 }
 
-export const HEADER_HEIGHT = 160;
+export const HEADER_HEIGHT = 200;
+
+function StatCell({
+  value,
+  label,
+  onPress,
+}: {
+  value: string;
+  label: string;
+  onPress?: () => void;
+}) {
+  const colors = useThemeColors();
+  const Wrapper = onPress ? Pressable : View;
+
+  return (
+    <Wrapper
+      {...(onPress ? { onPress, hitSlop: 8 } : {})}
+      style={{ alignItems: "center", flex: 1 }}
+    >
+      <Text
+        style={{
+          fontSize: 18,
+          fontFamily: "Poppins_700Bold",
+          color: colors.text,
+          lineHeight: 24,
+        }}
+      >
+        {value}
+      </Text>
+      <Text
+        style={{
+          fontSize: 11,
+          fontFamily: "Poppins_400Regular",
+          color: colors.textSecondary,
+          marginTop: 1,
+        }}
+      >
+        {label}
+      </Text>
+    </Wrapper>
+  );
+}
 
 type Props = {
   displayName: string | null;
   avatarUrl: string | null;
-  city: string | null;
   memberSince: string;
-  stampCount?: number;
+  followingCount: number;
+  followersCount: number;
+  findsCount: number;
+  stampsCount: number;
+  fanId: string;
   onSettingsPress: () => void;
   scrollY?: SharedValue<number>;
 };
@@ -46,13 +91,17 @@ type Props = {
 export function PassportHeader({
   displayName,
   avatarUrl,
-  city,
   memberSince,
-  stampCount,
+  followingCount,
+  followersCount,
+  findsCount,
+  stampsCount,
+  fanId,
   onSettingsPress,
   scrollY,
 }: Props) {
   const colors = useThemeColors();
+  const router = useRouter();
   const name = displayName || "Fan";
   const initial = name.charAt(0).toUpperCase();
   const gradientColors = getGradientForName(name);
@@ -97,16 +146,27 @@ export function PassportHeader({
         {
           paddingHorizontal: 20,
           paddingTop: 60,
-          paddingBottom: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 16,
+          paddingBottom: 12,
         },
         scrollY ? parallaxStyle : undefined,
       ]}
     >
-      {/* Avatar with stamp count badge */}
-      <View style={{ position: "relative" }}>
+      {/* Settings gear — top right */}
+      <View style={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
+        <Pressable onPress={onSettingsPress} hitSlop={12}>
+          <Settings size={24} color={colors.gray} />
+        </Pressable>
+      </View>
+
+      {/* Row 1: Avatar (left) | Stats (right) */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 20,
+        }}
+      >
+        {/* Avatar */}
         <View
           style={{
             width: 80,
@@ -146,76 +206,64 @@ export function PassportHeader({
             </LinearGradient>
           )}
         </View>
-        {stampCount != null && stampCount > 0 && (
-          <View
-            style={{
-              position: "absolute",
-              bottom: -2,
-              right: -2,
-              minWidth: 24,
-              height: 24,
-              borderRadius: 12,
-              backgroundColor: colors.pink,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 6,
-              borderWidth: 2,
-              borderColor: colors.bg,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 11,
-                fontFamily: "Poppins_700Bold",
-                color: "#FFFFFF",
-              }}
-            >
-              {stampCount}
-            </Text>
-          </View>
-        )}
-      </View>
 
-      {/* Info */}
-      <View style={{ flex: 1 }}>
-        <Text
+        {/* Stats columns */}
+        <View
           style={{
-            fontSize: 22,
-            fontFamily: "Poppins_700Bold",
-            color: colors.text,
-          }}
-          numberOfLines={1}
-        >
-          {name}
-        </Text>
-        {city && (
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: "Poppins_400Regular",
-              color: colors.textSecondary,
-              marginTop: 2,
-            }}
-          >
-            {city}
-          </Text>
-        )}
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "Poppins_400Regular",
-            color: colors.textDim,
-            marginTop: 2,
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-around",
           }}
         >
-          Member since {memberLabel}
-        </Text>
+          <StatCell
+            value={String(followingCount)}
+            label="Following"
+            onPress={() =>
+              router.push({
+                pathname: "/following" as any,
+                params: { fanId },
+              })
+            }
+          />
+          <StatCell
+            value={String(followersCount)}
+            label="Followers"
+            onPress={() =>
+              router.push({
+                pathname: "/followers" as any,
+                params: { fanId },
+              })
+            }
+          />
+          <StatCell value={String(findsCount)} label="Finds" />
+          <StatCell value={String(stampsCount)} label="Stamps" />
+        </View>
       </View>
 
-      {/* Settings gear */}
-      <Pressable onPress={onSettingsPress} hitSlop={12}>
-        <Settings size={24} color={colors.gray} />
-      </Pressable>
+      {/* Row 2: Username */}
+      <Text
+        style={{
+          fontSize: 18,
+          fontFamily: "Poppins_700Bold",
+          color: colors.text,
+          marginTop: 14,
+        }}
+        numberOfLines={1}
+      >
+        {name}
+      </Text>
+
+      {/* Row 3: Member since */}
+      <Text
+        style={{
+          fontSize: 12,
+          fontFamily: "Poppins_400Regular",
+          color: colors.textSecondary,
+          marginTop: 2,
+        }}
+      >
+        Member since {memberLabel}
+      </Text>
     </Animated.View>
   );
 }

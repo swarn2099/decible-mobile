@@ -19,7 +19,6 @@ import {
   useBadgeShareCard,
 } from "@/hooks/useShareCard";
 import { PassportHeader } from "@/components/passport/PassportHeader";
-import { StatsBar } from "@/components/passport/StatsBar";
 import { StampsSection } from "@/components/passport/StampsSection";
 import { FindsGrid } from "@/components/passport/FindsGrid";
 import { BadgeGrid } from "@/components/passport/BadgeGrid";
@@ -201,28 +200,19 @@ export default function PassportScreen() {
         <PassportHeader
           displayName={fanProfile?.name ?? null}
           avatarUrl={fanProfile?.avatar_url ?? null}
-          city={fanProfile?.city ?? null}
           memberSince={
             stats?.memberSince ??
             fanProfile?.created_at ??
             new Date().toISOString()
           }
-          stampCount={collections.length}
+          followingCount={socialCounts?.following_count ?? 0}
+          followersCount={socialCounts?.followers_count ?? 0}
+          findsCount={finds.length}
+          stampsCount={stamps.length}
+          fanId={fanProfile?.id ?? ""}
           onSettingsPress={() => router.push("/settings")}
           scrollY={scrollY}
         />
-
-        {/* Stats bar */}
-        <View style={{ paddingTop: 12, paddingBottom: 4 }}>
-          <StatsBar
-            followingCount={socialCounts?.following_count ?? 0}
-            followersCount={socialCounts?.followers_count ?? 0}
-            stampCount={collections.length}
-            badgeCount={badges?.filter((b) => b.earned).length ?? 0}
-            totalBadges={badges?.length ?? 0}
-            fanId={fanProfile?.id ?? ""}
-          />
-        </View>
 
         {/* Share Passport button */}
         <View style={{ paddingHorizontal: 16, paddingTop: 16, gap: 8 }}>
