@@ -73,13 +73,13 @@
 
 ### Artist Profile
 
-- [ ] **ART-01**: Artist fans list screen: Founder at top (gold), then Collected (pink), then Discovered (purple)
-- [ ] **ART-02**: Fan count tappable → navigates to fans list
+- [x] **ART-01**: Artist fans list screen: Founder at top (gold), then Collected (pink), then Discovered (purple)
+- [x] **ART-02**: Fan count tappable → navigates to fans list
 
 ### Polish
 
-- [ ] **POL-01**: Full QA pass in both dark and light mode
-- [ ] **POL-02**: All scrollable screens have bottom padding for floating tab bar
+- [x] **POL-01**: Full QA pass in both dark and light mode
+- [x] **POL-02**: All scrollable screens have bottom padding for floating tab bar
 
 ## v2 Requirements
 
