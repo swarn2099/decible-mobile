@@ -21,6 +21,7 @@ import {
 import { PassportHeader } from "@/components/passport/PassportHeader";
 import { StatsBar } from "@/components/passport/StatsBar";
 import { CollectionStamp } from "@/components/passport/CollectionStamp";
+import { FindsGrid } from "@/components/passport/FindsGrid";
 import { BadgeGrid } from "@/components/passport/BadgeGrid";
 import { BadgeDetailModal } from "@/components/passport/BadgeDetailModal";
 import { ShareSheet } from "@/components/passport/ShareSheet";
@@ -297,43 +298,7 @@ export default function PassportScreen() {
         </View>
 
         {finds.length > 0 ? (
-          <>
-            <View style={{ gap: 8 }}>
-              {visibleFinds.map((stamp) => (
-                <CollectionStamp
-                  key={stamp.id}
-                  stamp={stamp}
-                  onPress={handleStampPress}
-                />
-              ))}
-            </View>
-            {finds.length > VISIBLE_STAMPS && (
-              <TouchableOpacity
-                onPress={() => router.push("/collection")}
-                activeOpacity={0.7}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 4,
-                  paddingVertical: 14,
-                  marginHorizontal: 16,
-                  marginTop: 4,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontFamily: "Poppins_600SemiBold",
-                    color: colors.pink,
-                  }}
-                >
-                  View All {finds.length} Finds
-                </Text>
-                <ChevronRight size={16} color={colors.pink} />
-              </TouchableOpacity>
-            )}
-          </>
+          <FindsGrid finds={visibleFinds} totalCount={finds.length} />
         ) : (
           <EmptyState
             icon={<Disc size={32} color={colors.lightGray} />}
