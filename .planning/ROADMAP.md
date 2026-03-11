@@ -42,7 +42,7 @@ Plans:
   3. App detects when an artist is already on Decibel and shows the appropriate action (Discover vs existing status) instead of re-adding
   4. User who is first to add an artist sees "Add + Found" and becomes the one-of-one Founder with gold badge
   5. Home screen search bar lives in the top bar and searches only existing Decibel artists and users
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 02-01: Backend — validate-artist-link endpoint (Spotify + SoundCloud + Apple Music eligibility gate)
