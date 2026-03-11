@@ -18,6 +18,7 @@ type Props = {
 
 export function CheckInWizard({ onBack }: Props) {
   const colors = useThemeColors();
+  const router = useRouter();
   const {
     permissionStatus,
     hasPermission,
@@ -135,6 +136,23 @@ export function CheckInWizard({ onBack }: Props) {
     setStep({ type: 'already_checked_in', stamps });
   }
 
+  function handleNoMusic() {
+    setStep({ type: 'no_music_dismiss' });
+    if (noMusicTimer.current) clearTimeout(noMusicTimer.current);
+    noMusicTimer.current = setTimeout(() => {
+      resetWizard();
+    }, 2000);
+  }
+
+  function resetWizard() {
+    if (noMusicTimer.current) {
+      clearTimeout(noMusicTimer.current);
+      noMusicTimer.current = null;
+    }
+    setStep({ type: 'idle' });
+    onBack();
+  }
+
   // ---------- Back navigation within wizard ----------
   function handleWizardBack() {
     // Terminal / result states -> return to caller
@@ -166,15 +184,6 @@ export function CheckInWizard({ onBack }: Props) {
     onBack();
   }
 
-  // ---------- Stamp success screen ----------
-  if (step.type === 'stamp') {
-    return (
-      <View style={{ flex: 1 }}>
-        <StampSuccessScreen stamps={step.stamps} onDone={onBack} colors={colors} />
-      </View>
-    );
-  }
-
   // ---------- No-music dismiss ----------
   if (step.type === 'no_music_dismiss') {
     return (
@@ -190,134 +199,89 @@ export function CheckInWizard({ onBack }: Props) {
   }
 
   // ---------- Render ----------
-  const showBackButton = step.type !== 'scanning' && step.type !== 'idle';
+  const showBackButton =
+    step.type !== 'scanning' &&
+    step.type !== 'idle' &&
+    step.type !== 'stamp' &&
+    step.type !== 'no_lineup'; // TagPerformerStep has its own back button
+
+  const showStampModal = step.type === 'stamp';
+  const stampModalStamps = step.type === 'stamp' ? step.stamps : [];
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Location Permission Modal */}
-      <LocationPermissionModal
-        visible={showPermissionModal}
-        explanationText={explanationText}
-        onEnable={handleEnableLocation}
-        onClose={handleDismissPermissionModal}
-      />
+    <>
+      <View style={{ flex: 1 }}>
+        {/* Location Permission Modal */}
+        <LocationPermissionModal
+          visible={showPermissionModal}
+          explanationText={explanationText}
+          onEnable={handleEnableLocation}
+          onClose={handleDismissPermissionModal}
+        />
 
-      {/* Back button header */}
-      {showBackButton && (
-        <TouchableOpacity
-          onPress={handleWizardBack}
-          style={styles.backButton}
-          activeOpacity={0.7}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <ArrowLeft size={20} color={colors.textSecondary} />
-          <Text style={[styles.backLabel, { color: colors.textSecondary }]}>Back</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Step content */}
-      <View style={{ flex: 1, paddingTop: showBackButton ? 8 : 0 }}>
-        {/* Venue scan, GPS weak, no venues, venue select, venue confirm, already_checked_in */}
-        {(step.type === 'scanning' ||
-          step.type === 'gps_weak' ||
-          step.type === 'no_venues' ||
-          step.type === 'venue_select' ||
-          step.type === 'venue_confirm' ||
-          step.type === 'already_checked_in') && (
-          <VenueScanStep
-            step={step}
-            onRetry={handleStartScan}
-            onBack={onBack}
-            onSelectVenue={handleSelectVenue}
-            onConfirmVenue={handleConfirmVenue}
-          />
+        {/* Back button header */}
+        {showBackButton && (
+          <TouchableOpacity
+            onPress={handleWizardBack}
+            style={styles.backButton}
+            activeOpacity={0.7}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <ArrowLeft size={20} color={colors.textSecondary} />
+            <Text style={[styles.backLabel, { color: colors.textSecondary }]}>Back</Text>
+          </TouchableOpacity>
         )}
 
-        {/* Lineup (Scenario A) */}
-        {step.type === 'lineup' && (
-          <LineupStep
-            event={step.event}
-            onStamped={handleStamped}
-            onAlreadyCheckedIn={handleAlreadyCheckedIn}
-          />
-        )}
+        {/* Step content */}
+        <View style={{ flex: 1, paddingTop: showBackButton ? 8 : 0 }}>
+          {/* Venue scan, GPS weak, no venues, venue select, venue confirm, already_checked_in */}
+          {(step.type === 'scanning' ||
+            step.type === 'gps_weak' ||
+            step.type === 'no_venues' ||
+            step.type === 'venue_select' ||
+            step.type === 'venue_confirm' ||
+            step.type === 'already_checked_in') && (
+            <VenueScanStep
+              step={step}
+              onRetry={handleStartScan}
+              onBack={onBack}
+              onSelectVenue={handleSelectVenue}
+              onConfirmVenue={handleConfirmVenue}
+            />
+          )}
 
-        {/* No lineup (Scenario B — tag performer, wired in Plan 03-03) */}
-        {step.type === 'no_lineup' && (
-          <NoLineupPlaceholder
-            event={step.event}
-            onBack={handleWizardBack}
-            colors={colors}
-          />
-        )}
+          {/* Lineup (Scenario A) */}
+          {step.type === 'lineup' && (
+            <LineupStep
+              event={step.event}
+              onStamped={handleStamped}
+              onAlreadyCheckedIn={handleAlreadyCheckedIn}
+            />
+          )}
+
+          {/* No lineup (Scenario B — tag performer via link paste) */}
+          {step.type === 'no_lineup' && (
+            <TagPerformerStep
+              event={step.event}
+              onStamp={handleStamped}
+              onNoMusic={handleNoMusic}
+              onBack={() => setStep({ type: 'venue_confirm', event: step.event })}
+            />
+          )}
+        </View>
       </View>
-    </View>
-  );
-}
 
-// ---------- Sub-screens ----------
-
-type Colors = ReturnType<typeof useThemeColors>;
-
-function StampSuccessScreen({
-  stamps,
-  onDone,
-  colors,
-}: {
-  stamps: StampData[];
-  onDone: () => void;
-  colors: Colors;
-}) {
-  return (
-    <View style={[styles.centerContainer, { flex: 1 }]}>
-      <Text style={styles.celebrationEmoji}>🎟</Text>
-      <Text style={[styles.successTitle, { color: colors.text }]}>Passport Stamped!</Text>
-      <Text style={[styles.successSubtitle, { color: colors.textSecondary }]}>
-        {stamps[0]?.venue_name ?? 'the venue'} · {stamps[0]?.event_date}
-      </Text>
-      {stamps.map((s) => (
-        <Text
-          key={s.performer_id}
-          style={[styles.stampArtistName, { color: colors.textSecondary }]}
-        >
-          {s.performer_name}
-        </Text>
-      ))}
-      <TouchableOpacity
-        onPress={onDone}
-        style={[styles.doneButton, { backgroundColor: colors.pink }]}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.doneButtonText}>Done</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function NoLineupPlaceholder({
-  event,
-  onBack,
-  colors,
-}: {
-  event: ActiveVenueEvent;
-  onBack: () => void;
-  colors: Colors;
-}) {
-  return (
-    <View style={[styles.centerContainer, { flex: 1 }]}>
-      <Text style={[styles.headingText, { color: colors.text }]}>No Lineup Found</Text>
-      <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-        We don't have a lineup for {event.venue.name} tonight. Tag a performer coming in
-        Plan 03-03.
-      </Text>
-      <TouchableOpacity
-        onPress={onBack}
-        style={[styles.doneButton, { backgroundColor: colors.pink }]}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.doneButtonText}>Back</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Stamp animation modal — full-screen overlay */}
+      <StampAnimationModal
+        visible={showStampModal}
+        stamps={stampModalStamps}
+        onViewPassport={() => {
+          router.push('/(tabs)/passport');
+          resetWizard();
+        }}
+        onDismiss={resetWizard}
+      />
+    </>
   );
 }
 
@@ -333,40 +297,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
   centerContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
     gap: 12,
-  },
-  celebrationEmoji: {
-    fontSize: 56,
-    marginBottom: 8,
-  },
-  successTitle: {
-    fontSize: 26,
-    fontFamily: 'Poppins_700Bold',
-    textAlign: 'center',
-  },
-  successSubtitle: {
-    fontSize: 14,
-    fontFamily: 'Poppins_400Regular',
-    textAlign: 'center',
-  },
-  stampArtistName: {
-    fontSize: 14,
-    fontFamily: 'Poppins_500Medium',
-  },
-  doneButton: {
-    marginTop: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 14,
-    alignItems: 'center',
-  },
-  doneButtonText: {
-    fontSize: 16,
-    fontFamily: 'Poppins_700Bold',
-    color: '#FFFFFF',
   },
   headingText: {
     fontSize: 20,
