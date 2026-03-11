@@ -186,6 +186,7 @@ export type ArtistFan = {
   name: string;
   avatar_url: string | null;
   type: "founded" | "collected" | "discovered";
+  date: string; // ISO date string — when the fan found/collected/discovered
 };
 
 export function useArtistFans(performerId: string | undefined) {
@@ -198,20 +199,20 @@ export function useArtistFans(performerId: string | undefined) {
       // 1. Check founder
       const { data: founderData } = await supabase
         .from("founder_badges")
-        .select("fans!inner(id, name, avatar_url)")
+        .select("created_at, fans!inner(id, name, avatar_url)")
         .eq("performer_id", performerId!);
       for (const row of founderData ?? []) {
         const fan = Array.isArray(row.fans) ? row.fans[0] : row.fans;
         if (fan?.id && !seen.has(fan.id)) {
           seen.add(fan.id);
-          fans.push({ ...fan, type: "founded" });
+          fans.push({ ...fan, type: "founded", date: row.created_at ?? "" });
         }
       }
 
       // 2. Collections (verified = collected, unverified = discovered)
       const { data: collectionData, error } = await supabase
         .from("collections")
-        .select("verified, fans!inner(id, name, avatar_url)")
+        .select("verified, created_at, fans!inner(id, name, avatar_url)")
         .eq("performer_id", performerId!);
       if (error) throw error;
 
@@ -222,6 +223,7 @@ export function useArtistFans(performerId: string | undefined) {
         fans.push({
           ...fan,
           type: row.verified ? "collected" : "discovered",
+          date: row.created_at ?? "",
         });
       }
 
