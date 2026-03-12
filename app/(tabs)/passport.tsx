@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
@@ -7,7 +7,7 @@ import Animated, {
   useSharedValue,
 } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
-import { Disc } from "lucide-react-native";
+import { Disc, Trophy } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useThemeColors } from "@/constants/colors";
 import { useAuthStore } from "@/stores/authStore";
@@ -187,6 +187,24 @@ export default function PassportScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
+      {/* Leaderboard trophy button — top-right overlay */}
+      <Pressable
+        onPress={() => router.push("/leaderboard")}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={{
+          position: "absolute",
+          top: 54,
+          right: 16,
+          zIndex: 10,
+          width: 40,
+          height: 40,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Trophy size={20} color={colors.textSecondary} />
+      </Pressable>
+
       <Animated.ScrollView
         onScroll={scrollHandler}
         scrollEventThrottle={16}
