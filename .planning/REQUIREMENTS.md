@@ -1,134 +1,143 @@
-# Requirements: Decibel Mobile
+# Requirements: Decibel Mobile v3.0
 
-**Defined:** 2026-03-10
+**Defined:** 2026-03-12
 **Core Value:** Discover underground artists before anyone else (Finds) and prove you were at the show (Stamps) — a live music passport.
 
-## v1 Requirements
+## v3.0 Requirements
 
-### Link-Paste Add Flow
+### Bug Fixes (Phase 0)
 
-- [x] **ADD-01**: User can paste a Spotify artist URL and see the artist's name, image, and monthly listener count
-- [x] **ADD-02**: User can paste an Apple Music artist URL and see the artist's name and image
-- [x] **ADD-03**: User can paste a SoundCloud artist URL and see the artist's name, image, and follower count
-- [x] **ADD-04**: App rejects URLs from unsupported platforms with message: "Paste a Spotify, Apple Music, or SoundCloud artist link"
-- [x] **ADD-05**: App handles URL variants (with/without https, www, m. subdomain, short links like spotify.link)
-- [x] **ADD-06**: App rejects artists over 1M Spotify monthly listeners with eligibility message and artist card
-- [x] **ADD-07**: App rejects SoundCloud artists over 100K followers with eligibility message
-- [x] **ADD-08**: Apple Music artists are cross-referenced on Spotify; if not found, default to eligible
-- [x] **ADD-09**: If artist already on Decibel, user sees "Discover" button (or existing status if already found/discovered)
-- [x] **ADD-10**: If artist NOT on Decibel, user sees "Add + Found" button and becomes the one-of-one Founder
-- [x] **ADD-11**: Loading state shown during link validation and artist fetch
-- [x] **ADD-12**: Spotify scraper returns null (not 0) on failure; null treated as "unverified" not "eligible"
+- [ ] **BUG-01**: User can tap Discover button on an artist profile and it functions correctly (adds Discovery to passport)
+- [ ] **BUG-02**: Listen links on artist profile open the correct platform URL (only shown when URL exists in DB)
+- [ ] **BUG-03**: Share modal opens and functions correctly (native OS share sheet with share card)
+- [ ] **BUG-04**: Leaderboard API returns data and leaderboard screen renders correctly
 
-### Add Tab UI
+### DB Migrations
 
-- [x] **TAB-01**: + tab shows two modes: "Add an Artist" and "I'm at a Show"
-- [x] **TAB-02**: "Add an Artist" mode shows a paste field with placeholder text for supported platforms
-- [x] **TAB-03**: "I'm at a Show" mode initiates the check-in flow
+- [ ] **MIG-01**: `collection_type` column backfilled from legacy `capture_method` on existing collections
+- [ ] **MIG-02**: `search_results` table created with Realtime publication enabled and RLS SELECT policy
+- [ ] **MIG-03**: `venue_submissions` table created for crowdsource fallback data
+- [ ] **MIG-04**: `event_artists` junction table created (if not existing)
+- [ ] **MIG-05**: Embed URL columns added to `performers` table (spotify_embed_url, soundcloud_embed_url, apple_music_embed_url, top_track_cached_at)
+- [ ] **MIG-06**: `discovery` type added to collections type constraint
+- [ ] **MIG-07**: Unique constraint on `performers.spotify_id` to prevent simultaneous Founder race condition
 
-### Check-In Flow
+### Glassy Passport
 
-- [x] **CHK-01**: Scenario A: GPS matches known venue with scraped lineup → user taps "Check In" → all lineup artists auto-collected as Stamps
-- [x] **CHK-02**: Scenario B: GPS matches known venue, no lineup → user asked "Is there live music?" → Yes → link-paste to tag performer → Stamp created
-- [ ] **CHK-03**: Scenario C: GPS matches no venue → user asked "Is there live music?" → Yes → enter venue name + tag performer → venue added to DB → Stamp created
-- [x] **CHK-04**: "No live music" option results in zero stamps (no stamp without live performer)
-- [x] **CHK-05**: GPS permission rationale screen shown before requesting location
-- [x] **CHK-06**: Venue match confirmation: "You're at [Venue Name]" with address and distance
-- [x] **CHK-07**: Check-in uses client local date (not UTC) to match events correctly for late-night shows
-- [x] **CHK-08**: GPS accuracy read from coords; graceful handling when accuracy exceeds 200m
-- [x] **CHK-09**: user_tagged_events table stores tagged performers; visible to other users checking in same venue/night
-- [x] **CHK-10**: Stamp appears in passport immediately after check-in (optimistic UI update)
+- [ ] **GPASS-01**: Passport screen has three horizontal tabs: Stamps | Finds | Discoveries
+- [ ] **GPASS-02**: Tab switching works via tap and swipe gesture (react-native-pager-view)
+- [ ] **GPASS-03**: Each tab shows a 2x4 grid of frosted glass cards as preview
+- [ ] **GPASS-04**: Cards have backdrop blur (expo-blur BlurTargetView pattern for Android), soft shadow, slight rotation, transparent borders
+- [ ] **GPASS-05**: Stamp cards show artist + venue + date + Founder badge if applicable, pink tint
+- [ ] **GPASS-06**: Find cards show artist + platform icon + listener count + Founder badge if applicable, purple tint
+- [ ] **GPASS-07**: Discovery cards show artist + "via @username", blue tint, slightly more transparent
+- [ ] **GPASS-08**: Haptic feedback (light impact) + press-in animation (scale 0.97, spring back) on card tap
+- [ ] **GPASS-09**: "View More" button navigates to dedicated full page per tab
+- [ ] **GPASS-10**: View More page has search bar with relevant filters, newest-to-oldest order, infinite scroll (20 items/page)
+- [ ] **GPASS-11**: Animated gradient orbs render behind cards on passport background (slow-moving, low-opacity blurred circles)
+- [ ] **GPASS-12**: BlurView performs acceptably on iOS and Android (fallback to semi-transparent on low-end Android)
+- [ ] **GPASS-13**: Cards with fewer than 8 entries display correctly without empty placeholders
+- [ ] **GPASS-14**: Existing BlurView components (StampAnimationModal, SharePrompt, ConfirmationModal) updated to SDK 55 BlurTargetView pattern
 
-### Stamp Animation
+### Jukebox
 
-- [x] **ANIM-01**: Rubber stamp visual slams down on check-in with Lottie animation
-- [x] **ANIM-02**: Haptic feedback (medium impact) on stamp contact
-- [x] **ANIM-03**: Ink spread effect on impact, stamp lifts to reveal venue + date + artist
+- [ ] **JBX-01**: Map button on Home screen replaced with Jukebox icon button
+- [ ] **JBX-02**: Jukebox screen loads Finds from followed users in last 48 hours
+- [ ] **JBX-03**: Fallback to all platform Finds when followed-user finds are empty
+- [ ] **JBX-04**: Each card shows finder avatar + username + time ago, artist name + platform badge
+- [ ] **JBX-05**: Embedded player via react-native-webview renders and plays (Spotify, SoundCloud, Apple Music)
+- [ ] **JBX-06**: Max 3 WebViews active at once via onViewableItemsChanged lazy loading
+- [ ] **JBX-07**: WebView audio does not interrupt iOS background music playback (mediaPlaybackRequiresUserAction)
+- [ ] **JBX-08**: Unmounted WebViews have audio stopped via injectJavaScript before unmount
+- [ ] **JBX-09**: One-tap Discover collect button adds Discovery to passport with haptic feedback
+- [ ] **JBX-10**: Finder receives notification when someone collects from their Find
+- [ ] **JBX-11**: Empty state displays when no Finds available
+- [ ] **JBX-12**: Embed URLs cached on performers table for repeat loads
+- [ ] **JBX-13**: GET /api/mobile/jukebox endpoint returns feed data
+- [ ] **JBX-14**: POST /api/mobile/discover endpoint creates Discovery collection entry
 
-### Passport Redesign
+### "I'm at a Show" Check-in
 
-- [x] **PASS-01**: Finds section displays 2x3 artist card grid with hero photo, name, badge, fan count, "Listen" button
-- [x] **PASS-02**: Founded cards have gold border glow; Discovered cards have purple border
-- [x] **PASS-03**: "View All [X] Finds" link below grid opens scrollable full collection
-- [x] **PASS-04**: Stamps section has paper grain texture background with analog passport aesthetic
-- [x] **PASS-05**: Each stamp rotated slightly (-3° to +3°, deterministic by stamp ID)
-- [x] **PASS-06**: Stamp shows venue name (prominent), date (monospace), artist name(s)
-- [x] **PASS-07**: Dark mode: dark leather texture, stamps with slight glow. Light mode: cream/lighter, no glow
-- [x] **PASS-08**: "View All Stamps" opens chronological list (most recent first)
+- [ ] **SHOW-01**: "I'm at a Show" button accessible from + tab
+- [ ] **SHOW-02**: Location permission requested with custom pre-prompt explainer screen
+- [ ] **SHOW-03**: Happy path: venue + event + lineup resolved from DB in <1 second (Layer 1)
+- [ ] **SHOW-04**: Each artist in lineup shows Founder availability or existing founder info
+- [ ] **SHOW-05**: "Collect All" button stamps entire lineup in one tap
+- [ ] **SHOW-06**: Founder Badge + Stamp awarded simultaneously when eligible
+- [ ] **SHOW-07**: Confetti + haptic on Founder, subtle haptic on Stamp
+- [ ] **SHOW-08**: Summary screen shows results after collection
+- [ ] **SHOW-09**: Scraping waterfall fires on VM when DB has no match (Layers 2-6)
+- [ ] **SHOW-10**: Layer 2: Event platform APIs (RA GraphQL, DICE, EDMTrain, Songkick, Bandsintown)
+- [ ] **SHOW-11**: Layer 3: Google Places reverse geocode for venue enrichment
+- [ ] **SHOW-12**: Layer 4: Social media scraping (Instagram location, Facebook Events, X search)
+- [ ] **SHOW-13**: Layer 5: Playwright venue website scrape with LLM extraction
+- [ ] **SHOW-14**: Layer 6: Claude API with web search for venue + date query
+- [ ] **SHOW-15**: App shows "Finding out what's playing here..." loading state during scrape
+- [ ] **SHOW-16**: Results appear via Supabase Realtime subscription within 15 seconds
+- [ ] **SHOW-17**: Confidence levels displayed (high = auto, medium = confirm, low = form prefill with link required)
+- [ ] **SHOW-18**: Manual fallback form appears after 15-second timeout
+- [ ] **SHOW-19**: Manual form has venue autocomplete + artist link paste
+- [ ] **SHOW-20**: New venues and artists created from manual submissions
+- [ ] **SHOW-21**: Crowdsource data saved to venue_submissions for pattern detection
+- [ ] **SHOW-22**: POST /api/mobile/show-checkin Vercel endpoint with fire-and-forget VM dispatch
+- [ ] **SHOW-23**: VM scraper service at ~/decibel/scraper/ with PM2 process management
+- [ ] **SHOW-24**: Shared secret auth header on VM scraper endpoint
+- [ ] **SHOW-25**: Realtime polling fallback when subscription status is CLOSED/TIMED_OUT (iOS background)
 
-### Share & Virality
+### Infrastructure
 
-- [x] **SHR-01**: Post-found celebration: confetti animation, gold badge reveal (Founded) or purple compass (Discovered), haptic
-- [x] **SHR-02**: Share prompt after founding: "Share your claim?" with Instagram Stories, Messages, Copy Link, Save to Photos
-- [x] **SHR-03**: Founder share card generated server-side as PNG (artist photo, "FOUNDED BY [username]", Decibel branding)
-- [x] **SHR-04**: Passport share card generated server-side as PNG (stats, top artist photos, branding)
-- [x] **SHR-05**: Native OS share sheet used for all sharing
-- [x] **SHR-06**: "Save to Photos" works with proper media library permission handling
+- [ ] **INFRA-01**: VM scraper Express.js service with shared Playwright browser instance (context-per-request, try/finally cleanup)
+- [ ] **INFRA-02**: PM2 ecosystem config with max_memory_restart: 512M
+- [ ] **INFRA-03**: Playwright context leak prevention (strict try/finally on every context)
 
-### Home & Navigation
-
-- [x] **NAV-01**: Search bar relocated to Home screen top bar (search icon → full search screen)
-- [x] **NAV-02**: Home search queries existing Decibel artists and users only
-- [x] **NAV-03**: Activity feed shows both Find cards and Stamp cards with appropriate accents
-
-### Artist Profile
-
-- [x] **ART-01**: Artist fans list screen: Founder at top (gold), then Collected (pink), then Discovered (purple)
-- [x] **ART-02**: Fan count tappable → navigates to fans list
-
-### Polish
-
-- [x] **POL-01**: Full QA pass in both dark and light mode
-- [x] **POL-02**: All scrollable screens have bottom padding for floating tab bar
-
-## v2 Requirements
-
-### Fantasy League
-- **FAN-01**: Monthly tournament — draft 5 Founded artists, track Spotify growth
-- **FAN-02**: Daily Spotify scraper cron for all drafted artists
+## v4+ Requirements
 
 ### Social
 - **SOC-01**: "Who's Out Tonight" live friend map
-- **SOC-02**: Weekly recap notification ("Last week: 3 finds, 1 show")
-
-### DJ Platform
-- **DJ-01**: Performer profiles with QR, fan collection, basic stats (Free)
-- **DJ-02**: Pro tier ($29/mo) with messaging, analytics, fan tiers
-- **DJ-03**: Agency tier ($79/mo) with multi-profile, team login
+- **SOC-02**: Weekly recap notification
 
 ### Content
-- **CON-01**: Volume rating system (1-10 fader, verified fans only)
-- **CON-02**: Residency pattern detection from user_tagged_events
+- **CON-01**: Volume rating system (1-10 fader)
+- **CON-02**: Residency pattern detection from crowdsource data
+- **CON-03**: Native audio player replacing WebViews (react-native-track-player)
+
+### DJ Platform
+- **DJ-01**: Performer profiles with QR, fan collection, stats (Free)
+- **DJ-02**: Pro tier ($29/mo)
+- **DJ-03**: Agency tier ($79/mo)
+
+### Fantasy League
+- **FAN-01**: Monthly tournament — draft 5 Founded artists
+- **FAN-02**: Daily Spotify scraper cron
+
+### Advanced Check-in
+- **ADV-01**: Crowdsource pattern detection ("recurring residency" prediction)
+- **ADV-02**: Liquid Glass (iOS 26+) for passport cards
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
 | Text search for external artist catalogs | Replaced by link paste; would undermine eligibility system |
-| Deezer API | Eliminated entirely per PRD v5 |
-| 4th tab | Reduced to 3 tabs in v5 redesign |
-| Real-time chat | High complexity, not core to passport value |
-| OAuth login (Google/Apple) | Email/password + magic link sufficient for v1 |
+| Deezer API | Eliminated entirely |
+| Native audio player (track-player) | Large scope, Spotify SDK complexity — defer to v4+ |
+| Layer 4 social scraping (Instagram/Facebook/X) | Platforms actively block scrapers, schemas change frequently — implement as best-effort, not required |
+| Liquid Glass (iOS 26+) | Not cross-platform; defer until iOS 26 adoption is meaningful |
+| Scenario C (unknown venue GPS miss) | Deferred from v1.0, can be added as stretch in SHOW phase |
 
 ## Traceability
 
+(Populated during roadmap creation)
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ADD-01 through ADD-12 | Phase 2 — Add Flow | Pending |
-| TAB-01 through TAB-03 | Phase 2 — Add Flow | Pending |
-| NAV-01 through NAV-03 | Phase 2 — Add Flow | Pending |
-| CHK-01 through CHK-10 | Phase 3 — Check-In | Pending |
-| ANIM-01 through ANIM-03 | Phase 3 — Check-In | Pending |
-| PASS-01 through PASS-08 | Phase 4 — Passport Redesign | Pending |
-| SHR-01 through SHR-06 | Phase 5 — Share + Polish | Pending |
-| ART-01, ART-02 | Phase 5 — Share + Polish | Pending |
-| POL-01, POL-02 | Phase 5 — Share + Polish | Pending |
+| — | — | — |
 
 **Coverage:**
-- v1 requirements: 49 total
-- Mapped to phases: 49
-- Unmapped: 0 ✓
+- v3.0 requirements: 67 total
+- Mapped to phases: 0
+- Unmapped: 67
 
 ---
-*Requirements defined: 2026-03-10*
-*Last updated: 2026-03-10 — traceability confirmed against ROADMAP.md phases 2-5*
+*Requirements defined: 2026-03-12*
+*Last updated: 2026-03-12 after initial definition*
