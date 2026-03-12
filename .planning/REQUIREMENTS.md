@@ -26,17 +26,17 @@
 
 - [ ] **GPASS-01**: Passport screen has three horizontal tabs: Stamps | Finds | Discoveries
 - [ ] **GPASS-02**: Tab switching works via tap and swipe gesture (react-native-pager-view)
-- [ ] **GPASS-03**: Each tab shows a 2x4 grid of frosted glass cards as preview
-- [ ] **GPASS-04**: Cards have backdrop blur (expo-blur BlurTargetView pattern for Android), soft shadow, slight rotation, transparent borders
-- [ ] **GPASS-05**: Stamp cards show artist + venue + date + Founder badge if applicable, pink tint
-- [ ] **GPASS-06**: Find cards show artist + platform icon + listener count + Founder badge if applicable, purple tint
-- [ ] **GPASS-07**: Discovery cards show artist + "via @username", blue tint, slightly more transparent
-- [ ] **GPASS-08**: Haptic feedback (light impact) + press-in animation (scale 0.97, spring back) on card tap
+- [x] **GPASS-03**: Each tab shows a 2x4 grid of frosted glass cards as preview
+- [x] **GPASS-04**: Cards have backdrop blur (expo-blur BlurTargetView pattern for Android), soft shadow, slight rotation, transparent borders
+- [x] **GPASS-05**: Stamp cards show artist + venue + date + Founder badge if applicable, pink tint
+- [x] **GPASS-06**: Find cards show artist + platform icon + listener count + Founder badge if applicable, purple tint
+- [x] **GPASS-07**: Discovery cards show artist + "via @username", blue tint, slightly more transparent
+- [x] **GPASS-08**: Haptic feedback (light impact) + press-in animation (scale 0.97, spring back) on card tap
 - [ ] **GPASS-09**: "View More" button navigates to dedicated full page per tab
 - [ ] **GPASS-10**: View More page has search bar with relevant filters, newest-to-oldest order, infinite scroll (20 items/page)
-- [ ] **GPASS-11**: Animated gradient orbs render behind cards on passport background (slow-moving, low-opacity blurred circles)
-- [ ] **GPASS-12**: BlurView performs acceptably on iOS and Android (fallback to semi-transparent on low-end Android)
-- [ ] **GPASS-13**: Cards with fewer than 8 entries display correctly without empty placeholders
+- [x] **GPASS-11**: Animated gradient orbs render behind cards on passport background (slow-moving, low-opacity blurred circles)
+- [x] **GPASS-12**: BlurView performs acceptably on iOS and Android (fallback to semi-transparent on low-end Android)
+- [x] **GPASS-13**: Cards with fewer than 8 entries display correctly without empty placeholders
 - [x] **GPASS-14**: Existing BlurView components (StampAnimationModal, SharePrompt, ConfirmationModal) updated to SDK 55 BlurTargetView pattern
 
 ### Jukebox
@@ -142,17 +142,17 @@
 | MIG-07 | Phase 7 | Complete |
 | GPASS-01 | Phase 7 | Pending |
 | GPASS-02 | Phase 7 | Pending |
-| GPASS-03 | Phase 7 | Pending |
-| GPASS-04 | Phase 7 | Pending |
-| GPASS-05 | Phase 7 | Pending |
-| GPASS-06 | Phase 7 | Pending |
-| GPASS-07 | Phase 7 | Pending |
-| GPASS-08 | Phase 7 | Pending |
+| GPASS-03 | Phase 7 | Complete |
+| GPASS-04 | Phase 7 | Complete |
+| GPASS-05 | Phase 7 | Complete |
+| GPASS-06 | Phase 7 | Complete |
+| GPASS-07 | Phase 7 | Complete |
+| GPASS-08 | Phase 7 | Complete |
 | GPASS-09 | Phase 7 | Pending |
 | GPASS-10 | Phase 7 | Pending |
-| GPASS-11 | Phase 7 | Pending |
-| GPASS-12 | Phase 7 | Pending |
-| GPASS-13 | Phase 7 | Pending |
+| GPASS-11 | Phase 7 | Complete |
+| GPASS-12 | Phase 7 | Complete |
+| GPASS-13 | Phase 7 | Complete |
 | GPASS-14 | Phase 7 | Complete |
 | JBX-01 | Phase 8 | Pending |
 | JBX-02 | Phase 8 | Pending |
