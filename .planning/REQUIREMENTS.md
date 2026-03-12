@@ -24,8 +24,8 @@
 
 ### Glassy Passport
 
-- [ ] **GPASS-01**: Passport screen has three horizontal tabs: Stamps | Finds | Discoveries
-- [ ] **GPASS-02**: Tab switching works via tap and swipe gesture (react-native-pager-view)
+- [x] **GPASS-01**: Passport screen has three horizontal tabs: Stamps | Finds | Discoveries
+- [x] **GPASS-02**: Tab switching works via tap and swipe gesture (react-native-pager-view)
 - [x] **GPASS-03**: Each tab shows a 2x4 grid of frosted glass cards as preview
 - [x] **GPASS-04**: Cards have backdrop blur (expo-blur BlurTargetView pattern for Android), soft shadow, slight rotation, transparent borders
 - [x] **GPASS-05**: Stamp cards show artist + venue + date + Founder badge if applicable, pink tint
@@ -140,8 +140,8 @@
 | MIG-05 | Phase 7 | Complete |
 | MIG-06 | Phase 7 | Complete |
 | MIG-07 | Phase 7 | Complete |
-| GPASS-01 | Phase 7 | Pending |
-| GPASS-02 | Phase 7 | Pending |
+| GPASS-01 | Phase 7 | Complete |
+| GPASS-02 | Phase 7 | Complete |
 | GPASS-03 | Phase 7 | Complete |
 | GPASS-04 | Phase 7 | Complete |
 | GPASS-05 | Phase 7 | Complete |
