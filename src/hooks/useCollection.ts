@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { apiCall } from "@/lib/api";
 import * as Haptics from "expo-haptics";
 
 // ---------- Tier system ----------
@@ -105,39 +106,26 @@ export function useDiscover() {
 
   return useMutation<DiscoverResult, Error, { performerId: string }>({
     mutationFn: async ({ performerId }) => {
-      // Get user email from Supabase auth
-      const {
-        data: { user },
-        error: authError,
-      } = await supabase.auth.getUser();
-      if (authError || !user?.email) {
-        throw new Error("Not authenticated — please sign in first");
-      }
-
-      // Use web API like collect does (bypasses RLS)
-      const res = await fetch(
-        "https://decibel-three.vercel.app/api/discover",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            performer_id: performerId,
-            email: user.email,
-          }),
+      try {
+        const data = await apiCall<{ already_discovered?: boolean; is_founder?: boolean }>(
+          "/mobile/discover",
+          {
+            method: "POST",
+            body: JSON.stringify({ performerId }),
+          }
+        );
+        return {
+          success: true,
+          already_discovered: data.already_discovered ?? false,
+          is_founder: data.is_founder ?? false,
+        };
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        if (message.includes("409")) {
+          return { success: true, already_discovered: true, is_founder: false };
         }
-      );
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => "Unknown error");
-        throw new Error(`Discover failed: ${text}`);
+        throw err;
       }
-
-      const data = await res.json();
-      return {
-        success: true,
-        already_discovered: data.already_discovered ?? false,
-        is_founder: data.is_founder ?? false,
-      };
     },
     onSuccess: (_result, { performerId }) => {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);

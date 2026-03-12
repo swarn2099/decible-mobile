@@ -165,6 +165,7 @@ export default function ArtistProfileScreen() {
       artist.spotify_url,
       artist.soundcloud_url,
       artist.mixcloud_url,
+      artist.apple_music_url,
     ].filter(Boolean) as string[];
     const seen = new Set<string>();
     for (const rawUrl of allUrls) {
@@ -177,6 +178,8 @@ export default function ArtistProfileScreen() {
         <Headphones size={22} color={colors.pink} />
       ) : host.includes("mixcloud") ? (
         <Music size={22} color={colors.blue} />
+      ) : host.includes("apple") ? (
+        <Music2 size={22} color={colors.pink} />
       ) : (
         <Music2 size={22} color={colors.teal} />
       );

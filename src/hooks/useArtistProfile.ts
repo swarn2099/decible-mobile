@@ -13,6 +13,7 @@ export type ArtistProfile = {
   soundcloud_url: string | null;
   spotify_url: string | null;
   spotify_id: string | null;
+  apple_music_url: string | null;
   mixcloud_url: string | null;
   ra_url: string | null;
   instagram_handle: string | null;
