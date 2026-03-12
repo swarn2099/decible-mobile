@@ -105,10 +105,10 @@ Plans:
   2. Listen links on artist profiles open the correct platform URL and only appear when a URL exists in the DB
   3. Share modal opens and the native OS share sheet appears with a generated share card
   4. Leaderboard screen loads and displays ranked data without error
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: Fix Discover button, Listen links, share modal, and leaderboard API
+- [ ] 06-01-PLAN.md — Fix Discover button, Listen links, Share modal, and Leaderboard screen
 
 #### Phase 7: Glassy Passport Redesign
 **Goal**: The Passport tab becomes a glassmorphic identity artifact with three tabs (Stamps / Finds / Discoveries), frosted glass cards, animated orbs, and View More pages
