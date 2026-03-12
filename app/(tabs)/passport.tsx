@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
   useAnimatedScrollHandler,
@@ -165,27 +166,27 @@ export default function PassportScreen() {
 
   if (isError && !isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
         <ErrorState
           onRetry={() => {
             refetchStats();
             refetchCollections();
           }}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
         <PassportSkeleton />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
       <Animated.ScrollView
         onScroll={scrollHandler}
         scrollEventThrottle={16}
@@ -357,6 +358,6 @@ export default function PassportScreen() {
         shareUrl={shareUrl}
         isGenerating={isGeneratingCard}
       />
-    </View>
+    </SafeAreaView>
   );
 }
