@@ -120,12 +120,12 @@ Plans:
   3. Animated gradient orbs move slowly behind the cards — blur is visually meaningful against a non-flat background
   4. Tapping "View More" opens a full-page list for that tab with search bar and infinite scroll (20 items/page)
   5. Existing BlurView components (StampAnimationModal, SharePrompt, ConfirmationModal) render correctly on Android with the SDK 55 BlurTargetView pattern
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 07-01: DB migrations (MIG-01, MIG-05, MIG-06, MIG-07) + install react-native-pager-view + fix existing BlurView components to SDK 55 BlurTargetView pattern
-- [ ] 07-02: GradientOrbs background + GlassyPassportTabs pager + tab indicator
-- [ ] 07-03: StampGlassCard, FindGlassCard, DiscoveryGlassCard components + 2x4 preview grids per tab
+- [ ] 07-01: DB migrations + pager-view install + passport API extension + client types/hooks + BlurView SDK 55 fixes
+- [ ] 07-02: OrbBackground + 3 GlassCard variants (Stamp/Find/Discovery) + GlassGrid + press-in haptics
+- [ ] 07-03: PassportPager with frosted glass tab bar + passport.tsx rewrite (orbs + header + pager + badges)
 - [ ] 07-04: View More pages (search + infinite scroll) + GET /api/mobile/passport-collections endpoint
 
 #### Phase 8: Jukebox
