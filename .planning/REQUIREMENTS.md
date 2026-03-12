@@ -7,10 +7,10 @@
 
 ### Bug Fixes (Phase 0)
 
-- [ ] **BUG-01**: User can tap Discover button on an artist profile and it functions correctly (adds Discovery to passport)
-- [ ] **BUG-02**: Listen links on artist profile open the correct platform URL (only shown when URL exists in DB)
-- [ ] **BUG-03**: Share modal opens and functions correctly (native OS share sheet with share card)
-- [ ] **BUG-04**: Leaderboard API returns data and leaderboard screen renders correctly
+- [x] **BUG-01**: User can tap Discover button on an artist profile and it functions correctly (adds Discovery to passport)
+- [x] **BUG-02**: Listen links on artist profile open the correct platform URL (only shown when URL exists in DB)
+- [x] **BUG-03**: Share modal opens and functions correctly (native OS share sheet with share card)
+- [x] **BUG-04**: Leaderboard API returns data and leaderboard screen renders correctly
 
 ### DB Migrations
 
@@ -129,10 +129,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 6 | Pending |
-| BUG-02 | Phase 6 | Pending |
-| BUG-03 | Phase 6 | Pending |
-| BUG-04 | Phase 6 | Pending |
+| BUG-01 | Phase 6 | Complete |
+| BUG-02 | Phase 6 | Complete |
+| BUG-03 | Phase 6 | Complete |
+| BUG-04 | Phase 6 | Complete |
 | MIG-01 | Phase 7 | Pending |
 | MIG-02 | Phase 9 | Pending |
 | MIG-03 | Phase 9 | Pending |

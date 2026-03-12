@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
-status: ready_to_plan
-stopped_at: null
+status: in_progress
+stopped_at: "Completed 06-01-PLAN.md"
 last_updated: "2026-03-12"
-last_activity: "2026-03-12 — Roadmap created for v3.0 (Phases 6-9)"
+last_activity: "2026-03-12 — Completed Phase 6 Plan 1: BUG-01/02/03/04 fixes deployed"
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 13
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 8
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 6 of 9 (Bug Fixes)
-Plan: 0 of 1 in current phase
-Status: Ready to plan
-Last activity: 2026-03-12 — Roadmap v3.0 created, 67 requirements mapped across 4 phases
+Plan: 1 of 1 in current phase
+Status: Phase 6 complete
+Last activity: 2026-03-12 — Plan 06-01 complete: BUG-01/02/03/04 fixed + deployed (EAS preview ac62426d)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 8%
 
 ## Performance Metrics
 
@@ -61,6 +61,9 @@ Progress: [░░░░░░░░░░] 0%
 - Fire-and-forget VM dispatch: Vercel handles Layer 1 fast path, unawaited POST to VM on miss, mobile subscribes to Realtime by searchId
 - Realtime RLS: search_results table requires SELECT policy scoped to user_id = auth.uid() or events drop silently
 - iOS Realtime background disconnect: polling fallback required in Phase 9 — confirmed bug supabase/realtime #1088
+- apiCall pattern: all mobile API mutations use apiCall from @/lib/api — never raw fetch with manual auth (established in Phase 6)
+- SharePrompt finally block: async share flows use finally to guarantee loading state cleanup regardless of success/failure
+- Leaderboard trophy nav: absolute overlay on passport screen (zIndex 10), not a PassportHeader modification — lower surface area
 
 ### Pending Todos
 
@@ -74,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Roadmap v3.0 created — ready to plan Phase 6
+Stopped at: Completed 06-01-PLAN.md — Phase 6 Bug Fixes done, ready for Phase 7
 Resume file: None

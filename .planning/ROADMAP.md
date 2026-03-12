@@ -176,7 +176,7 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | 3. Check-In | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 4. Passport Redesign | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 5. Share + Polish | v1.0 | 3/3 | Complete | 2026-03-11 |
-| 6. Bug Fixes | v3.0 | 0/1 | Not started | - |
+| 6. Bug Fixes | 1/1 | Complete   | 2026-03-12 | - |
 | 7. Glassy Passport Redesign | v3.0 | 0/4 | Not started | - |
 | 8. Jukebox | v3.0 | 0/3 | Not started | - |
 | 9. I'm at a Show | v3.0 | 0/5 | Not started | - |
