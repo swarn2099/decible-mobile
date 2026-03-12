@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
-status: completed
-stopped_at: Phase 7 context gathered
-last_updated: "2026-03-12T18:00:33.721Z"
-last_activity: "2026-03-12 — Plan 06-01 complete: BUG-01/02/03/04 fixed + deployed (EAS preview ac62426d)"
+status: in_progress
+stopped_at: "Phase 07-01 complete: DB migrations + pager-view + BlurTargetView fix"
+last_updated: "2026-03-12T18:30:00.000Z"
+last_activity: "2026-03-12 — Plan 07-01 complete: MIG-01/05/06/07 applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
-  completed_phases: 5
-  total_plans: 12
-  completed_plans: 12
-  percent: 8
+  completed_phases: 6
+  total_plans: 13
+  completed_plans: 13
+  percent: 14
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Discover underground artists before anyone else (Finds) and prove you were at the show (Stamps) — a live music passport.
-**Current focus:** Phase 6 — Bug Fixes (starting point for v3.0)
+**Current focus:** Phase 7 — Glassy Passport Redesign (3-way collection split, pager tabs, visual overhaul)
 
 ## Current Position
 
-Phase: 6 of 9 (Bug Fixes)
-Plan: 1 of 1 in current phase
-Status: Phase 6 complete
-Last activity: 2026-03-12 — Plan 06-01 complete: BUG-01/02/03/04 fixed + deployed (EAS preview ac62426d)
+Phase: 7 of 9 (Glassy Passport Redesign)
+Plan: 1 of N in current phase (07-01 complete)
+Status: Phase 7 in progress
+Last activity: 2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals
 
-Progress: [█░░░░░░░░░] 8%
+Progress: [██░░░░░░░░] 14%
 
 ## Performance Metrics
 
@@ -56,7 +56,8 @@ Progress: [█░░░░░░░░░] 8%
 - 3 tabs (Home, +, Passport): simpler than v4's 4 tabs, + button emphasizes primary action
 - Finds vs Stamps visual separation: different aesthetics match different user motivations
 - DB migrations front-loaded into each phase that needs them (not a separate phase)
-- BlurView Android: existing StampAnimationModal, SharePrompt, ConfirmationModal must be updated to BlurTargetView pattern in Phase 7 day 1
+- BlurTargetView pattern established (Phase 7-01): all modal blur backgrounds use BlurTargetView ref + BlurView blurTarget — StampAnimationModal, SharePrompt, ConfirmationModal all converted
+- collection_type 3-way split established: stamp (verified live), find (online+founder), discovery (online no-founder) — 133 rows backfilled in DB
 - LLM Layer 6 confidence "low" results NEVER auto-collect — require platform link paste from user
 - Fire-and-forget VM dispatch: Vercel handles Layer 1 fast path, unawaited POST to VM on miss, mobile subscribes to Realtime by searchId
 - Realtime RLS: search_results table requires SELECT policy scoped to user_id = auth.uid() or events drop silently
@@ -76,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T18:00:33.715Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-glassy-passport-redesign/07-CONTEXT.md
+Last session: 2026-03-12T18:30:00.000Z
+Stopped at: Phase 07-01 complete
+Resume file: .planning/phases/07-glassy-passport-redesign/07-01-SUMMARY.md

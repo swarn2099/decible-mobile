@@ -14,13 +14,13 @@
 
 ### DB Migrations
 
-- [ ] **MIG-01**: `collection_type` column backfilled from legacy `capture_method` on existing collections
+- [x] **MIG-01**: `collection_type` column backfilled from legacy `capture_method` on existing collections
 - [ ] **MIG-02**: `search_results` table created with Realtime publication enabled and RLS SELECT policy
 - [ ] **MIG-03**: `venue_submissions` table created for crowdsource fallback data
 - [ ] **MIG-04**: `event_artists` junction table created (if not existing)
-- [ ] **MIG-05**: Embed URL columns added to `performers` table (spotify_embed_url, soundcloud_embed_url, apple_music_embed_url, top_track_cached_at)
-- [ ] **MIG-06**: `discovery` type added to collections type constraint
-- [ ] **MIG-07**: Unique constraint on `performers.spotify_id` to prevent simultaneous Founder race condition
+- [x] **MIG-05**: Embed URL columns added to `performers` table (spotify_embed_url, soundcloud_embed_url, apple_music_embed_url, top_track_cached_at)
+- [x] **MIG-06**: `discovery` type added to collections type constraint
+- [x] **MIG-07**: Unique constraint on `performers.spotify_id` to prevent simultaneous Founder race condition
 
 ### Glassy Passport
 
@@ -37,7 +37,7 @@
 - [ ] **GPASS-11**: Animated gradient orbs render behind cards on passport background (slow-moving, low-opacity blurred circles)
 - [ ] **GPASS-12**: BlurView performs acceptably on iOS and Android (fallback to semi-transparent on low-end Android)
 - [ ] **GPASS-13**: Cards with fewer than 8 entries display correctly without empty placeholders
-- [ ] **GPASS-14**: Existing BlurView components (StampAnimationModal, SharePrompt, ConfirmationModal) updated to SDK 55 BlurTargetView pattern
+- [x] **GPASS-14**: Existing BlurView components (StampAnimationModal, SharePrompt, ConfirmationModal) updated to SDK 55 BlurTargetView pattern
 
 ### Jukebox
 
@@ -133,13 +133,13 @@
 | BUG-02 | Phase 6 | Complete |
 | BUG-03 | Phase 6 | Complete |
 | BUG-04 | Phase 6 | Complete |
-| MIG-01 | Phase 7 | Pending |
+| MIG-01 | Phase 7 | Complete |
 | MIG-02 | Phase 9 | Pending |
 | MIG-03 | Phase 9 | Pending |
 | MIG-04 | Phase 8 | Pending |
-| MIG-05 | Phase 7 | Pending |
-| MIG-06 | Phase 7 | Pending |
-| MIG-07 | Phase 7 | Pending |
+| MIG-05 | Phase 7 | Complete |
+| MIG-06 | Phase 7 | Complete |
+| MIG-07 | Phase 7 | Complete |
 | GPASS-01 | Phase 7 | Pending |
 | GPASS-02 | Phase 7 | Pending |
 | GPASS-03 | Phase 7 | Pending |
@@ -153,7 +153,7 @@
 | GPASS-11 | Phase 7 | Pending |
 | GPASS-12 | Phase 7 | Pending |
 | GPASS-13 | Phase 7 | Pending |
-| GPASS-14 | Phase 7 | Pending |
+| GPASS-14 | Phase 7 | Complete |
 | JBX-01 | Phase 8 | Pending |
 | JBX-02 | Phase 8 | Pending |
 | JBX-03 | Phase 8 | Pending |

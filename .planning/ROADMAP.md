@@ -108,7 +108,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Fix Discover button, Listen links, Share modal, and Leaderboard screen
+- [x] 06-01-PLAN.md — Fix Discover button, Listen links, Share modal, and Leaderboard screen
 
 #### Phase 7: Glassy Passport Redesign
 **Goal**: The Passport tab becomes a glassmorphic identity artifact with three tabs (Stamps / Finds / Discoveries), frosted glass cards, animated orbs, and View More pages
@@ -123,7 +123,7 @@ Plans:
 **Plans**: 4 plans
 
 Plans:
-- [ ] 07-01: DB migrations + pager-view install + passport API extension + client types/hooks + BlurView SDK 55 fixes
+- [x] 07-01: DB migrations + pager-view install + passport API extension + client types/hooks + BlurView SDK 55 fixes
 - [ ] 07-02: OrbBackground + 3 GlassCard variants (Stamp/Find/Discovery) + GlassGrid + press-in haptics
 - [ ] 07-03: PassportPager with frosted glass tab bar + passport.tsx rewrite (orbs + header + pager + badges)
 - [ ] 07-04: View More pages (search + infinite scroll) + GET /api/mobile/passport-collections endpoint
@@ -177,6 +177,6 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | 4. Passport Redesign | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 5. Share + Polish | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 6. Bug Fixes | 1/1 | Complete   | 2026-03-12 | - |
-| 7. Glassy Passport Redesign | v3.0 | 0/4 | Not started | - |
+| 7. Glassy Passport Redesign | v3.0 | 1/4 | In Progress | - |
 | 8. Jukebox | v3.0 | 0/3 | Not started | - |
 | 9. I'm at a Show | v3.0 | 0/5 | Not started | - |
