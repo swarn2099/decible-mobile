@@ -8,35 +8,58 @@ Decibel is a mobile app (React Native + Expo) that serves as a live music passpo
 
 Every interaction in Decibel revolves around live music — discovering underground artists before they blow up (Finds) and proving you were at the show (Stamps). The Founder badge (one-of-one, first person to add an artist) is the app's most valuable social currency.
 
+## Current Milestone: v3.0 — The Living Passport
+
+**Goal:** Transform Decibel from a static collection app into a living, social music discovery platform with three major features: Glassy Passport redesign, Jukebox social feed, and magic check-in flow.
+
+**Target features:**
+- Glassy Passport Redesign (Stamps / Finds / Discoveries tabs, frosted glass cards, View More pages)
+- Jukebox (social music discovery feed, embedded players, one-tap Discover collect)
+- "I'm at a Show" magic check-in (location-based, scraping waterfall on VM, manual fallback)
+- Bug fixes (Discover button, Listen links, share modal, leaderboard API)
+
 ## Requirements
 
 ### Validated
 
-- ✓ 3-tab navigation (Home, +, Passport) with floating pill tab bar — Phase 1
-- ✓ Activity feed with find/stamp cards — Phase 1
-- ✓ Artist profile with hero, stats, action button, listen links — Phase 1
-- ✓ User profiles with collections, following/followers — Phase 1
-- ✓ Passport with collection stamps, badges, share button — Phase 1
-- ✓ Search screen for existing Decibel artists and users — Phase 1
-- ✓ Dark/light theme support — Phase 1
-- ✓ Discover/Found button hierarchy working — Phase 1
-- ✓ SoundCloud link paste working — Phase 1
+- ✓ 3-tab navigation (Home, +, Passport) with floating pill tab bar — v1.0
+- ✓ Activity feed with find/stamp cards — v1.0
+- ✓ Artist profile with hero, stats, action button, listen links — v1.0
+- ✓ User profiles with collections, following/followers — v1.0
+- ✓ Passport with collection stamps, badges, share button — v1.0
+- ✓ Search screen for existing Decibel artists and users — v1.0
+- ✓ Dark/light theme support — v1.0
+- ✓ Discover/Found button hierarchy working — v1.0
+- ✓ SoundCloud link paste working — v1.0
+- ✓ Link-paste-only Add flow (Spotify, Apple Music, SoundCloud) — v1.0
+- ✓ Eligibility threshold (1M Spotify / 100K SoundCloud) — v1.0
+- ✓ + tab with "Add an Artist" / "I'm at a Show" toggle — v1.0
+- ✓ GPS check-in (Scenarios A+B) — v1.0
+- ✓ Stamp animation (rubber stamp + ink spread + haptic) — v1.0
+- ✓ Passport redesign: Finds grid + Stamps analog section — v1.0
+- ✓ Share card system (founder + passport share cards) — v1.0
+- ✓ Post-found celebration (confetti, badge reveal, share prompt) — v1.0
+- ✓ Artist fans list screen — v1.0
+- ✓ Home search bar relocation (top bar) — v1.0
 
 ### Active
 
-- [ ] Link-paste-only Add flow (Spotify, Apple Music, SoundCloud URL parsing)
-- [ ] Eligibility threshold (1M Spotify / 100K SoundCloud)
-- [ ] Apple Music API integration
-- [ ] Spotify oEmbed + scraper for monthly listeners
-- [ ] + tab with "Add an Artist" / "I'm at a Show" toggle
-- [ ] Check-in flow: Scenario A (known venue + lineup), B (tag DJ), C (unknown venue)
-- [ ] Stamp animation (rubber stamp + ink spread + haptic)
-- [ ] user_tagged_events table and API
-- [ ] Passport redesign: Finds (2x3 artist card grid) + Stamps (analog passport aesthetic)
-- [ ] Share card system (founder share card, passport share card)
-- [ ] Post-found celebration (confetti, badge reveal, share prompt)
-- [ ] Artist fans list screen
-- [ ] Home search bar relocation (top bar)
+- [ ] Fix Discover button (non-functional)
+- [ ] Fix Listen links (broken)
+- [ ] Fix share modal (broken)
+- [ ] Fix leaderboard API (non-functional)
+- [ ] Glassy Passport: Three-tab layout (Stamps / Finds / Discoveries)
+- [ ] Glassy Passport: Frosted glass cards with expo-blur
+- [ ] Glassy Passport: View More pages with search + infinite scroll
+- [ ] Glassy Passport: Animated gradient orbs background
+- [ ] Jukebox: Social music discovery feed from followed users' Finds
+- [ ] Jukebox: Embedded players (Spotify, SoundCloud, Apple Music)
+- [ ] Jukebox: One-tap Discover collect
+- [ ] "I'm at a Show": Magic check-in with scraping waterfall
+- [ ] "I'm at a Show": VM scraper service (7 layers, 15s timeout)
+- [ ] "I'm at a Show": Manual fallback form
+- [ ] "I'm at a Show": Supabase realtime for async scrape results
+- [ ] Collection type: Discovery (collected via Jukebox/browse)
 
 ### Out of Scope
 
@@ -44,7 +67,7 @@ Every interaction in Decibel revolves around live music — discovering undergro
 - Volume Rating System — Beta 2, mixing console fader UI
 - "Who's Out Tonight" live friend map — Beta 2
 - Weekly recap notifications — Beta 2
-- DJ monetization (Pro/Agency tiers) — Phase 3, needs 500+ active users
+- DJ monetization (Pro/Agency tiers) — needs 500+ active users
 - Instagram auto-posting — Beta 2
 - Website conversion funnel — separate project
 - Text search for external artist catalogs — replaced by link paste
@@ -78,4 +101,4 @@ Every interaction in Decibel revolves around live music — discovering undergro
 | Coarse phase structure | PRD already defines 6 clear phases with natural boundaries | — Pending |
 
 ---
-*Last updated: 2026-03-10 after initialization*
+*Last updated: 2026-03-12 after milestone v3.0 initialization*
