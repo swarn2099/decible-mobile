@@ -17,22 +17,22 @@ const TAB_CONFIG: {
   { name: "passport", title: "Passport", Icon: Ticket },
 ];
 
-export const TAB_BAR_HEIGHT = 50;
+export const TAB_BAR_HEIGHT = 60;
 
 function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colors = useThemeColors();
   const insets = useSafeAreaInsets();
   const activeColor = colors.pink;
   const inactiveColor = colors.isDark
-    ? "rgba(255,255,255,0.4)"
-    : "rgba(0,0,0,0.35)";
+    ? "rgba(255,255,255,0.55)"
+    : "rgba(0,0,0,0.45)";
 
   return (
     <View
       style={[
         styles.tabBar,
         {
-          paddingBottom: insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 8),
           backgroundColor: colors.isDark ? "#15151C" : "#FFFFFF",
           borderTopColor: colors.isDark
             ? "rgba(255,255,255,0.06)"
@@ -47,7 +47,7 @@ function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         const isFocused = state.index === index;
         const isCenter = config.isCenter;
         const color = isFocused ? activeColor : inactiveColor;
-        const iconSize = isCenter ? 28 : 22;
+        const iconSize = isCenter ? 28 : 26;
 
         const onPress = () => {
           const event = navigation.emit({
@@ -107,17 +107,18 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     borderTopWidth: 0.5,
-    height: TAB_BAR_HEIGHT,
   },
   tab: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: 2,
-    paddingTop: 6,
+    minWidth: 64,
+    gap: 3,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   label: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: "Poppins_500Medium",
   },
 });
