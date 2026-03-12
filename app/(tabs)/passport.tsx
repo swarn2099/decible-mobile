@@ -1,39 +1,34 @@
 import { useState, useCallback } from "react";
-import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import { View, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import Animated, {
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { useSharedValue } from "react-native-reanimated";
 import { useQueryClient } from "@tanstack/react-query";
-import { Disc, Trophy } from "lucide-react-native";
+import { Trophy } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import { useThemeColors } from "@/constants/colors";
 import { useAuthStore } from "@/stores/authStore";
-import { usePassportStats, usePassportCollections } from "@/hooks/usePassport";
+import {
+  usePassportStats,
+  usePassportCollections,
+  usePassportCollectionsSplit,
+} from "@/hooks/usePassport";
 import { useFanBadges } from "@/hooks/useBadges";
 import { useSocialCounts } from "@/hooks/useUserSearch";
 import {
   usePassportShareCardV2,
-  useArtistShareCard,
-  useBadgeShareCard,
 } from "@/hooks/useShareCard";
 import { PassportHeader } from "@/components/passport/PassportHeader";
-import { StampsSection } from "@/components/passport/StampsSection";
-import { FindsGrid } from "@/components/passport/FindsGrid";
+import { PassportPager } from "@/components/passport/PassportPager";
+import { OrbBackground } from "@/components/passport/OrbBackground";
 import { BadgeGrid } from "@/components/passport/BadgeGrid";
 import { BadgeDetailModal } from "@/components/passport/BadgeDetailModal";
 import { ShareSheet } from "@/components/passport/ShareSheet";
-import { DecibelRefreshControl } from "@/components/ui/PullToRefresh";
 import { PassportSkeleton } from "@/components/ui/SkeletonLoader";
 import { ErrorState } from "@/components/ui/ErrorState";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { apiCall } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import type { BadgeWithStatus } from "@/types/badges";
-
-const VISIBLE_STAMPS = 6;
 
 type FanProfile = {
   id: string;
@@ -66,19 +61,22 @@ function useFanProfile() {
 
 export default function PassportScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const user = useAuthStore((s) => s.user);
   const colors = useThemeColors();
-  const [selectedBadge, setSelectedBadge] = useState<BadgeWithStatus | null>(
-    null
-  );
+
+  // Modal/sheet state
+  const [selectedBadge, setSelectedBadge] = useState<BadgeWithStatus | null>(null);
   const [shareSheetVisible, setShareSheetVisible] = useState(false);
   const [shareImageUri, setShareImageUri] = useState<string | null>(null);
   const [shareUrl, setShareUrl] = useState<string | undefined>(undefined);
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+
+  // Shared value for OrbBackground + tab pill (BOTH use this)
+  const activeTabIndex = useSharedValue(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const queryClient = useQueryClient();
-  const scrollY = useSharedValue(0);
 
   const { data: fanProfile } = useFanProfile();
   const {
@@ -88,45 +86,18 @@ export default function PassportScreen() {
     refetch: refetchStats,
   } = usePassportStats();
   const {
-    data: collectionPages,
     isLoading: collectionsLoading,
     isError: collectionsError,
     refetch: refetchCollections,
   } = usePassportCollections();
+  const { stamps, finds, discoveries } = usePassportCollectionsSplit();
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();
 
   const passportShare = usePassportShareCardV2();
 
-  const collections = collectionPages?.pages.flat() ?? [];
-
-  // Split into Finds (online: founded/discovered) and Stamps (live: collected/verified)
-  const finds = collections.filter(
-    (c) => !c.verified && (c.is_founder || !c.verified)
-  );
-  const stamps = collections.filter((c) => c.verified);
-
-  const visibleFinds = finds.slice(0, VISIBLE_STAMPS);
-  const visibleStamps = stamps.slice(0, 5);
-
   const fanSlug = user?.email?.split("@")[0] ?? "user";
-
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
-    },
-  });
-
-  const handleRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["passportStats"] }),
-      queryClient.invalidateQueries({ queryKey: ["passportCollections"] }),
-      queryClient.invalidateQueries({ queryKey: ["fanProfile"] }),
-      queryClient.invalidateQueries({ queryKey: ["fanBadges"] }),
-    ]);
-    setRefreshing(false);
-  }, [queryClient]);
+  const allCollections = [...stamps, ...finds, ...discoveries];
 
   const handleSharePassport = useCallback(async () => {
     if (!stats) return;
@@ -139,8 +110,7 @@ export default function PassportScreen() {
     setShareSheetVisible(true);
 
     try {
-      // Collect top 4 artist photo URLs (finds first, then stamps)
-      const topPhotos = collections
+      const topPhotos = allCollections
         .map((c) => c.performer?.photo_url ?? null)
         .filter((url): url is string => !!url)
         .filter((url, idx, arr) => arr.indexOf(url) === idx)
@@ -159,14 +129,29 @@ export default function PassportScreen() {
     } finally {
       setIsGeneratingCard(false);
     }
-  }, [stats, fanProfile, fanSlug, collections, finds, stamps, passportShare]);
+  }, [stats, fanProfile, fanSlug, allCollections, finds, stamps, passportShare]);
+
+  const handleViewMore = useCallback(
+    (type: "stamp" | "find" | "discovery") => {
+      const routeMap = {
+        stamp: "/collection/stamps",
+        find: "/collection/finds",
+        discovery: "/collection/discoveries",
+      };
+      router.push(routeMap[type] as any);
+    },
+    [router]
+  );
 
   const isLoading = statsLoading || collectionsLoading;
   const isError = statsError || collectionsError;
 
   if (isError && !isLoading) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: colors.bg }}
+        edges={["top"]}
+      >
         <ErrorState
           onRetry={() => {
             refetchStats();
@@ -179,43 +164,25 @@ export default function PassportScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: colors.bg }}
+        edges={["top"]}
+      >
         <PassportSkeleton />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }} edges={["top"]}>
-      {/* Leaderboard trophy button — top-right overlay */}
-      <Pressable
-        onPress={() => router.push("/leaderboard")}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={{
-          position: "absolute",
-          top: 54,
-          right: 16,
-          zIndex: 10,
-          width: 40,
-          height: 40,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Trophy size={20} color={colors.textSecondary} />
-      </Pressable>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      {/* Orb background — renders behind entire screen (outside SafeAreaView) */}
+      <OrbBackground activeTabIndex={activeTabIndex} />
 
-      <Animated.ScrollView
-        onScroll={scrollHandler}
-        scrollEventThrottle={16}
-        refreshControl={
-          <DecibelRefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-          />
-        }
-        contentContainerStyle={{ paddingBottom: 20 }}
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: "transparent" }}
+        edges={["top"]}
       >
+        {/* Pinned header — NOT in a ScrollView, no gesture conflict */}
         <PassportHeader
           displayName={fanProfile?.name ?? null}
           avatarUrl={fanProfile?.avatar_url ?? null}
@@ -230,132 +197,48 @@ export default function PassportScreen() {
           stampsCount={stamps.length}
           fanId={fanProfile?.id ?? ""}
           onSettingsPress={() => router.push("/settings")}
-          scrollY={scrollY}
+          onSharePress={handleSharePassport}
+          isSharing={passportShare.isLoading || isGeneratingCard}
         />
 
-        {/* Share Passport button */}
-        <View style={{ paddingHorizontal: 16, paddingTop: 16, gap: 8 }}>
-          <TouchableOpacity
-            onPress={handleSharePassport}
-            activeOpacity={0.85}
-            disabled={passportShare.isLoading}
-          >
-            <LinearGradient
-              colors={[colors.purple, colors.pink]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={{
-                borderRadius: 16,
-                paddingVertical: 14,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily: "Poppins_700Bold",
-                  color: "#FFFFFF",
-                }}
-              >
-                {passportShare.isLoading ? "Generating..." : "Share Passport"}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+        {/* 3-tab pager takes remaining flex space */}
+        <PassportPager
+          stamps={stamps}
+          finds={finds}
+          discoveries={discoveries}
+          activeTabIndex={activeTabIndex}
+          onTabChange={setActiveTab}
+          onViewMore={handleViewMore}
+        />
 
-        {/* Finds section */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 16,
-            paddingTop: 24,
-            paddingBottom: 8,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_700Bold",
-              color: colors.text,
-            }}
-          >
-            Finds
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontFamily: "Poppins_400Regular",
-              color: colors.lightGray,
-            }}
-          >
-            {finds.length} artist{finds.length !== 1 ? "s" : ""}
-          </Text>
-        </View>
-
-        {finds.length > 0 ? (
-          <FindsGrid finds={visibleFinds} totalCount={finds.length} scrollY={scrollY} sectionOffsetY={380} />
-        ) : (
-          <EmptyState
-            icon={<Disc size={32} color={colors.lightGray} />}
-            title="No finds yet"
-            subtitle="Add artists from the + tab to start your collection"
-          />
-        )}
-
-        {/* Stamps section */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 16,
-            paddingTop: 24,
-            paddingBottom: 8,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_700Bold",
-              color: colors.text,
-            }}
-          >
-            Stamps
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontFamily: "Poppins_400Regular",
-              color: colors.lightGray,
-            }}
-          >
-            {stamps.length} show{stamps.length !== 1 ? "s" : ""}
-          </Text>
-        </View>
-
-        {stamps.length > 0 ? (
-          <StampsSection stamps={visibleStamps} totalCount={stamps.length} />
-        ) : (
-          <EmptyState
-            icon={<Disc size={32} color={colors.lightGray} />}
-            title="No stamps yet"
-            subtitle='Check in at a live show from the + tab to earn stamps'
-          />
-        )}
-
-        {/* Badges section */}
+        {/* Badges section — horizontal scroll row below pager */}
         {badges && badges.length > 0 && (
-          <View style={{ paddingTop: 16 }}>
+          <View style={{ maxHeight: 160 }}>
             <BadgeGrid
               badges={badges}
               onBadgeTap={(badge) => setSelectedBadge(badge)}
             />
           </View>
         )}
-      </Animated.ScrollView>
+      </SafeAreaView>
+
+      {/* Leaderboard trophy — absolute overlay top-right (stays above SafeAreaView) */}
+      <Pressable
+        onPress={() => router.push("/leaderboard")}
+        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        style={{
+          position: "absolute",
+          top: insets.top + 12,
+          right: 16,
+          zIndex: 10,
+          width: 40,
+          height: 40,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Trophy size={20} color={colors.textSecondary} />
+      </Pressable>
 
       {/* Badge detail modal */}
       {selectedBadge && (
@@ -376,6 +259,6 @@ export default function PassportScreen() {
         shareUrl={shareUrl}
         isGenerating={isGeneratingCard}
       />
-    </SafeAreaView>
+    </View>
   );
 }

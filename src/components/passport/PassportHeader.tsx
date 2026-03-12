@@ -1,7 +1,7 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Settings } from "lucide-react-native";
+import { Settings, Share2 } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import Animated, {
   useAnimatedStyle,
@@ -85,6 +85,8 @@ type Props = {
   stampsCount: number;
   fanId: string;
   onSettingsPress: () => void;
+  onSharePress?: () => void;
+  isSharing?: boolean;
   scrollY?: SharedValue<number>;
 };
 
@@ -98,6 +100,8 @@ export function PassportHeader({
   stampsCount,
   fanId,
   onSettingsPress,
+  onSharePress,
+  isSharing,
   scrollY,
 }: Props) {
   const colors = useThemeColors();
@@ -264,6 +268,41 @@ export function PassportHeader({
       >
         Member since {memberLabel}
       </Text>
+
+      {/* Row 4: Share Passport button — always visible below stats */}
+      {onSharePress && (
+        <TouchableOpacity
+          onPress={onSharePress}
+          disabled={isSharing}
+          activeOpacity={0.85}
+          style={{ marginTop: 14 }}
+        >
+          <LinearGradient
+            colors={[colors.purple, colors.pink]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              borderRadius: 16,
+              paddingVertical: 11,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            <Share2 size={15} color="#FFFFFF" />
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: "Poppins_600SemiBold",
+                color: "#FFFFFF",
+              }}
+            >
+              {isSharing ? "Generating..." : "Share Passport"}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      )}
     </Animated.View>
   );
 }
