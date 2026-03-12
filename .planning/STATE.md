@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 07-03-PLAN.md
-last_updated: "2026-03-12T18:50:29.312Z"
+stopped_at: Completed 07-04-PLAN.md
+last_updated: "2026-03-12T18:54:30.646Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
   percent: 14
 ---
 
@@ -49,6 +49,7 @@ Progress: [██░░░░░░░░] 14%
 | 5. Share + Polish | 3/3 | Complete |
 | Phase 07-glassy-passport-redesign P02 | 3 | 2 tasks | 5 files |
 | Phase 07-glassy-passport-redesign P03 | 4 | 2 tasks | 3 files |
+| Phase 07-glassy-passport-redesign P04 | 15 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 07-glassy-passport-redesign]: OrbBackground uses LinearGradient radial falloff (no BlurView on orbs) — low overhead, perceived blur from large size + low opacity
 - [Phase 07-glassy-passport-redesign]: PassportPager tab pill: tabOffset SharedValue drives smooth mid-swipe animation via onPageScroll, synced to React state in onPageSelected
 - [Phase 07-glassy-passport-redesign]: passport.tsx no-parent-ScrollView pattern: OrbBackground sibling behind SafeAreaView, PassportPager(flex:1) prevents PagerView gesture conflicts
+- [Phase 07-04]: GlassCard simplified prop: BlurView in passport grid, LinearGradient in View More FlatLists — same component, different render path for perf
+- [Phase 07-04]: passport-collections endpoint separate from /passport route — avoids bloating the heavy main route with type-filter-only use cases
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-12T18:50:29.302Z
-Stopped at: Completed 07-03-PLAN.md
+Last session: 2026-03-12T18:54:30.640Z
+Stopped at: Completed 07-04-PLAN.md
 Resume file: None

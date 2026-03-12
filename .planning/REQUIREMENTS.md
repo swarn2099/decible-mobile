@@ -32,8 +32,8 @@
 - [x] **GPASS-06**: Find cards show artist + platform icon + listener count + Founder badge if applicable, purple tint
 - [x] **GPASS-07**: Discovery cards show artist + "via @username", blue tint, slightly more transparent
 - [x] **GPASS-08**: Haptic feedback (light impact) + press-in animation (scale 0.97, spring back) on card tap
-- [ ] **GPASS-09**: "View More" button navigates to dedicated full page per tab
-- [ ] **GPASS-10**: View More page has search bar with relevant filters, newest-to-oldest order, infinite scroll (20 items/page)
+- [x] **GPASS-09**: "View More" button navigates to dedicated full page per tab
+- [x] **GPASS-10**: View More page has search bar with relevant filters, newest-to-oldest order, infinite scroll (20 items/page)
 - [x] **GPASS-11**: Animated gradient orbs render behind cards on passport background (slow-moving, low-opacity blurred circles)
 - [x] **GPASS-12**: BlurView performs acceptably on iOS and Android (fallback to semi-transparent on low-end Android)
 - [x] **GPASS-13**: Cards with fewer than 8 entries display correctly without empty placeholders
@@ -148,8 +148,8 @@
 | GPASS-06 | Phase 7 | Complete |
 | GPASS-07 | Phase 7 | Complete |
 | GPASS-08 | Phase 7 | Complete |
-| GPASS-09 | Phase 7 | Pending |
-| GPASS-10 | Phase 7 | Pending |
+| GPASS-09 | Phase 7 | Complete |
+| GPASS-10 | Phase 7 | Complete |
 | GPASS-11 | Phase 7 | Complete |
 | GPASS-12 | Phase 7 | Complete |
 | GPASS-13 | Phase 7 | Complete |
