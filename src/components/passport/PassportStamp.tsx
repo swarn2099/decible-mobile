@@ -1,4 +1,5 @@
 import { View, Platform } from "react-native";
+import { Image } from "expo-image";
 import Svg, { Circle, Text as SvgText } from "react-native-svg";
 import { useThemeColors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
@@ -28,7 +29,7 @@ type Props = {
   size?: number;
 };
 
-export function PassportStamp({ stamp, size = 110 }: Props) {
+export function PassportStamp({ stamp, size = 120 }: Props) {
   const colors = useThemeColors();
 
   const venueName = stamp.venue?.name
@@ -46,6 +47,9 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
 
   const monoFont = Platform.OS === "ios" ? "Courier" : "monospace";
 
+  const photoSize = 40;
+  const photoTop = size * 0.12;
+
   const glowStyle = colors.isDark
     ? {
         shadowColor: colors.pink,
@@ -56,7 +60,7 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
     : {};
 
   return (
-    <View style={[{ opacity: 0.9 }, glowStyle]}>
+    <View style={[{ opacity: 0.9, width: size, height: size }, glowStyle]}>
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {/* Outer dashed circle */}
         <Circle
@@ -81,36 +85,36 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           opacity={0.4}
         />
 
-        {/* Venue name near top */}
+        {/* Venue name */}
         <SvgText
           x={cx}
-          y={size * 0.3}
+          y={size * 0.5}
           textAnchor="middle"
           fontFamily="Poppins-SemiBold, Poppins_600SemiBold, sans-serif"
           fontWeight="600"
-          fontSize={8}
+          fontSize={7.5}
           fill={colors.pink}
         >
           {venueName}
         </SvgText>
 
-        {/* Date in center */}
+        {/* Date */}
         <SvgText
           x={cx}
-          y={size * 0.52}
+          y={size * 0.62}
           textAnchor="middle"
           fontFamily={monoFont}
           fontWeight="bold"
-          fontSize={10}
+          fontSize={9}
           fill={colors.pink}
         >
           {dateLabel}
         </SvgText>
 
-        {/* Artist name below center */}
+        {/* Artist name below date */}
         <SvgText
           x={cx}
-          y={size * 0.68}
+          y={size * 0.75}
           textAnchor="middle"
           fontFamily="Poppins-Medium, Poppins_500Medium, sans-serif"
           fontSize={7}
@@ -120,6 +124,30 @@ export function PassportStamp({ stamp, size = 110 }: Props) {
           {artistName}
         </SvgText>
       </Svg>
+
+      {/* Artist photo — circular, centered at top of stamp */}
+      {stamp.performer.photo_url && (
+        <View
+          style={{
+            position: "absolute",
+            top: photoTop,
+            left: (size - photoSize) / 2,
+            width: photoSize,
+            height: photoSize,
+            borderRadius: photoSize / 2,
+            overflow: "hidden",
+            borderWidth: 1.5,
+            borderColor: colors.pink,
+          }}
+        >
+          <Image
+            source={{ uri: stamp.performer.photo_url }}
+            style={{ width: photoSize, height: photoSize }}
+            contentFit="cover"
+            transition={200}
+          />
+        </View>
+      )}
     </View>
   );
 }
