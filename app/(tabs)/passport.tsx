@@ -277,7 +277,7 @@ export default function PassportScreen() {
         </View>
 
         {finds.length > 0 ? (
-          <FindsGrid finds={visibleFinds} totalCount={finds.length} />
+          <FindsGrid finds={visibleFinds} totalCount={finds.length} scrollY={scrollY} sectionOffsetY={380} />
         ) : (
           <EmptyState
             icon={<Disc size={32} color={colors.lightGray} />}

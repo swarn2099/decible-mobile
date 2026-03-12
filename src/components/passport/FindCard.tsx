@@ -1,13 +1,20 @@
 import { View, Text, Pressable, TouchableOpacity, Linking, Platform } from "react-native";
-import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
 import { useRouter } from "expo-router";
 import { Star, Compass, Headphones } from "lucide-react-native";
-import { useThemeColors, Colors } from "@/constants/colors";
+import { Colors, useThemeColors } from "@/constants/colors";
+import Animated, {
+  useAnimatedStyle,
+  interpolate,
+  Extrapolation,
+  type SharedValue,
+} from "react-native-reanimated";
 import type { CollectionStamp } from "@/types/passport";
 
-// Deterministic gradient from name
+const AnimatedImage = Animated.createAnimatedComponent(
+  require("expo-image").Image
+);
+
 const GRADIENT_PAIRS: [string, string][] = [
   [Colors.pink, Colors.purple],
   [Colors.purple, Colors.blue],
@@ -28,29 +35,38 @@ function getGradientForName(name: string): [string, string] {
 type Props = {
   stamp: CollectionStamp;
   cardWidth: number;
+  scrollY?: SharedValue<number>;
+  cardOffsetY?: number;
 };
 
-export function FindCard({ stamp, cardWidth }: Props) {
+export function FindCard({ stamp, cardWidth, scrollY, cardOffsetY = 0 }: Props) {
   const router = useRouter();
   const colors = useThemeColors();
 
-  // 3:4 aspect ratio
   const cardHeight = cardWidth * 1.33;
   const gradientColors = getGradientForName(stamp.performer.name);
 
-  const isFounder = stamp.is_founder === true;
-  const borderColor = isFounder ? colors.gold : colors.purple;
-
   const shadowStyle = Platform.select({
     ios: {
-      shadowColor: borderColor,
-      shadowOpacity: colors.isDark ? (isFounder ? 0.5 : 0.4) : 0.25,
-      shadowRadius: colors.isDark ? 8 : 6,
-      shadowOffset: { width: 0, height: colors.isDark ? 0 : 3 },
+      shadowColor: "#000",
+      shadowOpacity: colors.isDark ? 0.5 : 0.3,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 4 },
     },
     android: {
-      elevation: 6,
+      elevation: 8,
     },
+  });
+
+  const parallaxStyle = useAnimatedStyle(() => {
+    if (!scrollY) return {};
+    const translateY = interpolate(
+      scrollY.value,
+      [cardOffsetY - 300, cardOffsetY, cardOffsetY + 300],
+      [15, 0, -15],
+      Extrapolation.CLAMP
+    );
+    return { transform: [{ translateY }] };
   });
 
   const handleCardPress = () => {
@@ -72,17 +88,23 @@ export function FindCard({ stamp, cardWidth }: Props) {
         width: cardWidth,
         height: cardHeight,
         borderRadius: 16,
-        borderColor: borderColor,
-        borderWidth: 2,
         overflow: "hidden",
         ...shadowStyle,
       }}
     >
-      {/* Full-bleed photo or gradient fallback */}
+      {/* Full-bleed photo with parallax or gradient fallback */}
       {stamp.performer.photo_url ? (
-        <Image
+        <AnimatedImage
           source={{ uri: stamp.performer.photo_url }}
-          style={{ width: "100%", height: "100%", position: "absolute" }}
+          style={[
+            {
+              width: "100%",
+              height: "120%",
+              position: "absolute",
+              top: -10,
+            },
+            parallaxStyle,
+          ]}
           contentFit="cover"
         />
       ) : (
@@ -139,14 +161,13 @@ export function FindCard({ stamp, cardWidth }: Props) {
           right: 0,
         }}
       >
-        {/* Dark gradient fade into blur */}
         <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.6)"]}
-          style={{ height: 24 }}
+          colors={["transparent", "rgba(0,0,0,0.75)"]}
+          style={{ height: 40 }}
         />
         <View
           style={{
-            backgroundColor: "rgba(0,0,0,0.55)",
+            backgroundColor: "rgba(0,0,0,0.65)",
             paddingHorizontal: 10,
             paddingTop: 2,
             paddingBottom: 10,
@@ -160,7 +181,7 @@ export function FindCard({ stamp, cardWidth }: Props) {
               gap: 5,
             }}
           >
-            {isFounder ? (
+            {stamp.is_founder ? (
               <Star size={12} color="#FFD700" fill="#FFD700" />
             ) : (
               <Compass size={12} color="#9B6DFF" />
