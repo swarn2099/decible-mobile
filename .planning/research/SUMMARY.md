@@ -1,17 +1,17 @@
 # Project Research Summary
 
-**Project:** Decibel Mobile — Phase 2+ Feature Build
-**Domain:** Live music passport app (React Native + Expo, GPS check-in, artist discovery, share cards)
-**Researched:** 2026-03-10
+**Project:** Decibel Mobile v3.0 — Glassy Passport, Jukebox, I'm at a Show
+**Domain:** React Native / Expo — live music passport social app
+**Researched:** 2026-03-12
 **Confidence:** HIGH
 
 ## Executive Summary
 
-Decibel is a live music passport app built on a confirmed, already-installed Expo SDK 55 stack. Phase 1 delivered the 3-tab navigation scaffold. The remaining work (Phases 2-5) adds the four core mechanics that make the app functional: link-paste artist discovery with eligibility gating, GPS-based venue check-in with stamp animation, a visual passport redesign (Finds grid + analog Stamps), and server-side share card generation. Crucially, every library required is already installed — this is a pure implementation milestone, not a greenfield build. The v4 codebase contains production-tested implementations of URL parsing, GPS/Haversine venue detection, and share card download patterns that should be copied verbatim and extended, not rewritten.
+Decibel v3.0 is a three-feature expansion of an existing, shipping Expo SDK 55 app. The stack is already mature — all core libraries are installed (Reanimated, expo-blur, expo-location, Supabase JS, TanStack Query, Zustand) — and only two new mobile libraries are required: `react-native-pager-view` (Passport tab swipe) and `react-native-webview` (Jukebox embedded players). The most architecturally complex feature is "I'm at a Show," which introduces a new infrastructure tier: an Express.js scraper service on the DigitalOcean VM (deployed via PM2) that communicates asynchronously to the mobile app via Supabase Realtime. This fire-and-forget pattern is the right call given Vercel's 60-second function timeout and Playwright's 300MB binary — it simply cannot run on Vercel.
 
-The recommended approach is to build in strict dependency order: validate-artist-link backend endpoint first (blocks the entire Add flow), then the client-side Add UI, then the check-in backend + UI, then the passport visual redesign, and finally the share card endpoints and celebration UX. The most important architectural discipline is to keep API keys and all Spotify/SoundCloud/Apple Music calls server-side via Next.js API routes — the mobile client parses URLs locally (instant feedback) but delegates all validation to the backend. Similarly, GPS-to-venue matching stays on the client (Haversine is a pure calculation), while stamp creation always happens server-side where dedup and auth can be enforced.
+The recommended build order is: DB migrations first (unblocks everything), then Glassy Passport and VM Scraper in parallel, then Jukebox once the `discovery` collection type is confirmed, and finally the full "I'm at a Show" mobile flow once the VM service is live and tested. This ordering reflects real hard dependencies — the Passport tab is the visual foundation that makes every new collection type immediately visible, and the VM scraper must be deployed before any end-to-end check-in testing can proceed.
 
-Three risks demand attention before any code is written. First, the existing Spotify monthly listener scraper returns `0` on failure, which silently approves mainstream artists — fix this to return `null` and treat it as "unknown" not "eligible". Second, the current venue detection uses UTC date for event matching, which breaks check-ins after midnight in Chicago — pass the client's local date from the mobile app instead. Third, the SoundCloud URL parser in v4 accepts track and set pages as artist pages — add specific error messages and ideally extract the username from track URLs rather than rejecting them. These three are not speculative edge cases; they are verified bugs in the existing code.
+The critical risk area is the Jukebox's WebView lifecycle: each mounted WebView spawns a native browser process, audio session conflicts with iOS background playback are confirmed bugs in react-native-webview, and unmounting a WebView does not stop its audio without explicit `injectJavaScript`. These are non-negotiable to solve upfront — not as a retrofit. The second risk is data integrity: LLM-generated artist names from Layer 6 of the scraper waterfall can produce hallucinated Founders that are expensive to clean up. The fix is requiring a platform link for all `confidence: "low"` results, with no auto-collect permitted.
 
 ---
 
@@ -19,143 +19,130 @@ Three risks demand attention before any code is written. First, the existing Spo
 
 ### Recommended Stack
 
-The stack is already frozen. Phase 1 ships with Expo SDK 55, React Native 0.83.2, Expo Router, Nativewind, react-native-reanimated 4.2.1, lottie-react-native, expo-location, expo-haptics, expo-blur, expo-sharing, expo-file-system, @tanstack/react-query, and Zustand. No new packages are required for any feature in Phases 2-5. The only optional addition is `@gorhom/bottom-sheet` if the check-in flow needs multi-snap sheet behavior, but the current Modal + Reanimated pattern is sufficient for a wizard-style flow.
+The existing codebase already includes everything needed for the Glassy Passport (expo-blur, Reanimated, LinearGradient) and the Check-In flow (expo-location, Supabase JS with Realtime built in). Only two new installs are needed: `react-native-pager-view` v8 (New Architecture-only, correct for SDK 55's mandatory New Architecture) and `react-native-webview` ~13.16.x for Jukebox embeds.
 
-**Core technologies and their roles:**
-- `urlParser.ts` (copy from v4): Client-side URL parsing — platform detection from pasted links, zero network cost, immediate feedback before API call
-- SoundCloud Widget API (`api-widget.soundcloud.com`): Follower count + avatar, no auth, already in production use in the backend scraper
-- Spotify Web API (Client Credentials): Artist name, photo, follower count via `/v1/artists/{id}` — `followers.total` as proxy for monthly listeners
-- Spotify HTML scrape (`__NEXT_DATA__`): Exact monthly listener count — fragile but already in `spotify.ts`, use as enrichment not as eligibility gate
-- Apple Music API v1 catalog: Artist lookup by numeric ID from URL; cross-reference by name to Spotify for eligibility (Apple exposes no listener count)
-- `expo-location` + Haversine (pure TS): GPS acquisition + client-side venue matching at 200m radius, one-shot `getCurrentPositionAsync`, Balanced accuracy
-- `next/og` ImageResponse (Vercel Edge): Server-side PNG share card generation — already in production, same pattern for all new card types
-- `react-native-reanimated` + `lottie-react-native`: Stamp slam animation (spring physics) + ink spread (Lottie JSON) + haptics (expo-haptics at contact frame)
+The VM scraper service should live at `~/decibel/scraper/`, not as a standalone project. It reuses the Playwright binary already installed there (`^1.58.2` confirmed in `~/decibel/package.json`), shares the Supabase JS client config, and avoids introducing a second Node.js project with separate CI/CD overhead. PM2 is required for the scraper process — tmux does not survive VM reboots.
 
-**See STACK.md for full version matrix and alternatives considered.**
+**Core technologies:**
+- `react-native-pager-view` v8: Passport gesture tab swipe — New Architecture-only from v7+, handles gesture conflict with nested scrollables natively; raw pager-view over `react-native-tab-view` because we need a custom frosted glass tab indicator
+- `react-native-webview` ~13.16.x: Jukebox embedded music players — only viable approach for Spotify/SoundCloud/Apple Music embeds; must be lazy-mounted with a hard cap of 3 active instances
+- `expo-blur` (already installed, SDK 55 breaking change): glassmorphism cards — requires the new `BlurTargetView` + `blurTarget` ref pattern on Android; old single-component wrap is silently transparent on Android in SDK 55
+- Express.js + PM2 on DigitalOcean VM: scraper waterfall service — Playwright cannot run on Vercel (300MB binary vs. 50MB bundle limit); VM has no timeout constraints
+- `@anthropic-ai/sdk` ^0.39.x on VM: Layer 6 LLM search augmentation — Claude with web search for venues with no structured event data; Node.js 20.20.0 on VM confirmed compatible
+- Supabase Realtime (already in `@supabase/supabase-js`): async result delivery from VM to mobile — replaces polling entirely; filtered by `search_id` to prevent cross-user event leakage
 
 ### Expected Features
 
-Decibel has two user personas with different entry points but shared data: Group A (Artist Hunters who use the Add flow to build their Finds collection) and Group B (Night-Out Loggers who use Check In to build their Stamps passport). Both are blocked by Phase 1's scaffold-only + tab.
+See FEATURES.md for the full prioritization matrix. Summary below.
 
-**Must have (table stakes — users will assume these work):**
-- Artist link validation with specific error messages per failure mode (wrong URL type, over threshold, already on Decibel)
-- Loading state during link fetch (network calls take 500ms-3s; no spinner = duplicate taps)
-- Eligibility rejection showing the artist card + listener count (proves the check ran, not a bug)
-- Already-on-Decibel detection before invoking the add flow (cross-reference by spotify_id / soundcloud_slug)
-- GPS permission rationale screen shown before `requestForegroundPermissionsAsync()` (higher accept rate)
-- Venue match confirmation ("You're at Smartbar — is this right?") after GPS match
-- Stamp appears in Passport immediately after check-in (optimistic React Query cache update)
-- Finds grid cards tappable through to artist profile (non-tappable cards feel decorative)
-- Stamps ordered most recent first (random order feels broken)
-- Native OS share sheet (not custom buttons)
+**Must have (table stakes — v3.0 launch):**
+- Glassy Passport: 3-tab layout (Stamps / Finds / Discoveries) with swipe + tap navigation — users expect swipeable tabs in 2026
+- Frosted glass cards with BlurView tints and slight rotation — the visual centerpiece; without it v3.0 has no identity
+- Animated gradient orbs on Passport background — required for blur to be visible; BlurView on a flat dark background blurs into near-identical flat dark
+- View More pages per Passport tab — collections grow; infinite scroll pagination must exist at launch
+- Jukebox social feed with embedded players — non-functional players equal a dead screen; feed without audio is just a list of names
+- Jukebox one-tap Discover collect — the conversion action; Jukebox is read-only without it
+- Jukebox max-3 WebView lazy mount/unmount — crash prevention, not optional
+- "I'm at a Show": Layer 1 (DB lookup) + Layer 2 (RA, DICE, EDMTrain) — covers majority of Chicago venue check-ins
+- Supabase Realtime subscription for async scrape results — polling is not an acceptable fallback
+- Manual fallback form always accessible — scraping will fail; this is a first-class path, not just a timeout recovery
+- Founder + Stamp simultaneous award — the star feature of v3.0; attending a show and discovering a new artist earns Founder in one tap
 
-**Should have (Decibel differentiators):**
-- Founder badge (one-of-one, permanent, race-condition-safe via DB unique constraint)
-- Link-paste-only adding — the friction is the feature, not a limitation
-- Eligibility threshold (1M Spotify / 100K SoundCloud) enforced server-side on every add
-- Check-in creates Stamps per artist, not just a venue visit log
-- Analog passport aesthetic: paper grain texture, per-stamp rotation, ink tint
-- Rubber stamp animation on check-in (no music app has this; it's the emotional hook)
-- Post-found celebration (confetti + badge reveal) with immediate share prompt
-- Dual visual language: clean digital gallery (Finds) vs textured analog diary (Stamps)
-- Founder share card (9:16 Stories format, time-stamped cultural credibility)
+**Should have (differentiators, add after core flows validated):**
+- Confidence-tiered result display (green/yellow/grey per scrape source layer)
+- Jukebox embed URL caching on `performers` table (launch with on-the-fly resolution, cache at scale)
+- VM scraper Layers 4-6 (social media, Playwright venue website, LLM) — Layers 1-3 cover structured data; 4-6 are fuzzy and expensive
 
-**Defer to v2+:**
-- Check-in Scenario C (unknown venue — needs live data accumulation first)
-- Recurring lineup suggestions ("last Friday pattern" — needs weeks of user_tagged_events data)
-- Volume Rating System (gated to Collected fans — needs check-in user base first)
-- Fantasy Music League, "Who's Out Tonight" map, push notifications, Instagram auto-posting
-
-**Anti-features to explicitly avoid:** text search for external artist catalogs, Deezer API, background location tracking, open venue creation, QR scanning, rating artists you haven't seen live.
-
-**See FEATURES.md for full prioritization matrix and competitor analysis.**
+**Defer (v3.x or v4+):**
+- Native audio player replacing WebViews (react-native-track-player) — large scope, Spotify SDK complexity
+- Crowdsource pattern detection ("recurring residency" prediction) — needs weeks of real submission data
+- Liquid Glass (iOS 26+) — not cross-platform; defer until iOS 26 adoption is meaningful
 
 ### Architecture Approach
 
-The architecture is a clean three-tier system: React Native mobile (Expo Router file-based, custom hooks, Zustand stores) calling Next.js API routes on Vercel, which in turn call Supabase with the service role key. The mobile client is allowed direct Supabase reads (venues, artists, activity feed) via the anon key + JS client, but all writes go through Next.js API routes. Share cards are generated at Vercel Edge using `next/og` ImageResponse, downloaded to local cache via `expo-file-system`, and shared via `expo-sharing`. GPS and Haversine venue matching run entirely on the client; the resolved `venue_id` is what gets sent to the server for stamp creation.
+The v3.0 system adds a third infrastructure tier to the existing mobile + Vercel architecture: a long-running Express.js service on the DigitalOcean VM. The key pattern is fire-and-forget async dispatch: the Vercel route handles the fast Layer 1 DB lookup, fires an unawaited HTTP POST to the VM on miss, returns a `searchId` immediately, and the mobile app subscribes to a Supabase Realtime channel filtered by that `searchId`. The VM writes its result directly to `search_results` using the service role key, triggering the Realtime event on mobile. This decouples the mobile UX from the scraper's 5-15 second runtime without polling.
 
-**Major components and responsibilities:**
-1. `app/(tabs)/add.tsx` — mode toggle orchestrator (Add Artist vs Check In), owns the flow state machine
-2. `lib/urlParser.ts` (copy + extend from v4) — sync client-side platform detection, zero network cost
-3. `/api/mobile/validate-artist-link` (NEW backend) — the eligibility gate; calls Spotify/SoundCloud/Apple Music server-side
-4. `hooks/useVenueDetection.ts` (copy from v4) — GPS + Haversine client-side, Supabase venue/event query
-5. `/api/mobile/check-in` (NEW backend) — auth-gated stamp creation with dedup via DB unique constraint
-6. `components/stamps/StampAnimation.tsx` — Reanimated spring + Lottie ink spread + expo-haptics, rendered in Modal above scroll context
-7. `app/(tabs)/passport.tsx` — Finds grid (2-column, digital) + Stamps section (analog, rotated, textured), separate components with zero shared layout logic
-8. `/api/share-card/founder` and `/api/share-card/passport` (NEW backend) — `next/og` ImageResponse following exact existing pattern from `passport/share-card/route.tsx`
+For the Glassy Passport, the correct BlurView architecture is a single page-level BlurView behind all cards — not one BlurView per FlatList item. Multiple BlurViews in a FlatList capture a static snapshot at render time and produce visual artifacts on scroll. Cards use `rgba(255,255,255,0.08)` semi-transparent backgrounds to let the single blur layer show through.
 
-**See ARCHITECTURE.md for full data flow diagrams and anti-patterns.**
+**Major components:**
+1. `GlassyPassportTabs` + card variants (`StampGlassCard`, `FindGlassCard`, `DiscoveryGlassCard`) — 3-tab pager with per-type visual languages; `GradientOrbs` provides the animated color layer that blur works against
+2. `JukeboxCard` + `EmbeddedPlayer` — FlatList with visibility-gated WebView pool; `onViewableItemsChanged` tracks visible cards, `injectJavaScript` pauses audio before unmount, `mediaPlaybackRequiresUserAction={true}` prevents iOS audio session hijacking
+3. `useShowCheckin` + `ScrapingWaitScreen` — orchestrates Vercel call → Realtime subscription → confidence-tiered result rendering → lineup confirmation → existing `useCheckIn` mutation
+4. VM scraper service (`~/decibel/scraper/`) — Express.js with shared Playwright browser instance (launch once, context-per-request), `try/finally` cleanup on every context, PM2 with `max_memory_restart: "512M"`
+5. DB schema additions — `search_results` (Realtime-enabled, RLS SELECT policy required, `user_id` column for per-user filtering), `venue_submissions`, embed URL columns on `performers`, `collection_type` backfill from legacy `capture_method`
 
 ### Critical Pitfalls
 
-1. **Spotify scrape returns `0` = silently eligible** — the existing `scrapeMonthlyListeners()` in `spotify.ts` returns `0` on any exception. Since `0 < 1_000_000`, mainstream artists pass eligibility when the scrape fails. Fix: return `null` on failure; treat `null` as "unverified", not "under threshold". Requires `listener_count_unverified` flag on performers if using as fallback-allow.
+1. **BlurView Android API change (SDK 55)** — The old `<BlurView intensity={40}>` wrap is silently transparent on Android. SDK 55 requires the new `BlurTargetView` + `blurTarget` ref pattern. Three existing components (`StampAnimationModal`, `SharePrompt`, `ConfirmationModal`) use the broken old API. Address on day 1 of Passport phase before writing any new glass component.
 
-2. **UTC date mismatch at midnight** — `todayDate()` in `useVenueDetection.ts` produces UTC date. Chicago at 1am is UTC tomorrow. Late-night shows (primary Decibel use case) become invisible. Fix: pass client's local date to the check-in API; query events on both yesterday and today client-side.
+2. **WebView audio ducking on iOS** — Any mounted WebView with a music embed can claim the iOS AVAudioSession, ducking or pausing background Spotify/Apple Music before the user ever taps play. Fix: `mediaPlaybackRequiresUserAction={true}` + `allowsInlineMediaPlayback={true}` on all WebViews. Verify by: play music on device, open Jukebox, confirm music continues.
 
-3. **SoundCloud track/set URLs silently rejected** — users sharing a track URL get a generic error with no guidance. Fix: detect 2+ segment SoundCloud paths, extract the username, and either treat it as the artist profile or show contextual instructions ("paste the artist profile link, not a track link").
+3. **Unmounted WebView continues playing audio** — Removing a WebView from the React tree does NOT stop its audio on iOS. Must call `injectJavaScript` to pause all `<audio>/<video>` elements and post `{"method":"pause"}` to Spotify iframes BEFORE unmounting. Required for the visibility-gated pool to function correctly.
 
-4. **GPS accuracy variance blows 200m match** — indoors accuracy degrades to 50-500m. Fix: read `position.coords.accuracy`; when accuracy > 300m show "Low GPS signal — try moving near a window" instead of "No venues detected". Add per-venue `geofence_radius` to DB.
+4. **Supabase Realtime RLS silently drops events** — New tables have RLS enabled by default. Without a SELECT policy on `search_results`, the scraper's INSERT fires but the mobile client never receives it — no error, subscription stays `SUBSCRIBED`, events disappear. Required: `ALTER PUBLICATION supabase_realtime ADD TABLE search_results` + CREATE SELECT policy scoped to `user_id = auth.uid()`.
 
-5. **Stamp animation jank from wrong render context** — rendering Reanimated transforms inside a `ScrollView` causes scroll-offset interference and JS-thread haptic timing issues. Fix: render `StampAnimation` in a `Modal` (Portal) above the scroll view; fire haptics via `runOnJS` callback at the exact contact frame.
+5. **Layer 6 LLM hallucinated Founder badges** — Claude will return confident-sounding artist names for any venue query, including when no real data exists. Hard rule: `confidence: "low"` results NEVER auto-collect; require a platform link paste from the user before any artist creation from Layer 6 output.
 
-**Also watch for:** ImageResponse CSS subset silently ignoring `background-clip: text` (gradient text goes invisible), SoundCloud unofficial widget client ID rotation risk, Apple Music developer JWT needing 6-month rotation, and duplicate collection rows on rapid taps (add DB unique constraint on `collections(fan_id, performer_id, capture_method)`).
+6. **`collection_type` vs legacy `capture_method` split** — Existing passport queries filter on `capture_method` ("location" / "online"). New Passport tabs filter on `collection_type` ("stamp" / "find" / "discovery"). Without a migration that backfills `collection_type` from `capture_method`, old and new screens show divergent collections with no obvious error. The migration runs before any UI code is built.
 
-**See PITFALLS.md for full recovery strategies, security mistakes, and the "Looks Done But Isn't" checklist.**
+7. **Playwright browser context leaks on VM** — Any unhandled error that skips `finally { await context.close() }` leaves a Chromium process open. After ~50 requests on a 1GB droplet, memory exhaustion triggers a PM2 restart. Use shared browser instance (launch once on service start), context-per-request with strict `try/finally`.
 
 ---
 
 ## Implications for Roadmap
 
-The PRD v5 already defines 6 phases. Research confirms and refines that structure. The key constraint is the dependency chain: Add flow must precede Check-In (Scenario B reuses the link-paste validator), and both must precede Share Cards (cards need real data). The Passport redesign is parallel to Check-In and should overlap.
+The dependency graph is clear from combined research and suggests a 4-phase structure with one parallel track.
 
-### Phase 2: Link-Paste Add Flow + Eligibility
-**Rationale:** All other features are blocked until artists can be added. The + tab is a placeholder today. This is the critical path.
-**Delivers:** Working "Add an Artist" flow — URL paste, platform detection, server-side eligibility check, ArtistPreviewCard, founder badge assignment, post-found celebration stub
-**Key features:** Link-paste-only (no search), eligibility threshold, already-on-Decibel detection, Founder badge (one-of-one)
-**Backend work:** `validate-artist-link` route (Spotify + SoundCloud + Apple Music), extend existing `add-artist` route
-**Client work:** `urlParser.ts` port + Apple Music extension, `add-artist/paste.tsx`, `preview.tsx`, `celebration.tsx`
-**Critical pitfalls to avoid:** Spotify scrape-returns-zero bug (fix before shipping), SoundCloud track URL rejection UX, Apple Music name-match fallback
-**Research flag:** Standard pattern — well-documented in existing v4 code and backend. No additional research phase needed. Verify Apple Music API developer JWT setup before starting.
+### Phase 1: DB Migrations + Schema Foundation
+**Rationale:** Everything blocks on this. `collection_type` backfill must exist before new Passport UI. `search_results` table must exist (with Realtime publication + RLS SELECT policy + `user_id` column) before the scraper can deliver results. Embed URL columns on `performers` must exist before Jukebox can cache them. Do this first and all other phases can proceed without schema blockers mid-build.
+**Delivers:** `search_results` table (Realtime-enabled, RLS SELECT policy), `venue_submissions` table, `event_artists` table, embed URL columns on `performers`, `collection_type` backfill from `capture_method`, `discovery` type added to collections constraint
+**Avoids:** Pitfall 4 (RLS blocks Realtime), Pitfall 6 (collection_type migration), mid-build schema breakage
 
-### Phase 3: GPS Check-In + Stamp Creation
-**Rationale:** Check-In Scenario B (tag-a-DJ) reuses the Add flow from Phase 2. Can't build Scenario B first.
-**Delivers:** Working "I'm at a Show" flow — GPS match, venue confirmation, lineup display, stamp creation (Scenarios A and B), `user_tagged_events` table populated
-**Key features:** GPS permission rationale screen, venue match confirmation ("Is this right?"), Collect All for known lineups, tag-DJ fallback for unknown lineups
-**Backend work:** `check-in` route, `tag-performer` route (with DB unique constraint for dedup)
-**Client work:** `useVenueDetection.ts` port, `useCheckIn.ts`, `useTagPerformer.ts`, scenario screens A and B
-**Critical pitfalls to avoid:** UTC midnight bug (pass local date from client), GPS accuracy variance (check `coords.accuracy`, show contextual message), duplicate collect on rapid tap (idempotent API + DB constraint)
-**Research flag:** Standard pattern — `useVenueDetection.ts` in v4 is the implementation. No research needed. Run the "date boundary check-in" test case at the end of the phase.
+### Phase 2: Glassy Passport Redesign
+**Rationale:** The Passport tab is the identity screen and the visual foundation for every new collection type. Jukebox creates `discovery` collections; Check-In creates `stamp` and `find` collections — both are immediately visible in the correct tabs if Passport is built first. Also validates the new BlurView Android pattern before it proliferates into additional components.
+**Delivers:** 3-tab Passport (`GlassyPassportTabs`), frosted glass card variants per type, animated gradient orbs (`GradientOrbs`), View More infinite-scroll pages, new `GET /api/mobile/passport-collections` backend endpoint
+**Uses:** `react-native-pager-view`, `expo-blur` SDK 55 `BlurTargetView` pattern, Reanimated + LinearGradient for orbs
+**Avoids:** Pitfall 1 (BlurView Android), Pitfall 2 (BlurView in FlatList static snapshot), Pitfall 6 (collection_type)
+**Research flag:** Standard patterns — BlurView, Reanimated, and pager-view are all documented. No additional research phase needed.
 
-### Phase 4: Passport Redesign + Stamp Animation
-**Rationale:** The passport visual redesign can start in parallel with Phase 3 but depends on stamp creation being complete to wire up the animation post-check-in. Separation of rendering into Finds (digital) and Stamps (analog) is a major layout refactor.
-**Delivers:** 2x3 Finds grid (tap-through artist profile), analog Stamps section (paper grain, rotated stamps, Poppins monospace dates), rubber stamp animation with haptics post-check-in, `StampAnimation` component isolated in Modal
-**Key features:** Dual visual language (zero shared layout logic), per-stamp rotation seeded deterministically by stamp ID, stamp animation in Modal above scroll context, haptic at contact frame via `runOnJS`
-**Lottie assets:** Source stamp-press + ink-spread + confetti JSON from LottieFiles.com before starting. Commit to `assets/animations/`.
-**Critical pitfalls to avoid:** Stamp animation in ScrollView (use Modal), Lottie file > 100KB (will lag on Android), haptic timing (test on device, not simulator)
-**Research flag:** Standard pattern for Reanimated + Lottie. No research phase needed. Physical device testing is mandatory — do not report done from simulator alone.
+### Phase 3: Jukebox Feed (parallel-eligible with VM scraper build)
+**Rationale:** Depends on Phase 1 (embed URL columns, discovery type) and Phase 2 (Discoveries tab exists to display collected items). All WebView pitfalls are fully documented in PITFALLS.md — build them correctly from day one. The audio session and memory issues are known confirmed bugs, not speculative.
+**Delivers:** `jukebox.tsx` screen, `JukeboxCard`, `EmbeddedPlayer` (visibility-gated, max-3 pool), `useJukebox` hook, `useDiscover` mutation, `GET /api/mobile/jukebox` endpoint, `POST /api/mobile/discover` endpoint, Jukebox icon replaces Map icon in Home tab
+**Uses:** `react-native-webview` with `mediaPlaybackRequiresUserAction={true}`, `onViewableItemsChanged` pattern, `injectJavaScript` audio-stop before unmount
+**Avoids:** Pitfall 3 (iOS audio ducking), Pitfall 4 (BatchedBridge memory leak), Pitfall 5 (unmounted WebView audio continues)
+**Research flag:** WebView audio session behavior is documented via confirmed GitHub issues. No additional research needed — patterns are fully specified in PITFALLS.md.
 
-### Phase 5: Share Cards + Virality
-**Rationale:** Share cards require real Finds and Stamps data to look designed. Build after passport redesign confirms visual language.
-**Delivers:** Founder share card (post-found celebration prompt, 9:16 Stories + 1:1 square), Passport share card (replaces broken existing button), `expo-media-library` save-to-photos, share count metrics stub
-**Backend work:** `/api/share-card/founder` and `/api/share-card/passport` routes following exact `next/og` ImageResponse pattern from existing `passport/share-card/route.tsx`; Poppins font loaded as ArrayBuffer from self-hosted URL
-**Client work:** `useFounderShareCard.ts` hook, share prompt in `celebration.tsx`, fix existing "Share Passport" button
-**Critical pitfalls to avoid:** ImageResponse CSS subset (gradient text invisible — use colored block instead; test every card with `curl` before mobile wiring), Poppins font must be ArrayBuffer not Google Fonts CSS URL
-**Research flag:** Established pattern — existing share card route is the template. No research needed. Run `curl` test on every card endpoint before connecting to mobile app.
+### Phase 4: VM Scraper Service (runs in parallel with Phase 3)
+**Rationale:** Fully independent of Phases 2 and 3 after migrations. No mobile UI dependencies — pure backend. Building it in parallel with Jukebox means the "I'm at a Show" mobile flow can wire up immediately in Phase 5 without waiting.
+**Delivers:** Express.js scraper at `~/decibel/scraper/`, Layer 2 (RA/DICE/EDMTrain/Songkick), Layer 3 (Google Places), Layer 5 (Playwright venue website), Layer 6 (Anthropic SDK, `confidence: "low"` only), confidence scoring, PM2 ecosystem config, shared secret authentication on scraper endpoint
+**Uses:** Playwright (already installed in `~/decibel`), `@anthropic-ai/sdk`, Express.js, PM2 globally on VM
+**Avoids:** Pitfall 7 (Playwright context leaks — shared browser + try/finally), Pitfall 9 (LLM hallucination — confidence: "low" output only, platform link required to collect)
+**Research flag:** Layer 2 API integrations need endpoint validation before implementation: Resident Advisor GraphQL schema, EDMTrain free-tier rate limits, Songkick API status post-Suno acquisition (November 2025, MEDIUM confidence). Validate before writing layer2 module.
+
+### Phase 5: "I'm at a Show" Mobile Flow
+**Rationale:** Last phase because it has the most dependencies: VM scraper live (Phase 4), Passport Stamps tab built (Phase 2), Realtime infrastructure tested. The mobile side is actually modest once the backend infrastructure exists — a new orchestration hook, a loading screen, lineup confirmation, and wiring into the existing `useCheckIn` mutation.
+**Delivers:** `useShowCheckin` orchestration hook, `useSupabaseRealtime` hook, `ScrapingWaitScreen` with layer-by-layer progress, lineup confirmation UI with confidence tiers, manual fallback integration, Founder + Stamp simultaneous award flow, `POST /api/mobile/show-checkin` Vercel endpoint
+**Uses:** Supabase Realtime `postgres_changes` subscription (filter by `search_id`), fire-and-forget VM dispatch from Vercel, AppState listener for iOS background/foreground reconnect, polling fallback when Realtime status is `CLOSED`/`TIMED_OUT`
+**Avoids:** Pitfall 6 (Realtime iOS background disconnect — polling fallback required), Pitfall 7 (RLS blocks events), Pitfall 9 (hallucinated Founders)
+**Research flag:** Realtime reconnection stuck in `CLOSED` loop on iOS is a confirmed bug (supabase/realtime #1088). The polling fallback is required — do not ship Phase 5 without it. Test explicitly by backgrounding the app during a 15s scrape window on a physical iOS device.
 
 ### Phase Ordering Rationale
 
-- **Phase 2 before Phase 3:** Check-in Scenario B (tag-DJ with no lineup) reuses the validate-artist-link + add-artist pipeline. Building Add flow first means Scenario B is nearly free.
-- **Phase 3 parallel with Phase 4 (partial):** Passport layout refactor (Finds grid, Stamps section) can begin during Phase 3 development. `StampAnimation` component wiring requires a Phase 3 stamp to animate — finish Scenario A first, then integrate.
-- **Phase 4 before Phase 5:** Founder share card must reflect the visual language established by the Finds grid (dark card, gold glow, large artist photo). Build the visual first, then screenshot it in a server-side card.
-- **Scenario C (unknown venue) deferred to v2:** Adds significant complexity (freetext venue creation, fuzzy matching) for coverage of edge-case check-ins. Chicago market has sufficient known venues for beta launch without it.
+- **Migrations first** is non-negotiable: two separate features would hit schema blockers mid-build without them.
+- **Passport before Jukebox and Check-In** means every new collection is immediately displayable the moment it's created. Without it, users have collections in the DB with no way to see them.
+- **VM Scraper parallel with Jukebox** makes efficient use of the independent dependency graph after migrations. Neither blocks the other.
+- **Check-In mobile flow last** because it has the most dependencies (VM live, Passport built, Realtime tested) but the least unique mobile code — the majority of the complexity is in the backend layers already built in Phase 4.
 
 ### Research Flags
 
-**No phase requires an additional `/gsd:research-phase` run.** Every pattern is verified against the existing v4 codebase or production backend. The only pre-implementation verification steps are:
+Phases needing validation during implementation:
+- **Phase 4 (VM Scraper):** Validate Layer 2 API endpoints before writing the integration layer. Specifically: RA GraphQL schema, EDMTrain API key availability, Songkick status post-Suno acquisition. DICE API may require partner agreement — implement as best-effort scrape fallback.
+- **Phase 5 (Check-In mobile):** Realtime reconnection must be tested on a physical iOS device with app backgrounding during the 15s window. Simulator does not reproduce the iOS background network kill behavior.
 
-- **Before Phase 2:** Confirm Apple Music developer JWT is provisioned (or explicitly scope Phase 2 to Spotify + SoundCloud only, with Apple Music as a fast follow). The name-cross-reference fallback ships first; Apple Music API wiring can follow.
-- **Before Phase 5:** Confirm Poppins font is hosted as a static asset accessible from the Vercel Edge runtime (not relying on Google Fonts CSS URL).
-- **All phases:** Run `eas update --channel preview` builds early — Lottie behavior on physical devices vs Expo Go vs standalone differs. Test on hardware before any phase is marked done.
+Phases with well-documented, standard patterns (no additional research needed):
+- **Phase 1 (Migrations):** Standard Supabase DDL + backfill SQL.
+- **Phase 2 (Passport):** BlurView + Reanimated + pager-view fully documented in STACK.md and PITFALLS.md.
+- **Phase 3 (Jukebox):** WebView patterns fully specified in PITFALLS.md.
 
 ---
 
@@ -163,47 +150,45 @@ The PRD v5 already defines 6 phases. Research confirms and refines that structur
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All packages verified against `package.json`. All patterns verified against running code in v4 and the decibel backend. No hypothetical recommendations. |
-| Features | HIGH | Grounded in PRD v5 (authoritative), competitor analysis from training knowledge (Bandsintown, Songkick, Foursquare, Last.fm). Feature hierarchy is clear and non-speculative. |
-| Architecture | HIGH | Every pattern (urlParser, useVenueDetection, ImageResponse, share card download) verified against actual source files in the codebase. Anti-patterns identified from confirmed bugs in v4. |
-| Pitfalls | HIGH | Critical bugs identified directly from source code (spotify.ts scrape-returns-zero, useVenueDetection UTC date). Not inferred — read from files. |
+| Stack | HIGH | Verified against actual `package.json` files in both `~/decibel-mobile` and `~/decibel`. Two new libraries needed; all else confirmed installed. Version compatibility confirmed against SDK 55 / New Architecture requirements. |
+| Features | HIGH | PRD v3.0 is the authoritative spec. Feature table stakes and differentiators verified against live competitors (Bandsintown, Songkick, Last.fm). Competitor analysis is MEDIUM confidence but directionally clear. |
+| Architecture | HIGH | All patterns verified against existing running codebase. Fire-and-forget + Realtime pattern confirmed against Supabase docs and Vercel timeout constraints. Component boundary diagram reflects actual file structure. |
+| Pitfalls | HIGH | Drawn from confirmed GitHub issues (react-native-webview #3205, #3168; supabase/realtime #1088; expo/expo #37905) and direct codebase inspection of three existing BlurView usages on old API. |
 
-**Overall confidence: HIGH**
+**Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Apple Music developer JWT:** Research confirmed the approach (catalog API with server-signed JWT, not MusicKit JS) but enrollment and key provisioning status is unknown. If no Apple Developer account key exists, Phase 2 ships Spotify + SoundCloud only with Apple Music as a fast follow. The PRD-specified fallback ("default to eligible") handles the gap gracefully.
-
-- **SoundCloud unofficial client ID stability:** The `nIjtjiYnjkOhMyh5xrbqEW12DxeJVnic` client ID from the v4 codebase is an unofficial widget key. It will rotate without notice. Applying for official SoundCloud API access before Phase 2 is the right call; until then, the existing approach works but has no SLA.
-
-- **Lottie animation files:** The stamp-press, ink-spread, and confetti Lottie JSON files are not yet in the repository. They must be sourced from LottieFiles.com before Phase 4 can start. License verification per file is required (free for commercial use, but varies). This is a sourcing task, not a technical unknown.
-
-- **Venue data coverage:** The check-in flow depends on venues table having GPS coordinates for Chicago venues. The coverage of this table is not verified in research. If Smartbar, Spybar, Schubas, Subterranean (the target venues) are not in the DB, Scenario A check-ins will silently fall through to Scenario B. Verify venue coverage before Phase 3.
+- **Songkick API post-Suno acquisition:** MEDIUM confidence. Treat as best-effort in Layer 2. Validate the endpoint before writing the integration; implement graceful skip-and-continue if unavailable.
+- **DICE API access:** LOW confidence. DICE does not offer a guaranteed public API without a partner agreement. Implement as best-effort fallback if no API key is available.
+- **Layer 4 social media scraping (Instagram, Facebook, X):** Intentionally deferred to v3.x. These platforms actively block scrapers and their schemas change frequently. Not worth the fragility for v3.0 launch.
+- **Apple Music embed URL parsing:** MEDIUM confidence. The embed URL format requires extracting `albumId` and `trackId` from an Apple Music URL, which has a different structure than Spotify. Validate parsing logic against real Apple Music artist URLs before shipping Jukebox embed support for that platform.
+- **Existing BlurView usage in 3 components:** `StampAnimationModal`, `SharePrompt`, and `ConfirmationModal` use the pre-SDK-55 BlurView API. These need to be updated to the `BlurTargetView` pattern in Phase 2 — not just new components, but existing ones that will break with the Passport context visible behind them.
 
 ---
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- `/home/swarn/decibel-mobile-v4/src/lib/urlParser.ts` — URL parsing implementation, edge cases
-- `/home/swarn/decibel-mobile-v4/src/hooks/useVenueDetection.ts` — GPS + Haversine pattern, UTC date bug
-- `/home/swarn/decibel-mobile-v4/src/hooks/useAddArtist.ts` — Add artist flow pattern
-- `/home/swarn/decibel/scripts/scrapers/enrich-via-api.ts` — SoundCloud Widget API in production
-- `/home/swarn/decibel/src/app/api/passport/share-card/route.tsx` — `next/og` ImageResponse in production
-- `/home/swarn/decibel/src/lib/spotify.ts` — Spotify token management, scrape-returns-zero bug identified here
-- `/home/swarn/decibel/src/app/api/mobile/add-artist/route.ts` — duplicate handling via `23505` pattern
-- `/home/swarn/decibel-mobile/package.json` — confirmed installed packages
-- `DECIBEL_PRD_v5.md` — product specification, feature requirements, phase order
+- `/home/swarn/decibel-mobile/package.json` — confirmed installed packages for mobile app
+- `/home/swarn/decibel/package.json` — confirmed Playwright ^1.58.2 installed, Node.js 20.20.0
+- `/home/swarn/decibel-mobile/DECIBEL_V3_PRD.md` — authoritative product spec for all three features
+- Expo BlurView SDK 55 docs — `BlurTargetView` requirement, `blurMethod` options, `blurReductionFactor`
+- expo/expo GitHub Discussion #37905 — Android BlurView V3 upgrade requirements for SDK 55
+- Supabase Realtime docs — `postgres_changes` filter syntax, RLS SELECT requirement for event forwarding
 
 ### Secondary (MEDIUM confidence)
-- Apple Music API v1 catalog endpoint — training knowledge; verify at developer.apple.com before implementation
-- Spotify `__NEXT_DATA__` monthly listener scraping — confirmed pattern in existing codebase (MEDIUM: page structure can change)
-- LottieFiles.com for stamp + confetti animations — training knowledge; license verification required per file
+- react-native-webview Issue #3205 — iOS audio session ducking confirmed bug
+- react-native-webview Issues #3168 + #3152 — `onMessage` BatchedBridge memory leak
+- supabase/realtime Issue #1088 — Realtime reconnection stuck in CLOSED loop on iOS
+- Playwright Issue #15400 — memory leak from unclosed browser contexts in long-running Node.js services
+- npm: `react-native-pager-view` v8, `react-native-webview` ~13.16.x — version compatibility with SDK 55 New Architecture
+- WebSearch: Songkick acquired by Suno November 2025 — API reliability uncertain
 
 ### Tertiary (LOW confidence)
-- SoundCloud unofficial widget client ID stability — works today, no official SLA
-- Competitor feature analysis (Bandsintown, Songkick, Foursquare, Last.fm) — training data through August 2025, not verified against current live products
+- DICE API partnership access — not verified; may require direct outreach
+- Apple Music embed URL parsing for arbitrary artist URLs — directionally confirmed, needs validation against real URLs before shipping
 
 ---
-*Research completed: 2026-03-10*
+*Research completed: 2026-03-12*
 *Ready for roadmap: yes*
