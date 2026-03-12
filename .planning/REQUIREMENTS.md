@@ -127,17 +127,81 @@
 
 ## Traceability
 
-(Populated during roadmap creation)
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| — | — | — |
+| BUG-01 | Phase 6 | Pending |
+| BUG-02 | Phase 6 | Pending |
+| BUG-03 | Phase 6 | Pending |
+| BUG-04 | Phase 6 | Pending |
+| MIG-01 | Phase 7 | Pending |
+| MIG-02 | Phase 9 | Pending |
+| MIG-03 | Phase 9 | Pending |
+| MIG-04 | Phase 8 | Pending |
+| MIG-05 | Phase 7 | Pending |
+| MIG-06 | Phase 7 | Pending |
+| MIG-07 | Phase 7 | Pending |
+| GPASS-01 | Phase 7 | Pending |
+| GPASS-02 | Phase 7 | Pending |
+| GPASS-03 | Phase 7 | Pending |
+| GPASS-04 | Phase 7 | Pending |
+| GPASS-05 | Phase 7 | Pending |
+| GPASS-06 | Phase 7 | Pending |
+| GPASS-07 | Phase 7 | Pending |
+| GPASS-08 | Phase 7 | Pending |
+| GPASS-09 | Phase 7 | Pending |
+| GPASS-10 | Phase 7 | Pending |
+| GPASS-11 | Phase 7 | Pending |
+| GPASS-12 | Phase 7 | Pending |
+| GPASS-13 | Phase 7 | Pending |
+| GPASS-14 | Phase 7 | Pending |
+| JBX-01 | Phase 8 | Pending |
+| JBX-02 | Phase 8 | Pending |
+| JBX-03 | Phase 8 | Pending |
+| JBX-04 | Phase 8 | Pending |
+| JBX-05 | Phase 8 | Pending |
+| JBX-06 | Phase 8 | Pending |
+| JBX-07 | Phase 8 | Pending |
+| JBX-08 | Phase 8 | Pending |
+| JBX-09 | Phase 8 | Pending |
+| JBX-10 | Phase 8 | Pending |
+| JBX-11 | Phase 8 | Pending |
+| JBX-12 | Phase 8 | Pending |
+| JBX-13 | Phase 8 | Pending |
+| JBX-14 | Phase 8 | Pending |
+| SHOW-01 | Phase 9 | Pending |
+| SHOW-02 | Phase 9 | Pending |
+| SHOW-03 | Phase 9 | Pending |
+| SHOW-04 | Phase 9 | Pending |
+| SHOW-05 | Phase 9 | Pending |
+| SHOW-06 | Phase 9 | Pending |
+| SHOW-07 | Phase 9 | Pending |
+| SHOW-08 | Phase 9 | Pending |
+| SHOW-09 | Phase 9 | Pending |
+| SHOW-10 | Phase 9 | Pending |
+| SHOW-11 | Phase 9 | Pending |
+| SHOW-12 | Phase 9 | Pending |
+| SHOW-13 | Phase 9 | Pending |
+| SHOW-14 | Phase 9 | Pending |
+| SHOW-15 | Phase 9 | Pending |
+| SHOW-16 | Phase 9 | Pending |
+| SHOW-17 | Phase 9 | Pending |
+| SHOW-18 | Phase 9 | Pending |
+| SHOW-19 | Phase 9 | Pending |
+| SHOW-20 | Phase 9 | Pending |
+| SHOW-21 | Phase 9 | Pending |
+| SHOW-22 | Phase 9 | Pending |
+| SHOW-23 | Phase 9 | Pending |
+| SHOW-24 | Phase 9 | Pending |
+| SHOW-25 | Phase 9 | Pending |
+| INFRA-01 | Phase 9 | Pending |
+| INFRA-02 | Phase 9 | Pending |
+| INFRA-03 | Phase 9 | Pending |
 
 **Coverage:**
 - v3.0 requirements: 67 total
-- Mapped to phases: 0
-- Unmapped: 67
+- Mapped to phases: 67
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-12*
-*Last updated: 2026-03-12 after initial definition*
+*Last updated: 2026-03-12 — traceability populated after roadmap creation*
