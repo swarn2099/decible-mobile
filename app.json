@@ -13,6 +13,7 @@
       "backgroundColor": "#0B0B0F"
     },
     "ios": {
+      "icon": "./assets/icon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.decibel.app",
       "buildNumber": "1",
