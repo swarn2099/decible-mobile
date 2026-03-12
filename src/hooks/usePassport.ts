@@ -107,6 +107,33 @@ export function usePassportCollections() {
   });
 }
 
+/**
+ * Splits passport collections into 3 buckets:
+ * - stamps: live verified attendance (collection_type === 'stamp' or verified === true)
+ * - finds: online + founder badge (collection_type === 'find' or is_founder === true)
+ * - discoveries: online discovery, no founder badge (collection_type === 'discovery')
+ *
+ * Additive — does not change existing hooks.
+ */
+export function usePassportCollectionsSplit() {
+  const query = usePassportCollections();
+  const collections = query.data?.pages.flat() ?? [];
+
+  const stamps = collections.filter(
+    (c) => c.collection_type === "stamp" || (c.verified === true && !c.collection_type)
+  );
+  const finds = collections.filter(
+    (c) => c.collection_type === "find" || (c.is_founder === true && !c.collection_type)
+  );
+  const discoveries = collections.filter(
+    (c) =>
+      c.collection_type === "discovery" ||
+      (!c.collection_type && !c.verified && !c.is_founder && c.capture_method === "online")
+  );
+
+  return { ...query, stamps, finds, discoveries };
+}
+
 export type TierProgress = {
   scanCount: number;
   currentTier: TierName;

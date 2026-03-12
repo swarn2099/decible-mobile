@@ -35,6 +35,12 @@ export interface PassportTimelineEntry {
   current_tier: string | null;
   is_founder?: boolean;
   fan_count: number; // total collection entries for this performer
+  /** Explicit 3-way split: 'stamp' = live verified, 'find' = online + founder, 'discovery' = online */
+  collection_type?: "stamp" | "find" | "discovery";
+  /** Username of the fan who made this discovery/find (for View More pages) */
+  finder_username?: string | null;
+  /** Fan ID of the discoverer */
+  finder_fan_id?: string | null;
 }
 
 export interface CollectionStamp extends PassportTimelineEntry {

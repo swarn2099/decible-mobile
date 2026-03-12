@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { View, Text, Pressable, Modal, Image } from "react-native";
+import { View, Text, Pressable, Modal, Image, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -13,7 +13,7 @@ import Animated, {
   useAnimatedReaction,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { BlurView } from "expo-blur";
+import { BlurView, BlurTargetView } from "expo-blur";
 import { Check } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { TIER_COLORS, TIER_LABELS, calculateTier, type TierName } from "@/hooks/useCollection";
@@ -57,6 +57,7 @@ export function ConfirmationModal({
 }: ConfirmationModalProps) {
   const colors = useThemeColors();
   const dismissTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bgRef = useRef<View>(null);
 
   // Shared values for animations
   const stampScale = useSharedValue(0.3);
@@ -282,16 +283,18 @@ export function ConfirmationModal({
           onDismiss();
         }}
       >
-        <BlurView
-          intensity={40}
-          tint="dark"
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.85)",
-          }}
+        <BlurTargetView
+          ref={bgRef}
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.85)" }}
         >
+          <BlurView
+            blurTarget={bgRef}
+            intensity={40}
+            tint="dark"
+            blurMethod="dimezisBlurViewSdk31Plus"
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Pressable
             onPress={handleInteraction}
             style={{ alignItems: "center", width: "100%", paddingHorizontal: 32 }}
@@ -536,7 +539,8 @@ export function ConfirmationModal({
               </Pressable>
             </Animated.View>
           </Pressable>
-        </BlurView>
+          </View>
+        </BlurTargetView>
       </Pressable>
     </Modal>
   );

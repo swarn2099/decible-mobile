@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Share, ActivityIndicator, View, Text, Modal } from "react-native";
-import { BlurView } from "expo-blur";
+import { useEffect, useRef, useState } from "react";
+import { Share, ActivityIndicator, View, Text, Modal, StyleSheet } from "react-native";
+import { BlurView, BlurTargetView } from "expo-blur";
 import { useThemeColors } from "@/constants/colors";
 import { supabase } from "@/lib/supabase";
 
@@ -19,6 +19,7 @@ export function SharePrompt({
 }: SharePromptProps) {
   const colors = useThemeColors();
   const [loading, setLoading] = useState(false);
+  const bgRef = useRef<View>(null);
 
   useEffect(() => {
     if (visible) {
@@ -83,29 +84,32 @@ export function SharePrompt({
   if (loading) {
     return (
       <Modal visible transparent animationType="fade">
-        <BlurView
-          intensity={30}
-          tint="dark"
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0,0,0,0.7)",
-          }}
+        <BlurTargetView
+          ref={bgRef}
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)" }}
         >
-          <View style={{ alignItems: "center", gap: 16 }}>
-            <ActivityIndicator size="large" color={colors.purple} />
-            <Text
-              style={{
-                color: colors.white,
-                fontFamily: "Poppins_500Medium",
-                fontSize: 16,
-              }}
-            >
-              Preparing share...
-            </Text>
+          <BlurView
+            blurTarget={bgRef}
+            intensity={30}
+            tint="dark"
+            blurMethod="dimezisBlurViewSdk31Plus"
+            style={StyleSheet.absoluteFill}
+          />
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <View style={{ alignItems: "center", gap: 16 }}>
+              <ActivityIndicator size="large" color={colors.purple} />
+              <Text
+                style={{
+                  color: colors.white,
+                  fontFamily: "Poppins_500Medium",
+                  fontSize: 16,
+                }}
+              >
+                Preparing share...
+              </Text>
+            </View>
           </View>
-        </BlurView>
+        </BlurTargetView>
       </Modal>
     );
   }

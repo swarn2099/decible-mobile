@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { View, Text, Modal, Pressable, Platform } from "react-native";
+import { View, Text, Modal, Pressable, Platform, StyleSheet } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,7 +10,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { BlurView } from "expo-blur";
+import { BlurView, BlurTargetView } from "expo-blur";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import { useThemeColors } from "@/constants/colors";
@@ -45,6 +45,7 @@ export function StampAnimationModal({
   const colors = useThemeColors();
   const router = useRouter();
   const lottieRef = useRef<LottieView>(null);
+  const bgRef = useRef<View>(null);
 
   // Shared animation values
   const stampTranslateY = useSharedValue(-300);
@@ -136,16 +137,24 @@ export function StampAnimationModal({
       onRequestClose={onDismiss}
       statusBarTranslucent
     >
-      <BlurView
-        intensity={40}
-        tint="dark"
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.88)",
-        }}
+      <BlurTargetView
+        ref={bgRef}
+        style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.88)" }}
       >
+        <BlurView
+          blurTarget={bgRef}
+          intensity={40}
+          tint="dark"
+          blurMethod="dimezisBlurViewSdk31Plus"
+          style={StyleSheet.absoluteFill}
+        />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
         <View
           style={{
             alignItems: "center",
@@ -279,7 +288,8 @@ export function StampAnimationModal({
             </Pressable>
           </Animated.View>
         </View>
-      </BlurView>
+        </View>
+      </BlurTargetView>
     </Modal>
   );
 }
