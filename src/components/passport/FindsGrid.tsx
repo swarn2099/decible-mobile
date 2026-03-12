@@ -11,9 +11,10 @@ type Props = {
   totalCount: number;
   scrollY?: SharedValue<number>;
   sectionOffsetY?: number;
+  fanId?: string; // when viewing another user's profile
 };
 
-export function FindsGrid({ finds, totalCount, scrollY, sectionOffsetY = 0 }: Props) {
+export function FindsGrid({ finds, totalCount, scrollY, sectionOffsetY = 0, fanId }: Props) {
   const colors = useThemeColors();
   const router = useRouter();
   const { width: screenWidth } = useWindowDimensions();
@@ -52,7 +53,12 @@ export function FindsGrid({ finds, totalCount, scrollY, sectionOffsetY = 0 }: Pr
       {/* View All link */}
       {totalCount > 6 && (
         <TouchableOpacity
-          onPress={() => router.push("/collection/finds")}
+          onPress={() =>
+            router.push({
+              pathname: "/collection/finds",
+              params: fanId ? { fanId } : {},
+            })
+          }
           activeOpacity={0.7}
           style={{
             flexDirection: "row",

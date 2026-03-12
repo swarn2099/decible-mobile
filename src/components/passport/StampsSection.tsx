@@ -16,9 +16,10 @@ const SCATTER_OFFSETS = [
 type Props = {
   stamps: CollectionStamp[];
   totalCount: number;
+  fanId?: string; // when viewing another user's profile
 };
 
-export function StampsSection({ stamps, totalCount }: Props) {
+export function StampsSection({ stamps, totalCount, fanId }: Props) {
   const colors = useThemeColors();
   const router = useRouter();
 
@@ -75,7 +76,12 @@ export function StampsSection({ stamps, totalCount }: Props) {
       {/* View All link — outside the texture, clean separation */}
       {totalCount > 5 && (
         <TouchableOpacity
-          onPress={() => router.push("/collection/stamps")}
+          onPress={() =>
+            router.push({
+              pathname: "/collection/stamps",
+              params: fanId ? { fanId } : {},
+            })
+          }
           activeOpacity={0.7}
           style={{
             flexDirection: "row",

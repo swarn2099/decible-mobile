@@ -1,12 +1,21 @@
 import { View, Text, FlatList, TouchableOpacity, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { usePassportCollections } from "@/hooks/usePassport";
+import { apiCall } from "@/lib/api";
 import { PassportStamp } from "@/components/passport/PassportStamp";
 import { PassportSkeleton } from "@/components/ui/SkeletonLoader";
 import type { CollectionStamp } from "@/types/passport";
+
+type PassportApiResponse = {
+  fan: { id: string; name: string | null; avatar_url: string | null; city: string | null; created_at: string };
+  collections: CollectionStamp[];
+  stats: unknown;
+  hasMore: boolean;
+};
 
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -90,9 +99,21 @@ function StampRow({ stamp, onPress, isLast }: StampRowProps) {
 export default function AllStampsScreen() {
   const colors = useThemeColors();
   const router = useRouter();
-  const { data: collectionPages, isLoading } = usePassportCollections();
+  const { fanId } = useLocalSearchParams<{ fanId?: string }>();
 
-  const collections = collectionPages?.pages.flat() ?? [];
+  const { data: collectionPages, isLoading: ownLoading } = usePassportCollections();
+  const { data: otherUserData, isLoading: otherLoading } = useQuery<PassportApiResponse>({
+    queryKey: ["userProfile", fanId],
+    queryFn: () => apiCall<PassportApiResponse>(`/mobile/passport?fan_id=${fanId}&page=0`),
+    enabled: !!fanId,
+  });
+
+  const isLoading = fanId ? otherLoading : ownLoading;
+
+  const collections = fanId
+    ? (otherUserData?.collections ?? [])
+    : (collectionPages?.pages.flat() ?? []);
+
   // Stamps = verified live collections, already sorted most recent first
   const stamps = collections.filter((c) => c.verified);
 

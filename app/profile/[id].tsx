@@ -383,7 +383,7 @@ export default function UserProfileScreen() {
         </View>
 
         {finds.length > 0 ? (
-          <FindsGrid finds={finds.slice(0, 6)} totalCount={finds.length} />
+          <FindsGrid finds={finds.slice(0, 6)} totalCount={finds.length} fanId={id} />
         ) : (
           <EmptyState
             icon={<Disc size={32} color={colors.textSecondary} />}
@@ -427,6 +427,7 @@ export default function UserProfileScreen() {
           <StampsSection
             stamps={stamps.slice(0, 5)}
             totalCount={stamps.length}
+            fanId={id}
           />
         ) : (
           <EmptyState
