@@ -13,7 +13,7 @@
       }
     },
     "preview": {
-      "distribution": "store",
+      "distribution": "internal",
       "channel": "preview"
     },
     "production": {
@@ -24,9 +24,12 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "TODO_SWARN_APPLE_ID_EMAIL",
-        "ascAppId": "TODO_SWARN_APP_STORE_CONNECT_APP_ID",
-        "appleTeamId": "TODO_SWARN_APPLE_TEAM_ID"
+        "appleId": "swarn2099@gmail.com",
+        "ascAppId": "6760446966",
+        "appleTeamId": "5R9W2MVQ3P",
+        "ascApiKeyPath": "/home/swarn/.appstoreconnect/AuthKey_4BV9T3UM85.p8",
+        "ascApiKeyIssuerId": "a5151996-ca34-4e23-b8c7-8b943f80f98a",
+        "ascApiKeyId": "4BV9T3UM85"
       }
     }
   }
