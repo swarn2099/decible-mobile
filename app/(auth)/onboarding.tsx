@@ -4,46 +4,46 @@ import {
   Text,
   ScrollView,
   Dimensions,
+  TouchableOpacity,
   type NativeSyntheticEvent,
   type NativeScrollEvent,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { Ticket, Music, Award } from "lucide-react-native";
-import { useThemeColors, type ThemeColors } from "@/constants/colors";
+import { Ticket, Star, MapPin } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from "@/constants/colors";
 import { useUIStore } from "@/stores/uiStore";
-import { Button } from "@/components/ui/Button";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
-function getSlides(colors: ThemeColors) {
-  return [
-    {
-      icon: Ticket,
-      color: colors.pink,
-      title: "Your Live Music Passport",
-      description:
-        "Every show you attend becomes a stamp in your passport. The more you show up, the more you get in.",
-    },
-    {
-      icon: Music,
-      color: colors.teal,
-      title: "Collect Artists at Shows",
-      description:
-        "Scan at venues or discover online. Build your collection and climb tiers from Fan to Inner Circle.",
-    },
-    {
-      icon: Award,
-      color: colors.purple,
-      title: "Earn Badges & Share",
-      description:
-        "Unlock badges for your music journey. Share your passport and show the world your taste.",
-    },
-  ];
-}
+const SLIDES = [
+  {
+    icon: Ticket,
+    iconColor: Colors.pink,
+    glowColor: Colors.pink,
+    title: "Your Live Music Passport",
+    subtitle:
+      "Track every show. Collect every artist. Build your music identity.",
+  },
+  {
+    icon: Star,
+    iconColor: Colors.yellow,
+    glowColor: Colors.yellow,
+    title: "Be the Founder",
+    subtitle:
+      "Discover underground artists before anyone else. Paste a link from Spotify, Apple Music, or SoundCloud to claim your Founder badge.",
+  },
+  {
+    icon: MapPin,
+    iconColor: Colors.pink,
+    glowColor: Colors.pink,
+    title: "Stamp Your Passport",
+    subtitle:
+      "When you're at a show, check in to collect the artists and build your live music diary.",
+  },
+];
 
 export default function OnboardingScreen() {
-  const colors = useThemeColors();
-  const slides = getSlides(colors);
   const router = useRouter();
   const scrollRef = useRef<ScrollView>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -55,8 +55,11 @@ export default function OnboardingScreen() {
   };
 
   const handleNext = () => {
-    if (currentPage < slides.length - 1) {
-      scrollRef.current?.scrollTo({ x: (currentPage + 1) * width, animated: true });
+    if (currentPage < SLIDES.length - 1) {
+      scrollRef.current?.scrollTo({
+        x: (currentPage + 1) * width,
+        animated: true,
+      });
     } else {
       finish();
     }
@@ -68,11 +71,30 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <View className="flex-1 bg-decibel">
-      {/* Skip button */}
-      <View className="absolute top-16 right-6 z-10">
-        <Button title="Skip" variant="ghost" onPress={finish} />
-      </View>
+    <View style={{ flex: 1, backgroundColor: "#0B0B0F" }}>
+      {/* Skip */}
+      <TouchableOpacity
+        onPress={finish}
+        activeOpacity={0.7}
+        style={{
+          position: "absolute",
+          top: 60,
+          right: 24,
+          zIndex: 10,
+          paddingVertical: 6,
+          paddingHorizontal: 12,
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: "Poppins_500Medium",
+            fontSize: 15,
+            color: "rgba(255,255,255,0.5)",
+          }}
+        >
+          Skip
+        </Text>
+      </TouchableOpacity>
 
       {/* Slides */}
       <ScrollView
@@ -83,25 +105,81 @@ export default function OnboardingScreen() {
         onMomentumScrollEnd={handleScroll}
         bounces={false}
       >
-        {slides.map((slide, index) => {
+        {SLIDES.map((slide, index) => {
           const Icon = slide.icon;
           return (
             <View
               key={index}
-              style={{ width }}
-              className="flex-1 items-center justify-center px-10"
+              style={{
+                width,
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 40,
+              }}
             >
+              {/* DECIBEL branding at top */}
+              {index === 0 && (
+                <Text
+                  style={{
+                    fontFamily: "Poppins_700Bold",
+                    fontSize: 14,
+                    letterSpacing: 6,
+                    color: "rgba(255,255,255,0.3)",
+                    position: "absolute",
+                    top: height * 0.15,
+                  }}
+                >
+                  DECIBEL
+                </Text>
+              )}
+
+              {/* Icon circle with glow */}
               <View
-                className="w-32 h-32 rounded-full items-center justify-center mb-10"
-                style={{ backgroundColor: `${slide.color}20` }}
+                style={{
+                  width: 120,
+                  height: 120,
+                  borderRadius: 60,
+                  backgroundColor: `${slide.glowColor}15`,
+                  borderWidth: 1,
+                  borderColor: `${slide.glowColor}30`,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 40,
+                  shadowColor: slide.glowColor,
+                  shadowOffset: { width: 0, height: 0 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 20,
+                }}
               >
-                <Icon size={64} color={slide.color} />
+                <Icon size={56} color={slide.iconColor} strokeWidth={1.5} />
               </View>
-              <Text className="font-poppins-bold text-white text-2xl text-center mb-4">
+
+              {/* Title */}
+              <Text
+                style={{
+                  fontFamily: "Poppins_700Bold",
+                  fontSize: 26,
+                  color: "#FFFFFF",
+                  textAlign: "center",
+                  marginBottom: 12,
+                  lineHeight: 34,
+                }}
+              >
                 {slide.title}
               </Text>
-              <Text className="font-poppins text-gray text-base text-center leading-6">
-                {slide.description}
+
+              {/* Subtitle */}
+              <Text
+                style={{
+                  fontFamily: "Poppins_400Regular",
+                  fontSize: 15,
+                  color: "rgba(255,255,255,0.55)",
+                  textAlign: "center",
+                  lineHeight: 22,
+                }}
+              >
+                {slide.subtitle}
               </Text>
             </View>
           );
@@ -109,27 +187,61 @@ export default function OnboardingScreen() {
       </ScrollView>
 
       {/* Bottom: dots + button */}
-      <View className="pb-14 px-6">
-        {/* Dot indicators */}
-        <View className="flex-row items-center justify-center mb-8">
-          {slides.map((_, index) => (
+      <View style={{ paddingBottom: 50, paddingHorizontal: 24 }}>
+        {/* Page dots */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 28,
+          }}
+        >
+          {SLIDES.map((_, index) => (
             <View
               key={index}
-              className={`h-2 rounded-full mx-1 ${
-                index === currentPage ? "w-8" : "w-2"
-              }`}
               style={{
+                height: 8,
+                borderRadius: 4,
+                marginHorizontal: 4,
+                width: index === currentPage ? 28 : 8,
                 backgroundColor:
-                  index === currentPage ? colors.pink : colors.lightGray,
+                  index === currentPage
+                    ? Colors.pink
+                    : "rgba(255,255,255,0.2)",
               }}
             />
           ))}
         </View>
 
-        <Button
-          title={currentPage === slides.length - 1 ? "Get Started" : "Next"}
-          onPress={handleNext}
-        />
+        {/* Next / Get Started button */}
+        <TouchableOpacity onPress={handleNext} activeOpacity={0.85}>
+          <LinearGradient
+            colors={
+              currentPage === SLIDES.length - 1
+                ? [Colors.pink, Colors.purple]
+                : [Colors.pink, Colors.pink]
+            }
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+              borderRadius: 16,
+              paddingVertical: 16,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Poppins_700Bold",
+                fontSize: 16,
+                color: "#FFFFFF",
+              }}
+            >
+              {currentPage === SLIDES.length - 1 ? "Get Started" : "Next"}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
     </View>
   );
