@@ -42,9 +42,11 @@ function hashCode(str: string): number {
 type Props = {
   item: CollectionStamp;
   onPress?: (item: CollectionStamp) => void;
+  /** Skip BlurView for performance in long FlatLists (uses LinearGradient overlay instead) */
+  simplified?: boolean;
 };
 
-export function DiscoveryGlassCard({ item, onPress }: Props) {
+export function DiscoveryGlassCard({ item, onPress, simplified = false }: Props) {
   const router = useRouter();
   const colors = useThemeColors();
   const { width: screenWidth } = useWindowDimensions();
@@ -131,18 +133,27 @@ export function DiscoveryGlassCard({ item, onPress }: Props) {
 
         {/* Blue-tinted frosted glass strip at bottom (slightly more transparent at 0.25) */}
         <View style={styles.glassStrip}>
-          <BlurView
-            intensity={40}
-            tint={colors.isDark ? "dark" : "light"}
-            style={StyleSheet.absoluteFillObject}
-          />
-          {/* Blue tint overlay (0.25 opacity — more transparent than stamp/find) */}
-          <View
-            style={[
-              StyleSheet.absoluteFillObject,
-              { backgroundColor: "rgba(77,154,255,0.25)" },
-            ]}
-          />
+          {simplified ? (
+            <LinearGradient
+              colors={["transparent", "rgba(77,154,255,0.65)"]}
+              style={StyleSheet.absoluteFillObject}
+            />
+          ) : (
+            <>
+              <BlurView
+                intensity={40}
+                tint={colors.isDark ? "dark" : "light"}
+                style={StyleSheet.absoluteFillObject}
+              />
+              {/* Blue tint overlay (0.25 opacity — more transparent than stamp/find) */}
+              <View
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  { backgroundColor: "rgba(77,154,255,0.25)" },
+                ]}
+              />
+            </>
+          )}
           {/* Content */}
           <View style={styles.stripContent}>
             {/* Artist name + compass icon */}

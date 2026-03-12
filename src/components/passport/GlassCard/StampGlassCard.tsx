@@ -52,9 +52,11 @@ function formatDate(dateStr: string | null): string {
 type Props = {
   item: CollectionStamp;
   onPress?: (item: CollectionStamp) => void;
+  /** Skip BlurView for performance in long FlatLists (uses LinearGradient overlay instead) */
+  simplified?: boolean;
 };
 
-export function StampGlassCard({ item, onPress }: Props) {
+export function StampGlassCard({ item, onPress, simplified = false }: Props) {
   const router = useRouter();
   const colors = useThemeColors();
   const { width: screenWidth } = useWindowDimensions();
@@ -132,18 +134,27 @@ export function StampGlassCard({ item, onPress }: Props) {
 
         {/* Pink-tinted frosted glass strip at bottom */}
         <View style={styles.glassStrip}>
-          <BlurView
-            intensity={40}
-            tint={colors.isDark ? "dark" : "light"}
-            style={StyleSheet.absoluteFillObject}
-          />
-          {/* Pink tint overlay */}
-          <View
-            style={[
-              StyleSheet.absoluteFillObject,
-              { backgroundColor: "rgba(255,77,106,0.3)" },
-            ]}
-          />
+          {simplified ? (
+            <LinearGradient
+              colors={["transparent", "rgba(255,77,106,0.75)"]}
+              style={StyleSheet.absoluteFillObject}
+            />
+          ) : (
+            <>
+              <BlurView
+                intensity={40}
+                tint={colors.isDark ? "dark" : "light"}
+                style={StyleSheet.absoluteFillObject}
+              />
+              {/* Pink tint overlay */}
+              <View
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  { backgroundColor: "rgba(255,77,106,0.3)" },
+                ]}
+              />
+            </>
+          )}
           {/* Content */}
           <View style={styles.stripContent}>
             {/* Artist name + founder badge */}

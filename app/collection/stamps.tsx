@@ -1,125 +1,108 @@
-import { View, Text, FlatList, TouchableOpacity, Platform } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { ChevronLeft, Search } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
-import { usePassportCollections } from "@/hooks/usePassport";
 import { apiCall } from "@/lib/api";
-import { PassportStamp } from "@/components/passport/PassportStamp";
-import { PassportSkeleton } from "@/components/ui/SkeletonLoader";
+import { StampGlassCard } from "@/components/passport/GlassCard/StampGlassCard";
 import type { CollectionStamp } from "@/types/passport";
 
-type PassportApiResponse = {
-  fan: { id: string; name: string | null; avatar_url: string | null; city: string | null; created_at: string };
+type CollectionsResponse = {
   collections: CollectionStamp[];
-  stats: unknown;
   hasMore: boolean;
 };
-
-const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
-
-function formatDisplayDate(dateString: string | null): string {
-  if (!dateString) return "Unknown date";
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return "Unknown date";
-  return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-}
-
-type StampRowProps = {
-  stamp: CollectionStamp;
-  onPress: (stamp: CollectionStamp) => void;
-  isLast: boolean;
-};
-
-function StampRow({ stamp, onPress, isLast }: StampRowProps) {
-  const colors = useThemeColors();
-  const monoFont = Platform.OS === "ios" ? "Courier" : "monospace";
-
-  return (
-    <TouchableOpacity
-      onPress={() => onPress(stamp)}
-      activeOpacity={0.7}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderBottomWidth: isLast ? 0 : 1,
-        borderBottomColor: colors.divider,
-      }}
-    >
-      {/* Small stamp thumbnail */}
-      <View style={{ flexShrink: 0 }}>
-        <PassportStamp stamp={stamp} size={56} />
-      </View>
-
-      {/* Info */}
-      <View style={{ flex: 1, marginLeft: 12 }}>
-        <Text
-          style={{
-            fontSize: 15,
-            fontFamily: "Poppins_600SemiBold",
-            color: colors.text,
-          }}
-          numberOfLines={1}
-        >
-          {stamp.venue?.name ?? "Unknown Venue"}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: monoFont,
-            color: colors.textSecondary,
-            marginTop: 2,
-          }}
-          numberOfLines={1}
-        >
-          {formatDisplayDate(stamp.event_date ?? stamp.created_at)}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "Poppins_400Regular",
-            color: colors.pink,
-            marginTop: 2,
-          }}
-          numberOfLines={1}
-        >
-          {stamp.performer.name}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 export default function AllStampsScreen() {
   const colors = useThemeColors();
   const router = useRouter();
-  const { fanId } = useLocalSearchParams<{ fanId?: string }>();
+  const [search, setSearch] = useState("");
 
-  const { data: collectionPages, isLoading: ownLoading } = usePassportCollections();
-  const { data: otherUserData, isLoading: otherLoading } = useQuery<PassportApiResponse>({
-    queryKey: ["userProfile", fanId],
-    queryFn: () => apiCall<PassportApiResponse>(`/mobile/passport?fan_id=${fanId}&page=0`),
-    enabled: !!fanId,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery<CollectionsResponse>({
+      queryKey: ["viewMore", "stamp"],
+      initialPageParam: 0,
+      queryFn: async ({ pageParam }) => {
+        return apiCall<CollectionsResponse>(
+          `/mobile/passport-collections?type=stamp&page=${pageParam as number}`
+        );
+      },
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.hasMore ? allPages.length : undefined,
+    });
 
-  const isLoading = fanId ? otherLoading : ownLoading;
+  const allItems = data?.pages.flatMap((p) => p.collections) ?? [];
+  const filtered = search.trim()
+    ? allItems.filter((c) =>
+        c.performer.name.toLowerCase().includes(search.trim().toLowerCase())
+      )
+    : allItems;
 
-  const collections = fanId
-    ? (otherUserData?.collections ?? [])
-    : (collectionPages?.pages.flat() ?? []);
+  const searchBar = (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: colors.isDark
+          ? "rgba(255,255,255,0.08)"
+          : "rgba(0,0,0,0.04)",
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        height: 40,
+        marginBottom: 16,
+        gap: 8,
+      }}
+    >
+      <Search size={16} color={colors.textSecondary} />
+      <TextInput
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search artists..."
+        placeholderTextColor={colors.textSecondary}
+        style={{
+          flex: 1,
+          fontSize: 14,
+          fontFamily: "Poppins_400Regular",
+          color: colors.text,
+        }}
+        returnKeyType="search"
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+    </View>
+  );
 
-  // Stamps = verified live collections, already sorted most recent first
-  const stamps = collections.filter((c) => c.verified);
-
-  const handleStampPress = (stamp: CollectionStamp) => {
-    router.push(`/artist/${stamp.performer.slug}`);
-  };
+  const emptyState = (
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: 60,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 15,
+          fontFamily: "Poppins_400Regular",
+          color: colors.textSecondary,
+          textAlign: "center",
+        }}
+      >
+        {search.trim()
+          ? `No stamps matching "${search.trim()}"`
+          : "No stamps yet.\nCheck in at a live show to earn your first stamp."}
+      </Text>
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -129,7 +112,8 @@ export default function AllStampsScreen() {
           flexDirection: "row",
           alignItems: "center",
           paddingHorizontal: 16,
-          paddingVertical: 16,
+          paddingTop: 8,
+          paddingBottom: 12,
           gap: 12,
         }}
       >
@@ -143,24 +127,45 @@ export default function AllStampsScreen() {
             color: colors.text,
           }}
         >
-          All Stamps ({stamps.length})
+          All Stamps
         </Text>
       </View>
 
       {isLoading ? (
-        <PassportSkeleton />
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <ActivityIndicator color={colors.pink} size="large" />
+        </View>
       ) : (
         <FlatList<CollectionStamp>
-          data={stamps}
+          data={filtered}
           keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => (
-            <StampRow
-              stamp={item}
-              onPress={handleStampPress}
-              isLast={index === stamps.length - 1}
-            />
+          numColumns={2}
+          renderItem={({ item }) => (
+            <StampGlassCard item={item} simplified />
           )}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          columnWrapperStyle={{ gap: 16 }}
+          contentContainerStyle={{
+            padding: 16,
+            paddingBottom: 120,
+            gap: 16,
+          }}
+          ListHeaderComponent={searchBar}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator
+                color={colors.pink}
+                style={{ marginVertical: 16 }}
+              />
+            ) : null
+          }
+          ListEmptyComponent={emptyState}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage && !search.trim()) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.3}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </SafeAreaView>

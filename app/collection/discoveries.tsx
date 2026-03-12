@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ChevronLeft, Search } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { apiCall } from "@/lib/api";
-import { FindGlassCard } from "@/components/passport/GlassCard/FindGlassCard";
+import { DiscoveryGlassCard } from "@/components/passport/GlassCard/DiscoveryGlassCard";
 import type { CollectionStamp } from "@/types/passport";
 
 type CollectionsResponse = {
@@ -21,18 +21,18 @@ type CollectionsResponse = {
   hasMore: boolean;
 };
 
-export default function AllFindsScreen() {
+export default function AllDiscoveriesScreen() {
   const colors = useThemeColors();
   const router = useRouter();
   const [search, setSearch] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery<CollectionsResponse>({
-      queryKey: ["viewMore", "find"],
+      queryKey: ["viewMore", "discovery"],
       initialPageParam: 0,
       queryFn: async ({ pageParam }) => {
         return apiCall<CollectionsResponse>(
-          `/mobile/passport-collections?type=find&page=${pageParam as number}`
+          `/mobile/passport-collections?type=discovery&page=${pageParam as number}`
         );
       },
       getNextPageParam: (lastPage, allPages) =>
@@ -98,8 +98,8 @@ export default function AllFindsScreen() {
         }}
       >
         {search.trim()
-          ? `No finds matching "${search.trim()}"`
-          : "No finds yet.\nAdd an artist to start your collection."}
+          ? `No discoveries matching "${search.trim()}"`
+          : "No discoveries yet.\nDiscover artists to build your collection."}
       </Text>
     </View>
   );
@@ -127,7 +127,7 @@ export default function AllFindsScreen() {
             color: colors.text,
           }}
         >
-          All Finds
+          All Discoveries
         </Text>
       </View>
 
@@ -141,7 +141,7 @@ export default function AllFindsScreen() {
           keyExtractor={(item) => item.id}
           numColumns={2}
           renderItem={({ item }) => (
-            <FindGlassCard item={item} simplified />
+            <DiscoveryGlassCard item={item} simplified />
           )}
           columnWrapperStyle={{ gap: 16 }}
           contentContainerStyle={{

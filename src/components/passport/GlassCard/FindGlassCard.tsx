@@ -55,9 +55,11 @@ function getPlatformLabel(url: string | null): { color: string; label: string } 
 type Props = {
   item: CollectionStamp;
   onPress?: (item: CollectionStamp) => void;
+  /** Skip BlurView for performance in long FlatLists (uses LinearGradient overlay instead) */
+  simplified?: boolean;
 };
 
-export function FindGlassCard({ item, onPress }: Props) {
+export function FindGlassCard({ item, onPress, simplified = false }: Props) {
   const router = useRouter();
   const colors = useThemeColors();
   const { width: screenWidth } = useWindowDimensions();
@@ -136,18 +138,27 @@ export function FindGlassCard({ item, onPress }: Props) {
 
         {/* Purple-tinted frosted glass strip at bottom */}
         <View style={styles.glassStrip}>
-          <BlurView
-            intensity={40}
-            tint={colors.isDark ? "dark" : "light"}
-            style={StyleSheet.absoluteFillObject}
-          />
-          {/* Purple tint overlay */}
-          <View
-            style={[
-              StyleSheet.absoluteFillObject,
-              { backgroundColor: "rgba(155,109,255,0.3)" },
-            ]}
-          />
+          {simplified ? (
+            <LinearGradient
+              colors={["transparent", "rgba(155,109,255,0.75)"]}
+              style={StyleSheet.absoluteFillObject}
+            />
+          ) : (
+            <>
+              <BlurView
+                intensity={40}
+                tint={colors.isDark ? "dark" : "light"}
+                style={StyleSheet.absoluteFillObject}
+              />
+              {/* Purple tint overlay */}
+              <View
+                style={[
+                  StyleSheet.absoluteFillObject,
+                  { backgroundColor: "rgba(155,109,255,0.3)" },
+                ]}
+              />
+            </>
+          )}
           {/* Content */}
           <View style={styles.stripContent}>
             {/* Artist name + gold star (always for finds) */}
