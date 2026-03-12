@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useThemeColors } from "@/constants/colors";
 
+const REVIEW_EMAIL = "apple-review@decibel.app";
+
 export default function LoginScreen() {
   const colors = useThemeColors();
   const router = useRouter();
@@ -31,6 +33,15 @@ export default function LoginScreen() {
     setLoading(true);
 
     try {
+      // Apple review demo account — skip magic link, go straight to code entry
+      if (trimmed === REVIEW_EMAIL) {
+        router.push({
+          pathname: "/(auth)/verify",
+          params: { email: trimmed, reviewMode: "1" },
+        });
+        return;
+      }
+
       const redirectUrl = Linking.createURL("auth/callback");
 
       const { error: otpError } = await supabase.auth.signInWithOtp({

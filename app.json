@@ -14,7 +14,7 @@
     },
     "ios": {
       "icon": "./assets/icon.png",
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.decibel.app",
       "buildNumber": "1",
       "infoPlist": {
