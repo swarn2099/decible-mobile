@@ -20,9 +20,9 @@ const PLATFORM_LABELS = {
   apple_music: "Apple Music",
 } as const;
 
-// SoundCloud embeds are taller than Spotify/Apple Music
-function getPlayerHeight(platform: JukeboxItem["platform"]): number {
-  return platform === "soundcloud" ? 166 : 152;
+// Get the best listen URL for the artist
+function getListenUrl(item: JukeboxItem): string | null {
+  return item.spotify_url ?? item.soundcloud_url ?? item.apple_music_url ?? null;
 }
 
 function AvatarCircle({
@@ -88,7 +88,7 @@ export function JukeboxCard({ item, isPlayerActive, isCollected, onDiscover }: P
 
   const platformColor = item.platform ? PLATFORM_COLORS[item.platform] : colors.textTertiary;
   const platformLabel = item.platform ? PLATFORM_LABELS[item.platform] : null;
-  const playerHeight = getPlayerHeight(item.platform);
+  const listenUrl = getListenUrl(item);
 
   return (
     <View
@@ -212,13 +212,14 @@ export function JukeboxCard({ item, isPlayerActive, isCollected, onDiscover }: P
         </View>
       </Pressable>
 
-      {/* Embedded player */}
-      {item.embed_url ? (
+      {/* Listen button */}
+      {listenUrl ? (
         <View style={{ marginBottom: 12 }}>
           <EmbeddedPlayer
-            embedUrl={item.embed_url}
+            embedUrl={item.embed_url ?? ""}
+            listenUrl={listenUrl}
+            platform={item.platform}
             isActive={isPlayerActive}
-            height={playerHeight}
           />
         </View>
       ) : (

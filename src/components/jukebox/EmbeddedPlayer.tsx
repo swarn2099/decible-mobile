@@ -1,30 +1,29 @@
-import { useEffect, useRef } from "react";
-import { View } from "react-native";
-import WebView from "react-native-webview";
-import { Music2 } from "lucide-react-native";
+import { View, Text, Pressable, Linking } from "react-native";
+import { Play, Music2 } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 
 type Props = {
   embedUrl: string;
+  listenUrl: string | null;
+  platform: "spotify" | "soundcloud" | "apple_music" | null;
   isActive: boolean;
   height?: number;
 };
 
-export function EmbeddedPlayer({ embedUrl, isActive, height = 152 }: Props) {
+const PLATFORM_LABELS: Record<string, string> = {
+  spotify: "Spotify",
+  soundcloud: "SoundCloud",
+  apple_music: "Apple Music",
+};
+
+/**
+ * Lightweight listen button that opens the artist's streaming page.
+ * Replaces WebView embeds until the next native build includes react-native-webview.
+ */
+export function EmbeddedPlayer({ listenUrl, platform, isActive, height = 80 }: Props) {
   const colors = useThemeColors();
-  const webViewRef = useRef<WebView>(null);
 
-  // Pause audio/video when this player is deactivated (pool eviction — JBX-08)
-  useEffect(() => {
-    if (!isActive && webViewRef.current) {
-      webViewRef.current.injectJavaScript(
-        "document.querySelectorAll('audio,video').forEach(el => el.pause()); true;"
-      );
-    }
-  }, [isActive]);
-
-  if (!isActive) {
-    // Placeholder — same dimensions, no active WebView
+  if (!isActive || !listenUrl) {
     return (
       <View
         style={{
@@ -40,16 +39,45 @@ export function EmbeddedPlayer({ embedUrl, isActive, height = 152 }: Props) {
     );
   }
 
+  const label = platform ? PLATFORM_LABELS[platform] ?? "Listen" : "Listen";
+
   return (
-    <WebView
-      ref={webViewRef}
-      source={{ uri: embedUrl }}
-      style={{ height, borderRadius: 12 }}
-      // JBX-07: CRITICAL — prevents embed autoplay from interrupting background music
-      mediaPlaybackRequiresUserAction={true}
-      allowsInlineMediaPlayback={true}
-      javaScriptEnabled={true}
-      scrollEnabled={false}
-    />
+    <Pressable
+      onPress={() => Linking.openURL(listenUrl)}
+      style={({ pressed }) => ({
+        height,
+        borderRadius: 12,
+        backgroundColor: pressed ? colors.cardHover : colors.card,
+        borderWidth: 1,
+        borderColor: colors.cardBorder,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        opacity: pressed ? 0.85 : 1,
+      })}
+    >
+      <View
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: 18,
+          backgroundColor: colors.pink,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Play size={16} color="#FFFFFF" fill="#FFFFFF" />
+      </View>
+      <Text
+        style={{
+          color: colors.textPrimary,
+          fontSize: 14,
+          fontFamily: "Poppins_600SemiBold",
+        }}
+      >
+        Listen on {label}
+      </Text>
+    </Pressable>
   );
 }
