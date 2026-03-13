@@ -10,20 +10,21 @@ import PagerView from "react-native-pager-view";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  withTiming,
   type SharedValue,
 } from "react-native-reanimated";
-import { BlurView } from "expo-blur";
-import { useThemeColors } from "@/constants/colors";
 import { GlassGrid } from "./GlassGrid";
 import type { CollectionStamp } from "@/types/passport";
+import type { ReactNode } from "react";
 
 interface PassportPagerProps {
   stamps: CollectionStamp[];
   finds: CollectionStamp[];
   discoveries: CollectionStamp[];
   onViewMore: (type: "stamp" | "find" | "discovery") => void;
-  activeTabIndex: SharedValue<number>; // shared with OrbBackground
-  onTabChange: (index: number) => void; // for React state sync
+  activeTabIndex: SharedValue<number>;
+  onTabChange: (index: number) => void;
+  footer?: ReactNode;
 }
 
 const TAB_LABELS = ["Stamps", "Finds", "Discoveries"] as const;
@@ -35,94 +36,50 @@ export function PassportPager({
   onViewMore,
   activeTabIndex,
   onTabChange,
+  footer,
 }: PassportPagerProps) {
-  const colors = useThemeColors();
   const { width: screenWidth } = useWindowDimensions();
   const pagerRef = useRef<PagerView>(null);
   const [activeTab, setActiveTab] = useState(0);
 
-  // tabOffset drives smooth pill animation (0..2 continuous during swipe)
-  const tabOffset = useSharedValue(0);
   const TAB_WIDTH = screenWidth / 3;
+  const underlineX = useSharedValue(0);
 
-  const pillStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: tabOffset.value * TAB_WIDTH }],
+  const underlineStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: underlineX.value }],
   }));
 
   const handleTabPress = (index: number) => {
     pagerRef.current?.setPage(index);
   };
 
-  const handlePageSelected = (e: {
-    nativeEvent: { position: number };
-  }) => {
+  const handlePageSelected = (e: { nativeEvent: { position: number } }) => {
     const position = e.nativeEvent.position;
     setActiveTab(position);
     onTabChange(position);
     activeTabIndex.value = position;
-    tabOffset.value = position;
+    underlineX.value = withTiming(position * TAB_WIDTH, { duration: 200 });
   };
 
   const handlePageScroll = (e: {
     nativeEvent: { position: number; offset: number };
   }) => {
-    tabOffset.value =
-      e.nativeEvent.position + e.nativeEvent.offset;
-    // Sync activeTabIndex for OrbBackground — smooth in-between values
-    activeTabIndex.value =
-      e.nativeEvent.position + e.nativeEvent.offset;
+    const continuous = e.nativeEvent.position + e.nativeEvent.offset;
+    underlineX.value = continuous * TAB_WIDTH;
+    activeTabIndex.value = continuous;
   };
-
-  const tintOverlayColor = colors.isDark
-    ? "rgba(255,255,255,0.08)"
-    : "rgba(0,0,0,0.04)";
 
   return (
     <View style={{ flex: 1 }}>
-      {/* ── Tab bar ── */}
+      {/* Tab bar — underline style */}
       <View
         style={{
           flexDirection: "row",
+          borderBottomWidth: 1,
+          borderBottomColor: "rgba(255,255,255,0.08)",
           position: "relative",
-          marginHorizontal: 16,
-          marginBottom: 8,
-          borderRadius: 20,
-          overflow: "hidden",
-          backgroundColor: colors.isDark
-            ? "rgba(255,255,255,0.04)"
-            : "rgba(0,0,0,0.03)",
         }}
       >
-        {/* Frosted glass pill — slides behind active tab label */}
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              width: TAB_WIDTH - 32 / 3, // match tab width minus container margins
-              height: "100%",
-            },
-            pillStyle,
-          ]}
-        >
-          <BlurView
-            intensity={30}
-            tint={colors.isDark ? "dark" : "light"}
-            blurMethod="dimezisBlurViewSdk31Plus"
-            style={{
-              flex: 1,
-              borderRadius: 20,
-              overflow: "hidden",
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                backgroundColor: tintOverlayColor,
-              }}
-            />
-          </BlurView>
-        </Animated.View>
-
         {TAB_LABELS.map((label, i) => (
           <Pressable
             key={i}
@@ -130,7 +87,7 @@ export function PassportPager({
             style={{
               flex: 1,
               alignItems: "center",
-              paddingVertical: 10,
+              paddingVertical: 12,
             }}
           >
             <Text
@@ -140,19 +97,32 @@ export function PassportPager({
                   activeTab === i
                     ? "Poppins_600SemiBold"
                     : "Poppins_500Medium",
-                color:
-                  activeTab === i
-                    ? colors.text
-                    : colors.textSecondary,
+                color: activeTab === i ? "#FFFFFF" : "#8E8E93",
               }}
             >
               {label}
             </Text>
           </Pressable>
         ))}
+
+        {/* Animated underline indicator */}
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              bottom: 0,
+              height: 2,
+              width: TAB_WIDTH * 0.5,
+              marginLeft: TAB_WIDTH * 0.25,
+              backgroundColor: "#FFFFFF",
+              borderRadius: 1,
+            },
+            underlineStyle,
+          ]}
+        />
       </View>
 
-      {/* ── PagerView ── */}
+      {/* PagerView */}
       <PagerView
         ref={pagerRef}
         style={{ flex: 1 }}
@@ -163,10 +133,7 @@ export function PassportPager({
         {/* Page 0 — Stamps */}
         <ScrollView
           key="0"
-          contentContainerStyle={{
-            padding: 16,
-            paddingBottom: 120,
-          }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
@@ -174,15 +141,13 @@ export function PassportPager({
             type="stamp"
             onViewMore={() => onViewMore("stamp")}
           />
+          {footer}
         </ScrollView>
 
         {/* Page 1 — Finds */}
         <ScrollView
           key="1"
-          contentContainerStyle={{
-            padding: 16,
-            paddingBottom: 120,
-          }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
@@ -190,15 +155,13 @@ export function PassportPager({
             type="find"
             onViewMore={() => onViewMore("find")}
           />
+          {footer}
         </ScrollView>
 
         {/* Page 2 — Discoveries */}
         <ScrollView
           key="2"
-          contentContainerStyle={{
-            padding: 16,
-            paddingBottom: 120,
-          }}
+          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
@@ -206,6 +169,7 @@ export function PassportPager({
             type="discovery"
             onViewMore={() => onViewMore("discovery")}
           />
+          {footer}
         </ScrollView>
       </PagerView>
     </View>

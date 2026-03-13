@@ -1,12 +1,8 @@
 import { useState, useCallback } from "react";
-import { View, Pressable, ScrollView } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { useSharedValue } from "react-native-reanimated";
-import { useQueryClient } from "@tanstack/react-query";
-import { Trophy } from "lucide-react-native";
+import { useSharedValue } from "react-native-reanimated";
 import { useRouter } from "expo-router";
-import { useThemeColors } from "@/constants/colors";
 import { useAuthStore } from "@/stores/authStore";
 import {
   usePassportStats,
@@ -15,9 +11,7 @@ import {
 } from "@/hooks/usePassport";
 import { useFanBadges } from "@/hooks/useBadges";
 import { useSocialCounts } from "@/hooks/useUserSearch";
-import {
-  usePassportShareCardV2,
-} from "@/hooks/useShareCard";
+import { usePassportShareCardV2 } from "@/hooks/useShareCard";
 import { PassportHeader } from "@/components/passport/PassportHeader";
 import { PassportPager } from "@/components/passport/PassportPager";
 import { OrbBackground } from "@/components/passport/OrbBackground";
@@ -59,24 +53,19 @@ function useFanProfile() {
   });
 }
 
+const BG = "#0B0B0F";
+
 export default function PassportScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const user = useAuthStore((s) => s.user);
-  const colors = useThemeColors();
 
-  // Modal/sheet state
   const [selectedBadge, setSelectedBadge] = useState<BadgeWithStatus | null>(null);
   const [shareSheetVisible, setShareSheetVisible] = useState(false);
   const [shareImageUri, setShareImageUri] = useState<string | null>(null);
   const [shareUrl, setShareUrl] = useState<string | undefined>(undefined);
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
 
-  // Shared value for OrbBackground + tab pill (BOTH use this)
   const activeTabIndex = useSharedValue(0);
-  const [activeTab, setActiveTab] = useState(0);
-
-  const queryClient = useQueryClient();
+  const [_activeTab, setActiveTab] = useState(0);
 
   const { data: fanProfile } = useFanProfile();
   const {
@@ -95,7 +84,7 @@ export default function PassportScreen() {
   const { data: socialCounts } = useSocialCounts();
 
   const passportShare = usePassportShareCardV2();
-
+  const user = useAuthStore((s) => s.user);
   const fanSlug = user?.email?.split("@")[0] ?? "user";
   const allCollections = [...stamps, ...finds, ...discoveries];
 
@@ -148,10 +137,7 @@ export default function PassportScreen() {
 
   if (isError && !isLoading) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: colors.bg }}
-        edges={["top"]}
-      >
+      <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
         <ErrorState
           onRetry={() => {
             refetchStats();
@@ -164,25 +150,20 @@ export default function PassportScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView
-        style={{ flex: 1, backgroundColor: colors.bg }}
-        edges={["top"]}
-      >
+      <SafeAreaView style={{ flex: 1, backgroundColor: BG }} edges={["top"]}>
         <PassportSkeleton />
       </SafeAreaView>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      {/* Orb background — renders behind entire screen (outside SafeAreaView) */}
+    <View style={{ flex: 1, backgroundColor: BG }}>
       <OrbBackground activeTabIndex={activeTabIndex} />
 
       <SafeAreaView
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
       >
-        {/* Pinned header — NOT in a ScrollView, no gesture conflict */}
         <PassportHeader
           displayName={fanProfile?.name ?? null}
           avatarUrl={fanProfile?.avatar_url ?? null}
@@ -191,7 +172,6 @@ export default function PassportScreen() {
             fanProfile?.created_at ??
             new Date().toISOString()
           }
-          followingCount={socialCounts?.following_count ?? 0}
           followersCount={socialCounts?.followers_count ?? 0}
           findsCount={finds.length}
           stampsCount={stamps.length}
@@ -201,7 +181,6 @@ export default function PassportScreen() {
           isSharing={passportShare.isLoading || isGeneratingCard}
         />
 
-        {/* 3-tab pager takes remaining flex space */}
         <PassportPager
           stamps={stamps}
           finds={finds}
@@ -209,38 +188,19 @@ export default function PassportScreen() {
           activeTabIndex={activeTabIndex}
           onTabChange={setActiveTab}
           onViewMore={handleViewMore}
+          footer={
+            badges && badges.length > 0 ? (
+              <View style={{ marginTop: 24 }}>
+                <BadgeGrid
+                  badges={badges}
+                  onBadgeTap={(badge) => setSelectedBadge(badge)}
+                />
+              </View>
+            ) : undefined
+          }
         />
-
-        {/* Badges section — horizontal scroll row below pager */}
-        {badges && badges.length > 0 && (
-          <View style={{ maxHeight: 160 }}>
-            <BadgeGrid
-              badges={badges}
-              onBadgeTap={(badge) => setSelectedBadge(badge)}
-            />
-          </View>
-        )}
       </SafeAreaView>
 
-      {/* Leaderboard trophy — absolute overlay top-right (stays above SafeAreaView) */}
-      <Pressable
-        onPress={() => router.push("/leaderboard")}
-        hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        style={{
-          position: "absolute",
-          top: insets.top + 12,
-          right: 16,
-          zIndex: 10,
-          width: 40,
-          height: 40,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Trophy size={20} color={colors.textSecondary} />
-      </Pressable>
-
-      {/* Badge detail modal */}
       {selectedBadge && (
         <BadgeDetailModal
           badge={selectedBadge}
@@ -248,7 +208,6 @@ export default function PassportScreen() {
         />
       )}
 
-      {/* Share sheet */}
       <ShareSheet
         visible={shareSheetVisible}
         onClose={() => {

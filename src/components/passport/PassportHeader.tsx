@@ -1,24 +1,16 @@
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Settings, Share2 } from "lucide-react-native";
+import { Settings, Share2, UserPen } from "lucide-react-native";
 import { useRouter } from "expo-router";
-import Animated, {
-  useAnimatedStyle,
-  interpolate,
-  Extrapolation,
-  type SharedValue,
-} from "react-native-reanimated";
-import { Colors, useThemeColors } from "@/constants/colors";
 
-// Deterministic gradient from name hash (same pattern as ArtistHero)
-const GRADIENT_PAIRS = [
-  [Colors.pink, Colors.purple],
-  [Colors.purple, Colors.blue],
-  [Colors.blue, Colors.teal],
-  [Colors.teal, Colors.pink],
-  [Colors.yellow, Colors.pink],
-  [Colors.purple, Colors.teal],
+const GRADIENT_PAIRS: [string, string][] = [
+  ["#FF4D6A", "#9B6DFF"],
+  ["#9B6DFF", "#4D9AFF"],
+  ["#4D9AFF", "#00D4AA"],
+  ["#00D4AA", "#FF4D6A"],
+  ["#FFD700", "#FF4D6A"],
+  ["#9B6DFF", "#00D4AA"],
 ];
 
 function getGradientForName(name: string): [string, string] {
@@ -26,13 +18,8 @@ function getGradientForName(name: string): [string, string] {
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return GRADIENT_PAIRS[Math.abs(hash) % GRADIENT_PAIRS.length] as [
-    string,
-    string,
-  ];
+  return GRADIENT_PAIRS[Math.abs(hash) % GRADIENT_PAIRS.length];
 }
-
-export const HEADER_HEIGHT = 200;
 
 function StatCell({
   value,
@@ -43,7 +30,6 @@ function StatCell({
   label: string;
   onPress?: () => void;
 }) {
-  const colors = useThemeColors();
   const Wrapper = onPress ? Pressable : View;
 
   return (
@@ -53,19 +39,19 @@ function StatCell({
     >
       <Text
         style={{
-          fontSize: 18,
+          fontSize: 17,
           fontFamily: "Poppins_700Bold",
-          color: colors.text,
-          lineHeight: 24,
+          color: "#FFFFFF",
+          lineHeight: 22,
         }}
       >
         {value}
       </Text>
       <Text
         style={{
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: "Poppins_400Regular",
-          color: colors.textSecondary,
+          color: "#8E8E93",
           marginTop: 1,
         }}
       >
@@ -79,7 +65,6 @@ type Props = {
   displayName: string | null;
   avatarUrl: string | null;
   memberSince: string;
-  followingCount: number;
   followersCount: number;
   findsCount: number;
   stampsCount: number;
@@ -87,14 +72,12 @@ type Props = {
   onSettingsPress: () => void;
   onSharePress?: () => void;
   isSharing?: boolean;
-  scrollY?: SharedValue<number>;
 };
 
 export function PassportHeader({
   displayName,
   avatarUrl,
   memberSince,
-  followingCount,
   followersCount,
   findsCount,
   stampsCount,
@@ -102,9 +85,7 @@ export function PassportHeader({
   onSettingsPress,
   onSharePress,
   isSharing,
-  scrollY,
 }: Props) {
-  const colors = useThemeColors();
   const router = useRouter();
   const name = displayName || "Fan";
   const initial = name.charAt(0).toUpperCase();
@@ -116,73 +97,25 @@ export function PassportHeader({
     year: "numeric",
   });
 
-  const parallaxStyle = useAnimatedStyle(() => {
-    if (!scrollY) return {};
-
-    const translateY = interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT],
-      [0, -HEADER_HEIGHT * 0.4],
-      Extrapolation.CLAMP
-    );
-    const opacity = interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT * 0.6, HEADER_HEIGHT],
-      [1, 0.8, 0],
-      Extrapolation.CLAMP
-    );
-    const scale = interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT],
-      [1, 0.95],
-      Extrapolation.CLAMP
-    );
-
-    return {
-      transform: [{ translateY }, { scale }],
-      opacity,
-    };
-  });
-
   return (
-    <Animated.View
-      style={[
-        {
-          paddingHorizontal: 20,
-          paddingTop: 16,
-          paddingBottom: 12,
-        },
-        scrollY ? parallaxStyle : undefined,
-      ]}
-    >
-      {/* Settings gear — top right */}
-      <View style={{ position: "absolute", top: 16, right: 16, zIndex: 1 }}>
-        <Pressable onPress={onSettingsPress} hitSlop={12}>
-          <Settings size={24} color={colors.gray} />
-        </Pressable>
-      </View>
-
-      {/* Row 1: Avatar (left) | Stats (right) */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 20,
-        }}
-      >
-        {/* Avatar */}
+    <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}>
+      {/* Row 1: Avatar (left) + Stats (right) */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+        {/* Avatar — 60x60, no colored ring */}
         <View
           style={{
-            width: 80,
-            height: 80,
-            borderRadius: 40,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
             overflow: "hidden",
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.15)",
           }}
         >
           {avatarUrl ? (
             <Image
               source={{ uri: avatarUrl }}
-              style={{ width: 80, height: 80 }}
+              style={{ width: 60, height: 60 }}
               contentFit="cover"
               transition={200}
             />
@@ -192,15 +125,15 @@ export function PassportHeader({
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{
-                width: 80,
-                height: 80,
+                width: 60,
+                height: 60,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
               <Text
                 style={{
-                  fontSize: 32,
+                  fontSize: 24,
                   fontFamily: "Poppins_700Bold",
                   color: "rgba(255,255,255,0.8)",
                 }}
@@ -211,24 +144,10 @@ export function PassportHeader({
           )}
         </View>
 
-        {/* Stats columns */}
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-around",
-          }}
-        >
-          <StatCell
-            value={String(followingCount)}
-            label="Following"
-            onPress={() =>
-              router.push({
-                pathname: "/following" as any,
-                params: { fanId },
-              })
-            }
-          />
+        {/* Stats — 3 columns: Finds, Stamps, Followers */}
+        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-around" }}>
+          <StatCell value={String(findsCount)} label="Finds" />
+          <StatCell value={String(stampsCount)} label="Stamps" />
           <StatCell
             value={String(followersCount)}
             label="Followers"
@@ -239,70 +158,114 @@ export function PassportHeader({
               })
             }
           />
-          <StatCell value={String(findsCount)} label="Finds" />
-          <StatCell value={String(stampsCount)} label="Stamps" />
         </View>
       </View>
 
-      {/* Row 2: Username */}
-      <Text
+      {/* Row 2: Username + Settings gear */}
+      <View
         style={{
-          fontSize: 18,
-          fontFamily: "Poppins_700Bold",
-          color: colors.text,
-          marginTop: 14,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginTop: 12,
         }}
-        numberOfLines={1}
       >
-        {name}
-      </Text>
+        <Text
+          style={{
+            fontSize: 18,
+            fontFamily: "Poppins_600SemiBold",
+            color: "#FFFFFF",
+          }}
+          numberOfLines={1}
+        >
+          {name}
+        </Text>
+        <Pressable onPress={onSettingsPress} hitSlop={12}>
+          <Settings size={20} color="#8E8E93" />
+        </Pressable>
+      </View>
 
       {/* Row 3: Member since */}
       <Text
         style={{
-          fontSize: 12,
+          fontSize: 13,
           fontFamily: "Poppins_400Regular",
-          color: colors.textSecondary,
+          color: "#8E8E93",
           marginTop: 2,
         }}
       >
         Member since {memberLabel}
       </Text>
 
-      {/* Row 4: Share Passport button — always visible below stats */}
-      {onSharePress && (
+      {/* Row 4: Action buttons — Share Passport + Edit Profile */}
+      <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>
+        {/* Share Passport — gradient */}
+        {onSharePress && (
+          <TouchableOpacity
+            onPress={onSharePress}
+            disabled={isSharing}
+            activeOpacity={0.85}
+            style={{ flex: 1 }}
+          >
+            <LinearGradient
+              colors={["#FF4D6A", "#9B6DFF"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{
+                borderRadius: 8,
+                height: 36,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              <Share2 size={14} color="#FFFFFF" />
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily: "Poppins_600SemiBold",
+                  color: "#FFFFFF",
+                }}
+              >
+                {isSharing ? "Generating..." : "Share Passport"}
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+
+        {/* Edit Profile — dark fill */}
         <TouchableOpacity
-          onPress={onSharePress}
-          disabled={isSharing}
+          onPress={() => router.push("/settings" as any)}
           activeOpacity={0.85}
-          style={{ marginTop: 14 }}
+          style={{ flex: 1 }}
         >
-          <LinearGradient
-            colors={[colors.purple, colors.pink]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+          <View
             style={{
-              borderRadius: 16,
-              paddingVertical: 11,
+              borderRadius: 8,
+              height: 36,
+              backgroundColor: "#1A1A1F",
+              borderWidth: 1,
+              borderColor: "rgba(255,255,255,0.15)",
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              gap: 8,
+              gap: 6,
             }}
           >
-            <Share2 size={15} color="#FFFFFF" />
+            <UserPen size={14} color="#FFFFFF" />
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontFamily: "Poppins_600SemiBold",
                 color: "#FFFFFF",
               }}
             >
-              {isSharing ? "Generating..." : "Share Passport"}
+              Edit Profile
             </Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
-      )}
-    </Animated.View>
+      </View>
+    </View>
   );
 }
