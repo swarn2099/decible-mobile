@@ -179,7 +179,10 @@ Plans:
   2. User sees the "D E C I B E L" wordmark and tagline fade in from top, then input and button stagger in below — before any interaction
   3. User taps the email field and the keyboard slides up without obscuring the input or button
   4. User enters an email, taps the gradient button with haptic feedback, sees a spinner, then sees a checkmark and "Check your email" confirmation
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 10-01-PLAN.md — Theme-aware login with Reanimated orbs, stagger animations, keyboard avoidance
 
 #### Phase 11: Passport Layout & Structure
 **Goal**: The Passport header and tab bar are rebuilt in an Instagram-style compact layout that pins to the top and supports swipe navigation
@@ -232,7 +235,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 7. Glassy Passport Redesign | v3.0 | 4/4 | Complete | 2026-03-12 |
 | 8. Jukebox | v3.0 | 3/3 | Complete | 2026-03-13 |
 | 9. I'm at a Show | v3.0 | 5/5 | Complete | 2026-03-13 |
-| 10. Login Flow Redesign | v3.5 | 0/? | Not started | - |
+| 10. Login Flow Redesign | v3.5 | 0/1 | Planning | - |
 | 11. Passport Layout & Structure | v3.5 | 0/? | Not started | - |
 | 12. Passport Grid & Cards | v3.5 | 0/? | Not started | - |
 | 13. Badges Section | v3.5 | 0/? | Not started | - |
