@@ -1,16 +1,14 @@
 import { Stack } from "expo-router";
 import { useUIStore } from "@/stores/uiStore";
-import { useThemeColors } from "@/constants/colors";
 
 export default function AuthLayout() {
   const hasSeenOnboarding = useUIStore((s) => s.hasSeenOnboarding);
-  const colors = useThemeColors();
 
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: colors.bg },
+        contentStyle: { backgroundColor: "#0B0B0F" },
         animation: "fade",
       }}
       initialRouteName={hasSeenOnboarding ? "login" : "onboarding"}
