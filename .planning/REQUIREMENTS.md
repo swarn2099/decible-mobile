@@ -58,8 +58,8 @@
 
 ### "I'm at a Show" Check-in
 
-- [ ] **SHOW-01**: "I'm at a Show" button accessible from + tab
-- [ ] **SHOW-02**: Location permission requested with custom pre-prompt explainer screen
+- [x] **SHOW-01**: "I'm at a Show" button accessible from + tab
+- [x] **SHOW-02**: Location permission requested with custom pre-prompt explainer screen
 - [x] **SHOW-03**: Happy path: venue + event + lineup resolved from DB in <1 second (Layer 1)
 - [x] **SHOW-04**: Each artist in lineup shows Founder availability or existing founder info
 - [ ] **SHOW-05**: "Collect All" button stamps entire lineup in one tap
@@ -72,8 +72,8 @@
 - [ ] **SHOW-12**: Layer 4: Social media scraping (Instagram location, Facebook Events, X search)
 - [x] **SHOW-13**: Layer 5: Playwright venue website scrape with LLM extraction
 - [x] **SHOW-14**: Layer 6: Claude API with web search for venue + date query
-- [ ] **SHOW-15**: App shows "Finding out what's playing here..." loading state during scrape
-- [ ] **SHOW-16**: Results appear via Supabase Realtime subscription within 15 seconds
+- [x] **SHOW-15**: App shows "Finding out what's playing here..." loading state during scrape
+- [x] **SHOW-16**: Results appear via Supabase Realtime subscription within 15 seconds
 - [ ] **SHOW-17**: Confidence levels displayed (high = auto, medium = confirm, low = form prefill with link required)
 - [ ] **SHOW-18**: Manual fallback form appears after 15-second timeout
 - [ ] **SHOW-19**: Manual form has venue autocomplete + artist link paste
@@ -82,7 +82,7 @@
 - [x] **SHOW-22**: POST /api/mobile/show-checkin Vercel endpoint with fire-and-forget VM dispatch
 - [x] **SHOW-23**: VM scraper service at ~/decibel/scraper/ with PM2 process management
 - [x] **SHOW-24**: Shared secret auth header on VM scraper endpoint
-- [ ] **SHOW-25**: Realtime polling fallback when subscription status is CLOSED/TIMED_OUT (iOS background)
+- [x] **SHOW-25**: Realtime polling fallback when subscription status is CLOSED/TIMED_OUT (iOS background)
 
 ### Infrastructure
 
@@ -168,8 +168,8 @@
 | JBX-12 | Phase 8 | Complete |
 | JBX-13 | Phase 8 | Complete |
 | JBX-14 | Phase 8 | Complete |
-| SHOW-01 | Phase 9 | Pending |
-| SHOW-02 | Phase 9 | Pending |
+| SHOW-01 | Phase 9 | Complete |
+| SHOW-02 | Phase 9 | Complete |
 | SHOW-03 | Phase 9 | Complete |
 | SHOW-04 | Phase 9 | Complete |
 | SHOW-05 | Phase 9 | Pending |
@@ -182,8 +182,8 @@
 | SHOW-12 | Phase 9 | Pending |
 | SHOW-13 | Phase 9 | Complete |
 | SHOW-14 | Phase 9 | Complete |
-| SHOW-15 | Phase 9 | Pending |
-| SHOW-16 | Phase 9 | Pending |
+| SHOW-15 | Phase 9 | Complete |
+| SHOW-16 | Phase 9 | Complete |
 | SHOW-17 | Phase 9 | Pending |
 | SHOW-18 | Phase 9 | Pending |
 | SHOW-19 | Phase 9 | Pending |
@@ -192,7 +192,7 @@
 | SHOW-22 | Phase 9 | Complete |
 | SHOW-23 | Phase 9 | Complete |
 | SHOW-24 | Phase 9 | Complete |
-| SHOW-25 | Phase 9 | Pending |
+| SHOW-25 | Phase 9 | Complete |
 | INFRA-01 | Phase 9 | Complete |
 | INFRA-02 | Phase 9 | Complete |
 | INFRA-03 | Phase 9 | Complete |

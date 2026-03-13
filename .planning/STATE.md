@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 09-03-PLAN.md
-last_updated: "2026-03-13T16:08:55.436Z"
+stopped_at: Completed 09-04-PLAN.md
+last_updated: "2026-03-13T16:14:18.724Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 24
-  completed_plans: 22
+  completed_plans: 23
   percent: 14
 ---
 
@@ -56,6 +56,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 09-im-at-a-show P01 | 429 | 2 tasks | 11 files |
 | Phase 09-im-at-a-show P02 | 274 | 2 tasks | 5 files |
 | Phase 09-im-at-a-show P03 | 420 | 2 tasks | 5 files |
+| Phase 09-im-at-a-show P04 | 202 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 09-im-at-a-show]: Layer 6 always returns confidence low — LLM web search results require user confirmation via link paste
 - [Phase 09-im-at-a-show]: tsconfig.json excludes scraper/ from Vercel build — @anthropic-ai/sdk not installed in Vercel project
 - [Phase 09-im-at-a-show]: show-checkin POST enriches performers with is_founder_available for instant UI state without extra roundtrip
+- [Phase 09-im-at-a-show]: lastPositionRef stores lat/lng from GPS scan for startCheckin() call — avoids second GPS request in handleConfirmVenue
+- [Phase 09-im-at-a-show]: show_result placeholder in CheckInWizard until Plan 09-05 confidence-aware collection UI
 
 ### Pending Todos
 
@@ -105,6 +108,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T16:08:55.430Z
-Stopped at: Completed 09-03-PLAN.md
+Last session: 2026-03-13T16:14:18.718Z
+Stopped at: Completed 09-04-PLAN.md
 Resume file: None
