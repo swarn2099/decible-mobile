@@ -19,7 +19,7 @@ type ShowCheckinFoundResponse = {
 
 type ShowCheckinSearchingResponse = {
   status: "searching";
-  search_id: string;
+  searchId: string;
 };
 
 type ShowCheckinResponse =
@@ -125,7 +125,7 @@ export function useShowCheckin() {
       }
 
       // Layer 1 miss — VM scraper is running
-      const { search_id: searchId } = response;
+      const { searchId } = response;
 
       // Initialize waiting state (elapsed = 0)
       setState({ phase: "waiting", searchId, elapsed: 0 });
