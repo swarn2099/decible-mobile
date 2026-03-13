@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 09-02-PLAN.md
-last_updated: "2026-03-13T16:02:26.366Z"
+stopped_at: Completed 09-03-PLAN.md
+last_updated: "2026-03-13T16:08:55.436Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 24
-  completed_plans: 21
+  completed_plans: 22
   percent: 14
 ---
 
@@ -55,6 +55,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 08-jukebox P03 | 4 | 2 tasks | 3 files |
 | Phase 09-im-at-a-show P01 | 429 | 2 tasks | 11 files |
 | Phase 09-im-at-a-show P02 | 274 | 2 tasks | 5 files |
+| Phase 09-im-at-a-show P03 | 420 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,9 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 09-im-at-a-show]: SCRAPER_SHARED_SECRET generated as crypto.randomUUID() = 19ee0dae-fd1a-4b85-8222-1895fab1233f — must be added to Vercel env for VM-to-Vercel calls
 - [Phase 09-im-at-a-show]: Layer 2 runs in parallel with Layer 3 via Promise.all — geocode and event APIs are both I/O bound, no benefit to sequencing
 - [Phase 09-im-at-a-show]: Songkick source skips gracefully when SONGKICK_API_KEY env var not set — avoids auth errors when key not configured
+- [Phase 09-im-at-a-show]: Layer 6 always returns confidence low — LLM web search results require user confirmation via link paste
+- [Phase 09-im-at-a-show]: tsconfig.json excludes scraper/ from Vercel build — @anthropic-ai/sdk not installed in Vercel project
+- [Phase 09-im-at-a-show]: show-checkin POST enriches performers with is_founder_available for instant UI state without extra roundtrip
 
 ### Pending Todos
 
@@ -101,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T16:02:26.360Z
-Stopped at: Completed 09-02-PLAN.md
+Last session: 2026-03-13T16:08:55.430Z
+Stopped at: Completed 09-03-PLAN.md
 Resume file: None
