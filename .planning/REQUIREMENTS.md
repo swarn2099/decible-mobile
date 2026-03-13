@@ -60,15 +60,15 @@
 
 - [ ] **SHOW-01**: "I'm at a Show" button accessible from + tab
 - [ ] **SHOW-02**: Location permission requested with custom pre-prompt explainer screen
-- [ ] **SHOW-03**: Happy path: venue + event + lineup resolved from DB in <1 second (Layer 1)
+- [x] **SHOW-03**: Happy path: venue + event + lineup resolved from DB in <1 second (Layer 1)
 - [ ] **SHOW-04**: Each artist in lineup shows Founder availability or existing founder info
 - [ ] **SHOW-05**: "Collect All" button stamps entire lineup in one tap
 - [ ] **SHOW-06**: Founder Badge + Stamp awarded simultaneously when eligible
 - [ ] **SHOW-07**: Confetti + haptic on Founder, subtle haptic on Stamp
 - [ ] **SHOW-08**: Summary screen shows results after collection
-- [ ] **SHOW-09**: Scraping waterfall fires on VM when DB has no match (Layers 2-6)
-- [ ] **SHOW-10**: Layer 2: Event platform APIs (RA GraphQL, DICE, EDMTrain, Songkick, Bandsintown)
-- [ ] **SHOW-11**: Layer 3: Google Places reverse geocode for venue enrichment
+- [x] **SHOW-09**: Scraping waterfall fires on VM when DB has no match (Layers 2-6)
+- [x] **SHOW-10**: Layer 2: Event platform APIs (RA GraphQL, DICE, EDMTrain, Songkick, Bandsintown)
+- [x] **SHOW-11**: Layer 3: Google Places reverse geocode for venue enrichment
 - [ ] **SHOW-12**: Layer 4: Social media scraping (Instagram location, Facebook Events, X search)
 - [ ] **SHOW-13**: Layer 5: Playwright venue website scrape with LLM extraction
 - [ ] **SHOW-14**: Layer 6: Claude API with web search for venue + date query
@@ -170,15 +170,15 @@
 | JBX-14 | Phase 8 | Complete |
 | SHOW-01 | Phase 9 | Pending |
 | SHOW-02 | Phase 9 | Pending |
-| SHOW-03 | Phase 9 | Pending |
+| SHOW-03 | Phase 9 | Complete |
 | SHOW-04 | Phase 9 | Pending |
 | SHOW-05 | Phase 9 | Pending |
 | SHOW-06 | Phase 9 | Pending |
 | SHOW-07 | Phase 9 | Pending |
 | SHOW-08 | Phase 9 | Pending |
-| SHOW-09 | Phase 9 | Pending |
-| SHOW-10 | Phase 9 | Pending |
-| SHOW-11 | Phase 9 | Pending |
+| SHOW-09 | Phase 9 | Complete |
+| SHOW-10 | Phase 9 | Complete |
+| SHOW-11 | Phase 9 | Complete |
 | SHOW-12 | Phase 9 | Pending |
 | SHOW-13 | Phase 9 | Pending |
 | SHOW-14 | Phase 9 | Pending |

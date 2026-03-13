@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 09-01-PLAN.md
-last_updated: "2026-03-13T15:55:35.535Z"
+stopped_at: Completed 09-02-PLAN.md
+last_updated: "2026-03-13T16:02:26.366Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
   completed_phases: 7
   total_plans: 24
-  completed_plans: 20
+  completed_plans: 21
   percent: 14
 ---
 
@@ -54,6 +54,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 08-jukebox P02 | 15 | 2 tasks | 4 files |
 | Phase 08-jukebox P03 | 4 | 2 tasks | 3 files |
 | Phase 09-im-at-a-show P01 | 429 | 2 tasks | 11 files |
+| Phase 09-im-at-a-show P02 | 274 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 09-im-at-a-show]: Used Supabase Management API (PAT) for migrations — psql not installed, supabase db execute removed in CLI 2.78.1
 - [Phase 09-im-at-a-show]: Scraper as standalone ~/decibel/scraper/ project — isolates Playwright from Vercel build env, clean PM2 process boundary
 - [Phase 09-im-at-a-show]: SCRAPER_SHARED_SECRET generated as crypto.randomUUID() = 19ee0dae-fd1a-4b85-8222-1895fab1233f — must be added to Vercel env for VM-to-Vercel calls
+- [Phase 09-im-at-a-show]: Layer 2 runs in parallel with Layer 3 via Promise.all — geocode and event APIs are both I/O bound, no benefit to sequencing
+- [Phase 09-im-at-a-show]: Songkick source skips gracefully when SONGKICK_API_KEY env var not set — avoids auth errors when key not configured
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T15:55:35.529Z
-Stopped at: Completed 09-01-PLAN.md
+Last session: 2026-03-13T16:02:26.360Z
+Stopped at: Completed 09-02-PLAN.md
 Resume file: None
