@@ -17,7 +17,7 @@
 - [x] **MIG-01**: `collection_type` column backfilled from legacy `capture_method` on existing collections
 - [ ] **MIG-02**: `search_results` table created with Realtime publication enabled and RLS SELECT policy
 - [ ] **MIG-03**: `venue_submissions` table created for crowdsource fallback data
-- [ ] **MIG-04**: `event_artists` junction table created (if not existing)
+- [x] **MIG-04**: `event_artists` junction table created (if not existing)
 - [x] **MIG-05**: Embed URL columns added to `performers` table (spotify_embed_url, soundcloud_embed_url, apple_music_embed_url, top_track_cached_at)
 - [x] **MIG-06**: `discovery` type added to collections type constraint
 - [x] **MIG-07**: Unique constraint on `performers.spotify_id` to prevent simultaneous Founder race condition
@@ -42,9 +42,9 @@
 ### Jukebox
 
 - [ ] **JBX-01**: Map button on Home screen replaced with Jukebox icon button
-- [ ] **JBX-02**: Jukebox screen loads Finds from followed users in last 48 hours
-- [ ] **JBX-03**: Fallback to all platform Finds when followed-user finds are empty
-- [ ] **JBX-04**: Each card shows finder avatar + username + time ago, artist name + platform badge
+- [x] **JBX-02**: Jukebox screen loads Finds from followed users in last 48 hours
+- [x] **JBX-03**: Fallback to all platform Finds when followed-user finds are empty
+- [x] **JBX-04**: Each card shows finder avatar + username + time ago, artist name + platform badge
 - [ ] **JBX-05**: Embedded player via react-native-webview renders and plays (Spotify, SoundCloud, Apple Music)
 - [ ] **JBX-06**: Max 3 WebViews active at once via onViewableItemsChanged lazy loading
 - [ ] **JBX-07**: WebView audio does not interrupt iOS background music playback (mediaPlaybackRequiresUserAction)
@@ -52,8 +52,8 @@
 - [ ] **JBX-09**: One-tap Discover collect button adds Discovery to passport with haptic feedback
 - [ ] **JBX-10**: Finder receives notification when someone collects from their Find
 - [ ] **JBX-11**: Empty state displays when no Finds available
-- [ ] **JBX-12**: Embed URLs cached on performers table for repeat loads
-- [ ] **JBX-13**: GET /api/mobile/jukebox endpoint returns feed data
+- [x] **JBX-12**: Embed URLs cached on performers table for repeat loads
+- [x] **JBX-13**: GET /api/mobile/jukebox endpoint returns feed data
 - [ ] **JBX-14**: POST /api/mobile/discover endpoint creates Discovery collection entry
 
 ### "I'm at a Show" Check-in
@@ -136,7 +136,7 @@
 | MIG-01 | Phase 7 | Complete |
 | MIG-02 | Phase 9 | Pending |
 | MIG-03 | Phase 9 | Pending |
-| MIG-04 | Phase 8 | Pending |
+| MIG-04 | Phase 8 | Complete |
 | MIG-05 | Phase 7 | Complete |
 | MIG-06 | Phase 7 | Complete |
 | MIG-07 | Phase 7 | Complete |
@@ -155,9 +155,9 @@
 | GPASS-13 | Phase 7 | Complete |
 | GPASS-14 | Phase 7 | Complete |
 | JBX-01 | Phase 8 | Pending |
-| JBX-02 | Phase 8 | Pending |
-| JBX-03 | Phase 8 | Pending |
-| JBX-04 | Phase 8 | Pending |
+| JBX-02 | Phase 8 | Complete |
+| JBX-03 | Phase 8 | Complete |
+| JBX-04 | Phase 8 | Complete |
 | JBX-05 | Phase 8 | Pending |
 | JBX-06 | Phase 8 | Pending |
 | JBX-07 | Phase 8 | Pending |
@@ -165,8 +165,8 @@
 | JBX-09 | Phase 8 | Pending |
 | JBX-10 | Phase 8 | Pending |
 | JBX-11 | Phase 8 | Pending |
-| JBX-12 | Phase 8 | Pending |
-| JBX-13 | Phase 8 | Pending |
+| JBX-12 | Phase 8 | Complete |
+| JBX-13 | Phase 8 | Complete |
 | JBX-14 | Phase 8 | Pending |
 | SHOW-01 | Phase 9 | Pending |
 | SHOW-02 | Phase 9 | Pending |
