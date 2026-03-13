@@ -1,8 +1,17 @@
 import { useState, useCallback } from "react";
-import { View } from "react-native";
+import {
+  View,
+  Text,
+  Modal,
+  ScrollView,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSharedValue } from "react-native-reanimated";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { X } from "lucide-react-native";
 import { useAuthStore } from "@/stores/authStore";
 import {
   usePassportStats,
@@ -15,11 +24,11 @@ import { usePassportShareCardV2 } from "@/hooks/useShareCard";
 import { PassportHeader } from "@/components/passport/PassportHeader";
 import { PassportPager } from "@/components/passport/PassportPager";
 import { OrbBackground } from "@/components/passport/OrbBackground";
-import { BadgeGrid } from "@/components/passport/BadgeGrid";
 import { BadgeDetailModal } from "@/components/passport/BadgeDetailModal";
 import { ShareSheet } from "@/components/passport/ShareSheet";
 import { PassportSkeleton } from "@/components/ui/SkeletonLoader";
 import { ErrorState } from "@/components/ui/ErrorState";
+import { RARITY_COLORS } from "@/constants/badges";
 import { apiCall } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import type { BadgeWithStatus } from "@/types/badges";
@@ -55,10 +64,163 @@ function useFanProfile() {
 
 const BG = "#0B0B0F";
 
+// ─── Badges Full-Screen Modal ────────────────────────────────────────
+function BadgesModal({
+  visible,
+  badges,
+  onClose,
+  onBadgeTap,
+}: {
+  visible: boolean;
+  badges: BadgeWithStatus[];
+  onClose: () => void;
+  onBadgeTap: (badge: BadgeWithStatus) => void;
+}) {
+  const earnedCount = badges.filter((b) => b.earned).length;
+  const sorted = [...badges].sort((a, b) => {
+    if (a.earned && !b.earned) return -1;
+    if (!a.earned && b.earned) return 1;
+    return 0;
+  });
+
+  // Build rows of 3
+  const rows: BadgeWithStatus[][] = [];
+  for (let i = 0; i < sorted.length; i += 3) {
+    rows.push(sorted.slice(i, i + 3));
+  }
+
+  return (
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+      <View style={{ flex: 1, backgroundColor: BG }}>
+        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+          {/* Header */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              paddingHorizontal: 20,
+              paddingVertical: 16,
+              borderBottomWidth: 1,
+              borderBottomColor: "rgba(255,255,255,0.08)",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "Poppins_700Bold",
+                color: "#FFFFFF",
+              }}
+            >
+              Badges ({earnedCount}/{badges.length})
+            </Text>
+            <Pressable onPress={onClose} hitSlop={12}>
+              <X size={24} color="#8E8E93" />
+            </Pressable>
+          </View>
+
+          <ScrollView
+            contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {rows.map((row, rowIdx) => (
+              <View
+                key={rowIdx}
+                style={{
+                  flexDirection: "row",
+                  gap: 12,
+                  marginBottom: 20,
+                  justifyContent: "center",
+                }}
+              >
+                {row.map((badge) => {
+                  const rarityColor = RARITY_COLORS[badge.rarity];
+
+                  return (
+                    <TouchableOpacity
+                      key={badge.id}
+                      style={{ width: "30%", alignItems: "center" }}
+                      onPress={() => onBadgeTap(badge)}
+                      activeOpacity={0.7}
+                    >
+                      <View
+                        style={{
+                          width: 64,
+                          height: 64,
+                          borderRadius: 32,
+                          overflow: "hidden",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          ...(badge.earned
+                            ? {
+                                borderWidth: 2,
+                                borderColor: rarityColor,
+                                shadowColor: rarityColor,
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 0.4,
+                                shadowRadius: 8,
+                                elevation: 4,
+                              }
+                            : {
+                                backgroundColor: "#15151C",
+                              }),
+                        }}
+                      >
+                        {badge.earned && (
+                          <LinearGradient
+                            colors={[`${rarityColor}33`, `${rarityColor}15`]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                            }}
+                          />
+                        )}
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            opacity: badge.earned ? 1 : 0.3,
+                          }}
+                        >
+                          {badge.icon}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontFamily: badge.earned
+                            ? "Poppins_500Medium"
+                            : "Poppins_400Regular",
+                          fontSize: 11,
+                          color: badge.earned ? "#FFFFFF" : "#8E8E93",
+                          marginTop: 6,
+                          textAlign: "center",
+                        }}
+                        numberOfLines={1}
+                      >
+                        {badge.name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    </Modal>
+  );
+}
+
+// ─── Passport Screen ─────────────────────────────────────────────────
 export default function PassportScreen() {
   const router = useRouter();
 
   const [selectedBadge, setSelectedBadge] = useState<BadgeWithStatus | null>(null);
+  const [badgesModalVisible, setBadgesModalVisible] = useState(false);
   const [shareSheetVisible, setShareSheetVisible] = useState(false);
   const [shareImageUri, setShareImageUri] = useState<string | null>(null);
   const [shareUrl, setShareUrl] = useState<string | undefined>(undefined);
@@ -87,6 +249,9 @@ export default function PassportScreen() {
   const user = useAuthStore((s) => s.user);
   const fanSlug = user?.email?.split("@")[0] ?? "user";
   const allCollections = [...stamps, ...finds, ...discoveries];
+
+  const badgesEarned = badges?.filter((b) => b.earned).length ?? 0;
+  const badgesTotal = badges?.length ?? 0;
 
   const handleSharePassport = useCallback(async () => {
     if (!stats) return;
@@ -179,6 +344,9 @@ export default function PassportScreen() {
           onSettingsPress={() => router.push("/settings")}
           onSharePress={handleSharePassport}
           isSharing={passportShare.isLoading || isGeneratingCard}
+          badgesEarned={badgesEarned}
+          badgesTotal={badgesTotal}
+          onBadgesPress={() => setBadgesModalVisible(true)}
         />
 
         <PassportPager
@@ -188,19 +356,23 @@ export default function PassportScreen() {
           activeTabIndex={activeTabIndex}
           onTabChange={setActiveTab}
           onViewMore={handleViewMore}
-          footer={
-            badges && badges.length > 0 ? (
-              <View style={{ marginTop: 24 }}>
-                <BadgeGrid
-                  badges={badges}
-                  onBadgeTap={(badge) => setSelectedBadge(badge)}
-                />
-              </View>
-            ) : undefined
-          }
         />
       </SafeAreaView>
 
+      {/* Badges full-screen modal */}
+      {badges && badges.length > 0 && (
+        <BadgesModal
+          visible={badgesModalVisible}
+          badges={badges}
+          onClose={() => setBadgesModalVisible(false)}
+          onBadgeTap={(badge) => {
+            setBadgesModalVisible(false);
+            setSelectedBadge(badge);
+          }}
+        />
+      )}
+
+      {/* Badge detail modal */}
       {selectedBadge && (
         <BadgeDetailModal
           badge={selectedBadge}
@@ -208,6 +380,7 @@ export default function PassportScreen() {
         />
       )}
 
+      {/* Share sheet */}
       <ShareSheet
         visible={shareSheetVisible}
         onClose={() => {

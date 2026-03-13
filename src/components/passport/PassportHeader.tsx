@@ -1,7 +1,7 @@
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Settings, Share2, UserPen } from "lucide-react-native";
+import { Settings, Share2, UserPen, Award, ChevronRight } from "lucide-react-native";
 import { useRouter } from "expo-router";
 
 const GRADIENT_PAIRS: [string, string][] = [
@@ -72,6 +72,9 @@ type Props = {
   onSettingsPress: () => void;
   onSharePress?: () => void;
   isSharing?: boolean;
+  badgesEarned?: number;
+  badgesTotal?: number;
+  onBadgesPress?: () => void;
 };
 
 export function PassportHeader({
@@ -85,6 +88,9 @@ export function PassportHeader({
   onSettingsPress,
   onSharePress,
   isSharing,
+  badgesEarned = 0,
+  badgesTotal = 0,
+  onBadgesPress,
 }: Props) {
   const router = useRouter();
   const name = displayName || "Fan";
@@ -266,6 +272,39 @@ export function PassportHeader({
           </View>
         </TouchableOpacity>
       </View>
+
+      {/* Row 5: Badges teaser */}
+      {badgesTotal > 0 && onBadgesPress && (
+        <Pressable
+          onPress={onBadgesPress}
+          style={({ pressed }) => ({
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 12,
+            paddingVertical: 10,
+            paddingHorizontal: 12,
+            backgroundColor: "#1A1A1F",
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.08)",
+            opacity: pressed ? 0.7 : 1,
+          })}
+        >
+          <Award size={16} color="#FFD700" />
+          <Text
+            style={{
+              flex: 1,
+              marginLeft: 8,
+              fontSize: 13,
+              fontFamily: "Poppins_500Medium",
+              color: "#FFFFFF",
+            }}
+          >
+            {badgesEarned} of {badgesTotal} badges earned
+          </Text>
+          <ChevronRight size={16} color="#8E8E93" />
+        </Pressable>
+      )}
     </View>
   );
 }

@@ -15,8 +15,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { GlassGrid } from "./GlassGrid";
 import type { CollectionStamp } from "@/types/passport";
-import type { ReactNode } from "react";
-
 interface PassportPagerProps {
   stamps: CollectionStamp[];
   finds: CollectionStamp[];
@@ -24,7 +22,6 @@ interface PassportPagerProps {
   onViewMore: (type: "stamp" | "find" | "discovery") => void;
   activeTabIndex: SharedValue<number>;
   onTabChange: (index: number) => void;
-  footer?: ReactNode;
 }
 
 const TAB_LABELS = ["Stamps", "Finds", "Discoveries"] as const;
@@ -36,7 +33,6 @@ export function PassportPager({
   onViewMore,
   activeTabIndex,
   onTabChange,
-  footer,
 }: PassportPagerProps) {
   const { width: screenWidth } = useWindowDimensions();
   const pagerRef = useRef<PagerView>(null);
@@ -141,7 +137,7 @@ export function PassportPager({
             type="stamp"
             onViewMore={() => onViewMore("stamp")}
           />
-          {footer}
+
         </ScrollView>
 
         {/* Page 1 — Finds */}
@@ -155,7 +151,7 @@ export function PassportPager({
             type="find"
             onViewMore={() => onViewMore("find")}
           />
-          {footer}
+
         </ScrollView>
 
         {/* Page 2 — Discoveries */}
@@ -169,7 +165,7 @@ export function PassportPager({
             type="discovery"
             onViewMore={() => onViewMore("discovery")}
           />
-          {footer}
+
         </ScrollView>
       </PagerView>
     </View>
