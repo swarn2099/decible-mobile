@@ -15,8 +15,8 @@
 ### DB Migrations
 
 - [x] **MIG-01**: `collection_type` column backfilled from legacy `capture_method` on existing collections
-- [ ] **MIG-02**: `search_results` table created with Realtime publication enabled and RLS SELECT policy
-- [ ] **MIG-03**: `venue_submissions` table created for crowdsource fallback data
+- [x] **MIG-02**: `search_results` table created with Realtime publication enabled and RLS SELECT policy
+- [x] **MIG-03**: `venue_submissions` table created for crowdsource fallback data
 - [x] **MIG-04**: `event_artists` junction table created (if not existing)
 - [x] **MIG-05**: Embed URL columns added to `performers` table (spotify_embed_url, soundcloud_embed_url, apple_music_embed_url, top_track_cached_at)
 - [x] **MIG-06**: `discovery` type added to collections type constraint
@@ -80,15 +80,15 @@
 - [ ] **SHOW-20**: New venues and artists created from manual submissions
 - [ ] **SHOW-21**: Crowdsource data saved to venue_submissions for pattern detection
 - [ ] **SHOW-22**: POST /api/mobile/show-checkin Vercel endpoint with fire-and-forget VM dispatch
-- [ ] **SHOW-23**: VM scraper service at ~/decibel/scraper/ with PM2 process management
-- [ ] **SHOW-24**: Shared secret auth header on VM scraper endpoint
+- [x] **SHOW-23**: VM scraper service at ~/decibel/scraper/ with PM2 process management
+- [x] **SHOW-24**: Shared secret auth header on VM scraper endpoint
 - [ ] **SHOW-25**: Realtime polling fallback when subscription status is CLOSED/TIMED_OUT (iOS background)
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: VM scraper Express.js service with shared Playwright browser instance (context-per-request, try/finally cleanup)
-- [ ] **INFRA-02**: PM2 ecosystem config with max_memory_restart: 512M
-- [ ] **INFRA-03**: Playwright context leak prevention (strict try/finally on every context)
+- [x] **INFRA-01**: VM scraper Express.js service with shared Playwright browser instance (context-per-request, try/finally cleanup)
+- [x] **INFRA-02**: PM2 ecosystem config with max_memory_restart: 512M
+- [x] **INFRA-03**: Playwright context leak prevention (strict try/finally on every context)
 
 ## v4+ Requirements
 
@@ -134,8 +134,8 @@
 | BUG-03 | Phase 6 | Complete |
 | BUG-04 | Phase 6 | Complete |
 | MIG-01 | Phase 7 | Complete |
-| MIG-02 | Phase 9 | Pending |
-| MIG-03 | Phase 9 | Pending |
+| MIG-02 | Phase 9 | Complete |
+| MIG-03 | Phase 9 | Complete |
 | MIG-04 | Phase 8 | Complete |
 | MIG-05 | Phase 7 | Complete |
 | MIG-06 | Phase 7 | Complete |
@@ -190,12 +190,12 @@
 | SHOW-20 | Phase 9 | Pending |
 | SHOW-21 | Phase 9 | Pending |
 | SHOW-22 | Phase 9 | Pending |
-| SHOW-23 | Phase 9 | Pending |
-| SHOW-24 | Phase 9 | Pending |
+| SHOW-23 | Phase 9 | Complete |
+| SHOW-24 | Phase 9 | Complete |
 | SHOW-25 | Phase 9 | Pending |
-| INFRA-01 | Phase 9 | Pending |
-| INFRA-02 | Phase 9 | Pending |
-| INFRA-03 | Phase 9 | Pending |
+| INFRA-01 | Phase 9 | Complete |
+| INFRA-02 | Phase 9 | Complete |
+| INFRA-03 | Phase 9 | Complete |
 
 **Coverage:**
 - v3.0 requirements: 67 total
