@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, ActivityIndicator, Alert } from "react-native";
+import { View, Text, FlatList, Pressable, ActivityIndicator } from "react-native";
 import Svg, {
   Defs,
   LinearGradient as SvgLinearGradient,
@@ -7,7 +7,7 @@ import Svg, {
 } from "react-native-svg";
 import { DecibelRefreshControl } from "@/components/ui/PullToRefresh";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Search, Map, Compass } from "lucide-react-native";
+import { Search, ListMusic, Compass } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { useActivityFeed } from "@/hooks/useActivityFeed";
 import {
@@ -81,7 +81,7 @@ export default function HomeScreen() {
         }}
       >
         <Pressable
-          onPress={() => Alert.alert("Coming Soon", "Map & Events view is on the way!")}
+          onPress={() => router.push("/jukebox")}
           hitSlop={12}
           style={{
             width: 40,
@@ -94,7 +94,7 @@ export default function HomeScreen() {
             justifyContent: "center",
           }}
         >
-          <Map size={20} color={colors.textSecondary} />
+          <ListMusic size={20} color={colors.textSecondary} />
         </Pressable>
 
         <GradientTitle />
