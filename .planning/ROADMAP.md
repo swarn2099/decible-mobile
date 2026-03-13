@@ -124,9 +124,9 @@ Plans:
 
 Plans:
 - [x] 07-01: DB migrations + pager-view install + passport API extension + client types/hooks + BlurView SDK 55 fixes
-- [ ] 07-02: OrbBackground + 3 GlassCard variants (Stamp/Find/Discovery) + GlassGrid + press-in haptics
-- [ ] 07-03: PassportPager with frosted glass tab bar + passport.tsx rewrite (orbs + header + pager + badges)
-- [ ] 07-04: View More pages (search + infinite scroll) + GET /api/mobile/passport-collections endpoint
+- [x] 07-02: OrbBackground + 3 GlassCard variants (Stamp/Find/Discovery) + GlassGrid + press-in haptics
+- [x] 07-03: PassportPager with frosted glass tab bar + passport.tsx rewrite (orbs + header + pager + badges)
+- [x] 07-04: View More pages (search + infinite scroll) + GET /api/mobile/passport-collections endpoint
 
 #### Phase 8: Jukebox
 **Goal**: Users can browse followed users' Finds in a social music feed, listen via embedded players, and one-tap collect Discoveries
@@ -138,12 +138,12 @@ Plans:
   3. Embedded players (Spotify, SoundCloud, Apple Music) render and play audio; opening Jukebox does not interrupt background music already playing on the device
   4. User can one-tap "Discover" on any Jukebox card and the Discovery appears in their Discoveries tab on the Passport screen with haptic feedback
   5. Finder receives a notification when someone collects from their Find
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: DB migration (MIG-04) + install react-native-webview + GET /api/mobile/jukebox endpoint
-- [ ] 08-02: JukeboxCard + EmbeddedPlayer with max-3 WebView pool (onViewableItemsChanged, injectJavaScript audio-stop, mediaPlaybackRequiresUserAction)
-- [ ] 08-03: POST /api/mobile/discover endpoint + useDiscover mutation + one-tap Discover collect + finder notification + empty state
+- [ ] 08-01-PLAN.md — DB migration (MIG-04) + react-native-webview + jukebox API endpoint + useJukebox hook
+- [ ] 08-02-PLAN.md — JukeboxCard + EmbeddedPlayer + Jukebox screen + Home icon swap + WebView pool
+- [ ] 08-03-PLAN.md — Discover endpoint fix (collection_type) + finder notification + notification routing
 
 #### Phase 9: I'm at a Show
 **Goal**: Users can check in at a live show and have the app discover who is performing — via DB lookup, scraping waterfall on the VM, or manual entry — stamping their passport with the full lineup
@@ -155,7 +155,7 @@ Plans:
   3. High-confidence scrape results auto-fill the lineup; medium-confidence results ask for confirmation; low-confidence results require the user to paste a platform link before any artist is created
   4. After 15 seconds with no result, a manual fallback form appears with venue autocomplete and artist link paste; new venues and artists created from submissions are saved to the DB
   5. VM scraper service runs under PM2, restarts on memory exceeding 512MB, and Playwright browser contexts are cleaned up after every request with no leaks
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
 - [ ] 09-01: DB migrations (MIG-02, MIG-03) + VM scraper service scaffold (Express.js, PM2, shared Playwright browser, INFRA-01/02/03) + shared secret auth
