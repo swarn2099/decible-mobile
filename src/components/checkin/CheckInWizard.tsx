@@ -2,25 +2,37 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { ArrowLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useThemeColors } from "@/constants/colors";
 import { useLocation } from "@/hooks/useLocation";
 import { useVenueDetection } from "@/hooks/useVenueDetection";
 import { useShowCheckin } from "@/hooks/useShowCheckin";
+import { apiCall } from "@/lib/api";
+import { getLocalDate } from "@/hooks/useCheckIn";
 import { LocationPermissionModal } from "@/components/location/LocationPermissionModal";
 import { VenueScanStep } from "./VenueScanStep";
 import { LineupStep } from "./LineupStep";
 import { TagPerformerStep } from "./TagPerformerStep";
 import { StampAnimationModal } from "./StampAnimationModal";
 import { ScrapingWaitScreen } from "./ScrapingWaitScreen";
+import { ConfidenceLineupScreen } from "./ConfidenceLineupScreen";
+import { ManualFallbackForm } from "./ManualFallbackForm";
+import { ShowSummaryScreen } from "./ShowSummaryScreen";
 import type { WizardStep, ActiveVenueEvent, StampData } from "@/types";
 
 type Props = {
   onBack: () => void;
 };
 
+type CollectAllResult = {
+  stamps: StampData[];
+  founders: string[];
+};
+
 export function CheckInWizard({ onBack }: Props) {
   const colors = useThemeColors();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const {
     permissionStatus,
     hasPermission,
@@ -35,6 +47,9 @@ export function CheckInWizard({ onBack }: Props) {
 
   // Store last known position so we can pass lat/lng to startCheckin
   const lastPositionRef = useRef<{ lat: number; lng: number } | null>(null);
+
+  // Track founder performer IDs for the stamp animation
+  const foundersRef = useRef<string[]>([]);
 
   // ---------- Show check-in (VM scraper) ----------
   const { state: showCheckinState, startCheckin, reset: resetShowCheckin } = useShowCheckin();
@@ -194,12 +209,92 @@ export function CheckInWizard({ onBack }: Props) {
   }
 
   // ---------- Check-in result handlers ----------
-  function handleStamped(stamps: StampData[]) {
+  function handleStamped(stamps: StampData[], founders: string[] = []) {
+    foundersRef.current = founders;
     setStep({ type: 'stamp', stamps });
   }
 
   function handleAlreadyCheckedIn(stamps: StampData[]) {
     setStep({ type: 'already_checked_in', stamps });
+  }
+
+  /**
+   * Called from ConfidenceLineupScreen or ManualFallbackForm after stamps arrive.
+   * Transitions: stamp animation → show_summary
+   */
+  function handleShowStamped(stamps: StampData[], founders: string[]) {
+    foundersRef.current = founders;
+    // Invalidate passport caches
+    queryClient.invalidateQueries({ queryKey: ['passportCollections'] });
+    queryClient.invalidateQueries({ queryKey: ['myCollectedIds'] });
+    queryClient.invalidateQueries({ queryKey: ['passport'] });
+    setStep({ type: 'stamp', stamps });
+  }
+
+  /**
+   * Called after stamp animation completes when we came from show_result / show_timeout path.
+   * Transitions to the summary screen instead of dismissing.
+   */
+  const postStampSummaryRef = useRef<{
+    stamps: StampData[];
+    founders: string[];
+    venueName: string;
+    eventDate: string;
+  } | null>(null);
+
+  /**
+   * Collect performers from ConfidenceLineupScreen's onCollect callback.
+   * venue_id comes from the ShowSearchResult.
+   */
+  async function handleConfidenceCollect(performerIds: string[]) {
+    const currentStep = step;
+    if (currentStep.type !== 'show_result') return;
+    const { result } = currentStep;
+
+    try {
+      const payload = await apiCall<CollectAllResult>('/mobile/show-checkin', {
+        method: 'PUT',
+        body: JSON.stringify({
+          venue_id: result.venue_id,
+          venue_name: result.venue_name,
+          performer_ids: performerIds,
+          local_date: getLocalDate(),
+        }),
+      });
+
+      const venueName = result.venue_name ?? 'Tonight\'s Show';
+      const eventDate = getLocalDate();
+
+      postStampSummaryRef.current = {
+        stamps: payload.stamps,
+        founders: payload.founders,
+        venueName,
+        eventDate,
+      };
+
+      handleShowStamped(payload.stamps, payload.founders);
+    } catch (err) {
+      // Stay on confidence screen — CheckInWizard doesn't have inline error yet
+      // The error is surfaced via console in dev; production would need a toast
+      console.warn('[handleConfidenceCollect]', err);
+    }
+  }
+
+  /**
+   * Called from ManualFallbackForm.onStamped — transitions to stamp animation → summary.
+   */
+  function handleManualStamped(stamps: StampData[]) {
+    const venueName = stamps[0]?.venue_name ?? 'Tonight\'s Show';
+    const eventDate = stamps[0]?.event_date ?? getLocalDate();
+
+    postStampSummaryRef.current = {
+      stamps,
+      founders: [],
+      venueName,
+      eventDate,
+    };
+
+    handleShowStamped(stamps, []);
   }
 
   function handleNoMusic() {
@@ -254,6 +349,10 @@ export function CheckInWizard({ onBack }: Props) {
       handleStartScan();
       return;
     }
+    if (step.type === 'show_summary') {
+      onBack();
+      return;
+    }
     onBack();
   }
 
@@ -281,50 +380,93 @@ export function CheckInWizard({ onBack }: Props) {
     );
   }
 
-  // ---------- VM result / timeout ----------
-  // Plan 05 adds confidence-aware UI. For now, route to existing fallback paths.
+  // ---------- VM result — confidence-aware lineup UI ----------
   if (step.type === 'show_result') {
-    // Plan 05: render confidence-based confirmation UI.
-    // Placeholder: fall through to no_venues until Plan 05 is built.
     return (
-      <View style={[styles.centerContainer, { flex: 1 }]}>
-        <Text style={[styles.headingText, { color: colors.text }]}>
-          Lineup found!
-        </Text>
-        <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-          Confidence: {step.result.confidence}. Full UI coming in Phase 09-05.
-        </Text>
+      <View style={{ flex: 1, paddingTop: 8 }}>
+        <TouchableOpacity
+          onPress={handleWizardBack}
+          style={styles.backButton}
+          activeOpacity={0.7}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <ArrowLeft size={20} color={colors.textSecondary} />
+          <Text style={[styles.backLabel, { color: colors.textSecondary }]}>Back</Text>
+        </TouchableOpacity>
+        <View style={{ flex: 1, paddingTop: 8 }}>
+          <ConfidenceLineupScreen
+            result={step.result}
+            onCollect={handleConfidenceCollect}
+            onManualFallback={() => {
+              const pos = lastPositionRef.current ?? { lat: 0, lng: 0 };
+              setStep({ type: 'show_timeout' });
+              // Store position for ManualFallbackForm
+              lastPositionRef.current = pos;
+            }}
+            onBack={handleWizardBack}
+          />
+        </View>
       </View>
     );
   }
 
+  // ---------- Timeout / manual fallback ----------
   if (step.type === 'show_timeout') {
-    // No scrape result — show no_venues fallback
+    const pos = lastPositionRef.current ?? { lat: 0, lng: 0 };
     return (
-      <View style={[styles.centerContainer, { flex: 1 }]}>
-        <Text style={[styles.headingText, { color: colors.text }]}>
-          Couldn't find tonight's lineup
-        </Text>
-        <Text style={[styles.bodyText, { color: colors.textSecondary }]}>
-          Tag a performer manually to earn your stamp.
-        </Text>
+      <View style={{ flex: 1, paddingTop: 8 }}>
         <TouchableOpacity
-          onPress={() => setStep({ type: 'no_venues' })}
+          onPress={handleWizardBack}
+          style={styles.backButton}
           activeOpacity={0.7}
-          style={[styles.actionButton, { backgroundColor: colors.pink }]}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Text style={styles.actionButtonText}>Tag Manually</Text>
+          <ArrowLeft size={20} color={colors.textSecondary} />
+          <Text style={[styles.backLabel, { color: colors.textSecondary }]}>Back</Text>
         </TouchableOpacity>
+        <View style={{ flex: 1, paddingTop: 8 }}>
+          <ManualFallbackForm
+            lat={pos.lat}
+            lng={pos.lng}
+            onStamped={handleManualStamped}
+            onBack={handleWizardBack}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  // ---------- Summary screen ----------
+  if (step.type === 'show_summary') {
+    return (
+      <View style={{ flex: 1, paddingTop: 8 }}>
+        <ShowSummaryScreen
+          stamps={step.stamps}
+          founders={step.founders}
+          venueName={step.venueName}
+          eventDate={step.eventDate}
+          onViewPassport={() => {
+            router.push('/(tabs)/passport');
+            resetWizard();
+          }}
+          onDone={resetWizard}
+        />
       </View>
     );
   }
 
   // ---------- Render ----------
+  // Note: show_result / show_timeout / show_summary are handled by early returns above,
+  // so TS narrows them out here. Cast to string to avoid false-positive TS2367 errors.
+  const stepType = step.type as string;
   const showBackButton =
-    step.type !== 'scanning' &&
-    step.type !== 'idle' &&
-    step.type !== 'stamp' &&
-    step.type !== 'no_lineup'; // TagPerformerStep has its own back button
+    stepType !== 'scanning' &&
+    stepType !== 'idle' &&
+    stepType !== 'stamp' &&
+    stepType !== 'no_lineup' && // TagPerformerStep has its own back button
+    stepType !== 'show_result' && // Has its own back in the conditional return above
+    stepType !== 'show_timeout' && // Has its own back in the conditional return above
+    stepType !== 'show_summary'; // ShowSummaryScreen has its own navigation
 
   const showStampModal = step.type === 'stamp';
   const stampModalStamps = step.type === 'stamp' ? step.stamps : [];
@@ -375,7 +517,7 @@ export function CheckInWizard({ onBack }: Props) {
           {step.type === 'lineup' && (
             <LineupStep
               event={step.event}
-              onStamped={handleStamped}
+              onStamped={(stamps, founders) => handleStamped(stamps, founders)}
               onAlreadyCheckedIn={handleAlreadyCheckedIn}
             />
           )}
@@ -396,11 +538,39 @@ export function CheckInWizard({ onBack }: Props) {
       <StampAnimationModal
         visible={showStampModal}
         stamps={stampModalStamps}
+        founderPerformerIds={foundersRef.current}
         onViewPassport={() => {
-          router.push('/(tabs)/passport');
-          resetWizard();
+          if (postStampSummaryRef.current) {
+            // From show_result / show_timeout path — go to summary screen
+            const summary = postStampSummaryRef.current;
+            postStampSummaryRef.current = null;
+            setStep({
+              type: 'show_summary',
+              stamps: summary.stamps,
+              founders: summary.founders,
+              venueName: summary.venueName,
+              eventDate: summary.eventDate,
+            });
+          } else {
+            router.push('/(tabs)/passport');
+            resetWizard();
+          }
         }}
-        onDismiss={resetWizard}
+        onDismiss={() => {
+          if (postStampSummaryRef.current) {
+            const summary = postStampSummaryRef.current;
+            postStampSummaryRef.current = null;
+            setStep({
+              type: 'show_summary',
+              stamps: summary.stamps,
+              founders: summary.founders,
+              venueName: summary.venueName,
+              eventDate: summary.eventDate,
+            });
+          } else {
+            resetWizard();
+          }
+        }}
       />
     </>
   );

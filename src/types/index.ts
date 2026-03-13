@@ -76,7 +76,8 @@ export type WizardStep =
   | { type: 'stamp'; stamps: StampData[] }
   | { type: 'show_waiting'; searchId: string; elapsed: number }
   | { type: 'show_result'; result: ShowSearchResult }
-  | { type: 'show_timeout' };
+  | { type: 'show_timeout' }
+  | { type: 'show_summary'; stamps: StampData[]; founders: string[]; venueName: string; eventDate: string };
 
 // ---------- Show Check-In (VM Scraper) types ----------
 

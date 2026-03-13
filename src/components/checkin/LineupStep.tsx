@@ -9,17 +9,24 @@ import {
 } from "react-native";
 import { useThemeColors } from "@/constants/colors";
 import { useCheckIn, getLocalDate } from "@/hooks/useCheckIn";
-import type { ActiveVenueEvent, WizardStep, StampData } from "@/types";
+import type { ActiveVenueEvent, StampData, EnrichedPerformer } from "@/types";
 
 type Props = {
   event: ActiveVenueEvent;
-  onStamped: (stamps: StampData[]) => void;
+  /** performers enriched with is_founder_available — optional (falls back to event.performers) */
+  enrichedPerformers?: EnrichedPerformer[];
+  onStamped: (stamps: StampData[], founders: string[]) => void;
   onAlreadyCheckedIn: (stamps: StampData[]) => void;
 };
 
-export function LineupStep({ event, onStamped, onAlreadyCheckedIn }: Props) {
+export function LineupStep({ event, enrichedPerformers, onStamped, onAlreadyCheckedIn }: Props) {
   const colors = useThemeColors();
   const checkIn = useCheckIn();
+
+  // Merge enriched data with base performers for display
+  const enrichedMap = new Map(
+    (enrichedPerformers ?? []).map((p) => [p.id, p])
+  );
 
   function handleCheckIn() {
     const performerIds = event.performers.map((p) => p.id);
@@ -34,7 +41,9 @@ export function LineupStep({ event, onStamped, onAlreadyCheckedIn }: Props) {
           if (result.already_checked_in) {
             onAlreadyCheckedIn(result.stamps);
           } else {
-            onStamped(result.stamps);
+            // Extract founder performer_ids from the response (if API returns them)
+            const founders = (result as unknown as { founders?: string[] }).founders ?? [];
+            onStamped(result.stamps, founders);
           }
         },
       }
@@ -61,38 +70,50 @@ export function LineupStep({ event, onStamped, onAlreadyCheckedIn }: Props) {
         showsVerticalScrollIndicator={false}
         style={{ flex: 1, marginTop: 16 }}
         contentContainerStyle={{ paddingBottom: 24 }}
-        renderItem={({ item }) => (
-          <View style={styles.performerRow}>
-            {item.photo_url ? (
-              <Image
-                source={{ uri: item.photo_url }}
-                style={[styles.performerAvatar, { backgroundColor: colors.card }]}
-              />
-            ) : (
-              <View
-                style={[
-                  styles.performerAvatar,
-                  styles.performerAvatarPlaceholder,
-                  { backgroundColor: colors.card },
-                ]}
-              >
-                <Text style={[styles.avatarInitial, { color: colors.textSecondary }]}>
-                  {item.name.charAt(0).toUpperCase()}
+        renderItem={({ item }) => {
+          const enriched = enrichedMap.get(item.id);
+          const isFounderAvailable = enriched?.is_founder_available ?? false;
+          return (
+            <View style={styles.performerRow}>
+              {item.photo_url ? (
+                <Image
+                  source={{ uri: item.photo_url }}
+                  style={[styles.performerAvatar, { backgroundColor: colors.card }]}
+                />
+              ) : (
+                <View
+                  style={[
+                    styles.performerAvatar,
+                    styles.performerAvatarPlaceholder,
+                    { backgroundColor: colors.card },
+                  ]}
+                >
+                  <Text style={[styles.avatarInitial, { color: colors.textSecondary }]}>
+                    {item.name.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+              )}
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.performerName, { color: colors.text }]}>
+                  {item.name}
                 </Text>
+                {item.slug && (
+                  <Text style={[styles.performerSlug, { color: colors.textTertiary }]}>
+                    @{item.slug}
+                  </Text>
+                )}
               </View>
-            )}
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.performerName, { color: colors.text }]}>
-                {item.name}
-              </Text>
-              {item.slug && (
-                <Text style={[styles.performerSlug, { color: colors.textTertiary }]}>
-                  @{item.slug}
-                </Text>
+              {isFounderAvailable && (
+                <View style={styles.founderBadge}>
+                  <Text style={[styles.founderStar, { color: colors.gold }]}>★</Text>
+                  <Text style={[styles.founderLabel, { color: colors.gold }]}>
+                    Founder available!
+                  </Text>
+                </View>
               )}
             </View>
-          </View>
-        )}
+          );
+        }}
       />
 
       {/* Check In CTA */}
@@ -192,5 +213,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Poppins_500Medium',
     textAlign: 'center',
+  },
+  founderBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+  },
+  founderStar: {
+    fontSize: 14,
+  },
+  founderLabel: {
+    fontSize: 11,
+    fontFamily: 'Poppins_600SemiBold',
   },
 });

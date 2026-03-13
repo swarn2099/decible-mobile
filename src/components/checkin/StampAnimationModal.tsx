@@ -21,6 +21,7 @@ import type { StampData } from "@/types";
 type StampAnimationModalProps = {
   visible: boolean;
   stamps: StampData[];
+  founderPerformerIds?: string[];
   onViewPassport: () => void;
   onDismiss: () => void;
 };
@@ -39,6 +40,7 @@ function formatDate(dateStr: string): string {
 export function StampAnimationModal({
   visible,
   stamps,
+  founderPerformerIds,
   onViewPassport,
   onDismiss,
 }: StampAnimationModalProps) {
@@ -46,6 +48,11 @@ export function StampAnimationModal({
   const router = useRouter();
   const lottieRef = useRef<LottieView>(null);
   const bgRef = useRef<View>(null);
+
+  // Whether any stamp in this batch is a Founder award
+  const hasFounder =
+    (founderPerformerIds?.length ?? 0) > 0 &&
+    stamps.some((s) => founderPerformerIds!.includes(s.performer_id));
 
   // Shared animation values
   const stampTranslateY = useSharedValue(-300);
@@ -56,7 +63,11 @@ export function StampAnimationModal({
   const buttonsOpacity = useSharedValue(0);
 
   const triggerHaptic = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    if (hasFounder) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    } else {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
   };
 
   useEffect(() => {
@@ -127,6 +138,11 @@ export function StampAnimationModal({
   const eventDate = primaryStamp ? formatDate(primaryStamp.event_date) : "";
   const artistNames = stamps.map((s) => s.performer_name);
 
+  // For Founder batch: show gold header label
+  const founderNames = stamps
+    .filter((s) => founderPerformerIds?.includes(s.performer_id))
+    .map((s) => s.performer_name);
+
   if (!visible) return null;
 
   return (
@@ -164,7 +180,7 @@ export function StampAnimationModal({
         >
           {/* Stamp animation area */}
           <View style={{ alignItems: "center", marginBottom: 28, position: "relative" }}>
-            {/* Ink spread — circular pink burst behind the stamp */}
+            {/* Ink spread — circular burst behind the stamp (gold for Founder, pink for regular) */}
             <Animated.View
               style={[
                 inkStyle,
@@ -173,7 +189,7 @@ export function StampAnimationModal({
                   width: 100,
                   height: 100,
                   borderRadius: 50,
-                  backgroundColor: colors.pink,
+                  backgroundColor: hasFounder ? colors.gold : colors.pink,
                 },
               ]}
             />
@@ -189,11 +205,11 @@ export function StampAnimationModal({
                 colorFilters={[
                   {
                     keypath: "ink_ring",
-                    color: colors.pink,
+                    color: hasFounder ? colors.gold : colors.pink,
                   },
                   {
                     keypath: "stamp_circle",
-                    color: colors.pink,
+                    color: hasFounder ? colors.gold : colors.pink,
                   },
                 ]}
               />
@@ -202,6 +218,35 @@ export function StampAnimationModal({
 
           {/* Revealed stamp content */}
           <Animated.View style={[textStyle, { alignItems: "center", gap: 8, width: "100%" }]}>
+            {/* Founder badge — only shown when founder */}
+            {hasFounder && (
+              <View
+                style={{
+                  backgroundColor: "rgba(255,215,0,0.15)",
+                  borderColor: colors.gold,
+                  borderWidth: 1,
+                  borderRadius: 20,
+                  paddingHorizontal: 14,
+                  paddingVertical: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 6,
+                  marginBottom: 4,
+                }}
+              >
+                <Text style={{ color: colors.gold, fontSize: 14 }}>★</Text>
+                <Text
+                  style={{
+                    color: colors.gold,
+                    fontFamily: "Poppins_700Bold",
+                    fontSize: 13,
+                  }}
+                >
+                  You're the Founder!
+                </Text>
+              </View>
+            )}
+
             {/* Venue name — large and prominent */}
             <Text
               style={{
