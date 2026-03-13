@@ -41,20 +41,20 @@
 
 ### Jukebox
 
-- [ ] **JBX-01**: Map button on Home screen replaced with Jukebox icon button
+- [x] **JBX-01**: Map button on Home screen replaced with Jukebox icon button
 - [x] **JBX-02**: Jukebox screen loads Finds from followed users in last 48 hours
 - [x] **JBX-03**: Fallback to all platform Finds when followed-user finds are empty
 - [x] **JBX-04**: Each card shows finder avatar + username + time ago, artist name + platform badge
-- [ ] **JBX-05**: Embedded player via react-native-webview renders and plays (Spotify, SoundCloud, Apple Music)
-- [ ] **JBX-06**: Max 3 WebViews active at once via onViewableItemsChanged lazy loading
-- [ ] **JBX-07**: WebView audio does not interrupt iOS background music playback (mediaPlaybackRequiresUserAction)
-- [ ] **JBX-08**: Unmounted WebViews have audio stopped via injectJavaScript before unmount
-- [ ] **JBX-09**: One-tap Discover collect button adds Discovery to passport with haptic feedback
-- [ ] **JBX-10**: Finder receives notification when someone collects from their Find
-- [ ] **JBX-11**: Empty state displays when no Finds available
+- [x] **JBX-05**: Embedded player via react-native-webview renders and plays (Spotify, SoundCloud, Apple Music)
+- [x] **JBX-06**: Max 3 WebViews active at once via onViewableItemsChanged lazy loading
+- [x] **JBX-07**: WebView audio does not interrupt iOS background music playback (mediaPlaybackRequiresUserAction)
+- [x] **JBX-08**: Unmounted WebViews have audio stopped via injectJavaScript before unmount
+- [x] **JBX-09**: One-tap Discover collect button adds Discovery to passport with haptic feedback
+- [x] **JBX-10**: Finder receives notification when someone collects from their Find
+- [x] **JBX-11**: Empty state displays when no Finds available
 - [x] **JBX-12**: Embed URLs cached on performers table for repeat loads
 - [x] **JBX-13**: GET /api/mobile/jukebox endpoint returns feed data
-- [ ] **JBX-14**: POST /api/mobile/discover endpoint creates Discovery collection entry
+- [x] **JBX-14**: POST /api/mobile/discover endpoint creates Discovery collection entry
 
 ### "I'm at a Show" Check-in
 
@@ -154,20 +154,20 @@
 | GPASS-12 | Phase 7 | Complete |
 | GPASS-13 | Phase 7 | Complete |
 | GPASS-14 | Phase 7 | Complete |
-| JBX-01 | Phase 8 | Pending |
+| JBX-01 | Phase 8 | Complete |
 | JBX-02 | Phase 8 | Complete |
 | JBX-03 | Phase 8 | Complete |
 | JBX-04 | Phase 8 | Complete |
-| JBX-05 | Phase 8 | Pending |
-| JBX-06 | Phase 8 | Pending |
-| JBX-07 | Phase 8 | Pending |
-| JBX-08 | Phase 8 | Pending |
-| JBX-09 | Phase 8 | Pending |
-| JBX-10 | Phase 8 | Pending |
-| JBX-11 | Phase 8 | Pending |
+| JBX-05 | Phase 8 | Complete |
+| JBX-06 | Phase 8 | Complete |
+| JBX-07 | Phase 8 | Complete |
+| JBX-08 | Phase 8 | Complete |
+| JBX-09 | Phase 8 | Complete |
+| JBX-10 | Phase 8 | Complete |
+| JBX-11 | Phase 8 | Complete |
 | JBX-12 | Phase 8 | Complete |
 | JBX-13 | Phase 8 | Complete |
-| JBX-14 | Phase 8 | Pending |
+| JBX-14 | Phase 8 | Complete |
 | SHOW-01 | Phase 9 | Pending |
 | SHOW-02 | Phase 9 | Pending |
 | SHOW-03 | Phase 9 | Pending |
