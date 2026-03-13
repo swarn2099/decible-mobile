@@ -133,7 +133,7 @@ export function PassportPager({
         {/* Page 0 — Stamps */}
         <ScrollView
           key="0"
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
@@ -147,7 +147,7 @@ export function PassportPager({
         {/* Page 1 — Finds */}
         <ScrollView
           key="1"
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
@@ -161,7 +161,7 @@ export function PassportPager({
         {/* Page 2 — Discoveries */}
         <ScrollView
           key="2"
-          contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <GlassGrid
