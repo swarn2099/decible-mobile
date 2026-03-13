@@ -73,7 +73,35 @@ export type WizardStep =
   | { type: 'tag_performer'; event: ActiveVenueEvent }
   | { type: 'no_music_dismiss' }
   | { type: 'already_checked_in'; stamps: StampData[] }
-  | { type: 'stamp'; stamps: StampData[] };
+  | { type: 'stamp'; stamps: StampData[] }
+  | { type: 'show_waiting'; searchId: string; elapsed: number }
+  | { type: 'show_result'; result: ShowSearchResult }
+  | { type: 'show_timeout' };
+
+// ---------- Show Check-In (VM Scraper) types ----------
+
+export type EnrichedPerformer = Pick<Performer, 'id' | 'name' | 'slug' | 'photo_url'> & {
+  is_founder_available: boolean;
+  founder_fan_id: string | null;
+};
+
+export type ShowSearchResult = {
+  search_id: string;
+  confidence: 'high' | 'medium' | 'low';
+  venue_name: string | null;
+  venue_id: string | null;
+  artists: { name: string; performer_id: string | null; platform_url: string | null; }[];
+  source: string;
+};
+
+export type ShowCheckinState =
+  | { phase: 'idle' }
+  | { phase: 'scanning' }
+  | { phase: 'layer1_hit'; venue: Venue; performers: EnrichedPerformer[] }
+  | { phase: 'waiting'; searchId: string; elapsed: number }
+  | { phase: 'result'; result: ShowSearchResult }
+  | { phase: 'timeout' }
+  | { phase: 'error'; message: string };
 
 export type ActiveVenueEvent = {
   venue: Venue;
