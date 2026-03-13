@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-13T06:12:10.339Z"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-03-13T06:16:55.120Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
   completed_phases: 6
   total_plans: 19
-  completed_plans: 17
+  completed_plans: 18
   percent: 14
 ---
 
@@ -51,6 +51,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 07-glassy-passport-redesign P03 | 4 | 2 tasks | 3 files |
 | Phase 07-glassy-passport-redesign P04 | 15 | 2 tasks | 7 files |
 | Phase 08-jukebox P01 | 25 | 2 tasks | 5 files |
+| Phase 08-jukebox P02 | 15 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 07-04]: passport-collections endpoint separate from /passport route — avoids bloating the heavy main route with type-filter-only use cases
 - [Phase 08-jukebox]: isFallback=true when fan has no followees OR followees have no recent Finds — both cases serve global feed
 - [Phase 08-jukebox]: Jukebox embed URL derivation: fire-and-forget backfill pattern — derive on miss, upsert performers table without blocking response
+- [Phase 08-jukebox]: WebView pool uses ref for ordered eviction + state Set for render — avoids stale closure in onViewableItemsChanged callback
+- [Phase 08-jukebox]: EmbeddedPlayer placeholder preserves exact height to prevent FlatList layout jumps on pool eviction
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T06:12:10.333Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-03-13T06:16:51.263Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None
