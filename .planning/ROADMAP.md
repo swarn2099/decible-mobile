@@ -3,7 +3,8 @@
 ## Milestones
 
 - ✅ **v1.0 Foundation** - Phases 1-5 (shipped 2026-03-11)
-- 🚧 **v3.0 The Living Passport** - Phases 6-9 (in progress)
+- ✅ **v3.0 The Living Passport** - Phases 6-9 (shipped 2026-03-13)
+- 🚧 **v3.5 Polish & Identity** - Phases 10-13 (in progress)
 
 ## Phases
 
@@ -90,13 +91,10 @@ Plans:
 
 </details>
 
----
+<details>
+<summary>✅ v3.0 The Living Passport (Phases 6-9) - SHIPPED 2026-03-13</summary>
 
-### 🚧 v3.0 The Living Passport (In Progress)
-
-**Milestone Goal:** Transform Decibel from a static collection app into a living, social music discovery platform — glassmorphic Passport with three tabs, Jukebox social feed with embedded players, and magic show check-in with VM scraping waterfall.
-
-#### Phase 6: Bug Fixes
+### Phase 6: Bug Fixes
 **Goal**: All critical user-facing bugs resolved so v3.0 features build on a stable foundation
 **Depends on**: Phase 5
 **Requirements**: BUG-01, BUG-02, BUG-03, BUG-04
@@ -110,7 +108,7 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md — Fix Discover button, Listen links, Share modal, and Leaderboard screen
 
-#### Phase 7: Glassy Passport Redesign
+### Phase 7: Glassy Passport Redesign
 **Goal**: The Passport tab becomes a glassmorphic identity artifact with three tabs (Stamps / Finds / Discoveries), frosted glass cards, animated orbs, and View More pages
 **Depends on**: Phase 6
 **Requirements**: MIG-01, MIG-05, MIG-06, MIG-07, GPASS-01, GPASS-02, GPASS-03, GPASS-04, GPASS-05, GPASS-06, GPASS-07, GPASS-08, GPASS-09, GPASS-10, GPASS-11, GPASS-12, GPASS-13, GPASS-14
@@ -128,7 +126,7 @@ Plans:
 - [x] 07-03: PassportPager with frosted glass tab bar + passport.tsx rewrite (orbs + header + pager + badges)
 - [x] 07-04: View More pages (search + infinite scroll) + GET /api/mobile/passport-collections endpoint
 
-#### Phase 8: Jukebox
+### Phase 8: Jukebox
 **Goal**: Users can browse followed users' Finds in a social music feed, listen via embedded players, and one-tap collect Discoveries
 **Depends on**: Phase 7
 **Requirements**: MIG-04, JBX-01, JBX-02, JBX-03, JBX-04, JBX-05, JBX-06, JBX-07, JBX-08, JBX-09, JBX-10, JBX-11, JBX-12, JBX-13, JBX-14
@@ -141,11 +139,11 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — DB migration (MIG-04) + react-native-webview + jukebox API endpoint + useJukebox hook
-- [ ] 08-02-PLAN.md — JukeboxCard + EmbeddedPlayer + Jukebox screen + Home icon swap + WebView pool
-- [ ] 08-03-PLAN.md — Discover endpoint fix (collection_type) + finder notification + notification routing
+- [x] 08-01-PLAN.md — DB migration (MIG-04) + react-native-webview + jukebox API endpoint + useJukebox hook
+- [x] 08-02-PLAN.md — JukeboxCard + EmbeddedPlayer + Jukebox screen + Home icon swap + WebView pool
+- [x] 08-03-PLAN.md — Discover endpoint fix (collection_type) + finder notification + notification routing
 
-#### Phase 9: I'm at a Show
+### Phase 9: I'm at a Show
 **Goal**: Users can check in at a live show and have the app discover who is performing — via DB lookup, scraping waterfall on the VM, or manual entry — stamping their passport with the full lineup
 **Depends on**: Phase 8
 **Requirements**: MIG-02, MIG-03, SHOW-01, SHOW-02, SHOW-03, SHOW-04, SHOW-05, SHOW-06, SHOW-07, SHOW-08, SHOW-09, SHOW-10, SHOW-11, SHOW-12, SHOW-13, SHOW-14, SHOW-15, SHOW-16, SHOW-17, SHOW-18, SHOW-19, SHOW-20, SHOW-21, SHOW-22, SHOW-23, SHOW-24, SHOW-25, INFRA-01, INFRA-02, INFRA-03
@@ -158,16 +156,70 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 09-01: DB migrations (MIG-02, MIG-03) + VM scraper service scaffold (Express.js, PM2, shared Playwright browser, INFRA-01/02/03) + shared secret auth
-- [ ] 09-02: Layer 1 (DB lookup) + Layer 2 (RA/DICE/EDMTrain/Songkick/Bandsintown) + Layer 3 (Google Places) on VM
-- [ ] 09-03: Layer 5 (Playwright venue website) + Layer 6 (Anthropic SDK, confidence-gated) on VM + POST /api/mobile/show-checkin Vercel fire-and-forget dispatch
-- [ ] 09-04: Mobile: useShowCheckin hook + ScrapingWaitScreen + Supabase Realtime subscription (with polling fallback for iOS background)
-- [ ] 09-05: Mobile: confidence-tiered lineup confirmation UI + manual fallback form + Founder+Stamp simultaneous award + summary screen
+- [x] 09-01: DB migrations (MIG-02, MIG-03) + VM scraper service scaffold (Express.js, PM2, shared Playwright browser, INFRA-01/02/03) + shared secret auth
+- [x] 09-02: Layer 1 (DB lookup) + Layer 2 (RA/DICE/EDMTrain/Songkick/Bandsintown) + Layer 3 (Google Places) on VM
+- [x] 09-03: Layer 5 (Playwright venue website) + Layer 6 (Anthropic SDK, confidence-gated) on VM + POST /api/mobile/show-checkin Vercel fire-and-forget dispatch
+- [x] 09-04: Mobile: useShowCheckin hook + ScrapingWaitScreen + Supabase Realtime subscription (with polling fallback for iOS background)
+- [x] 09-05: Mobile: confidence-tiered lineup confirmation UI + manual fallback form + Founder+Stamp simultaneous award + summary screen
+
+</details>
+
+---
+
+### 🚧 v3.5 Polish & Identity (In Progress)
+
+**Milestone Goal:** Redesign the login flow and passport screen to establish brand tone and maximize information density — animated login, Instagram-style compact layout, 3-column grid, and badges as a dedicated tab.
+
+#### Phase 10: Login Flow Redesign
+**Goal**: The login screen makes a strong first impression with branded animations and a frictionless magic-link flow
+**Depends on**: Phase 9
+**Requirements**: LOGIN-01, LOGIN-02, LOGIN-03, LOGIN-04, LOGIN-05, LOGIN-06, LOGIN-07, LOGIN-08
+**Success Criteria** (what must be TRUE):
+  1. Login screen adapts to device dark/light mode — dark background (#0B0B0F) with subtler orbs in dark, white background with low-opacity orbs in light
+  2. User sees the "D E C I B E L" wordmark and tagline fade in from top, then input and button stagger in below — before any interaction
+  3. User taps the email field and the keyboard slides up without obscuring the input or button
+  4. User enters an email, taps the gradient button with haptic feedback, sees a spinner, then sees a checkmark and "Check your email" confirmation
+**Plans**: TBD
+
+#### Phase 11: Passport Layout & Structure
+**Goal**: The Passport header and tab bar are rebuilt in an Instagram-style compact layout that pins to the top and supports swipe navigation
+**Depends on**: Phase 10
+**Requirements**: PLAYOUT-01, PLAYOUT-02, PLAYOUT-03, PLAYOUT-04, PLAYOUT-05, PLAYOUT-06, PLAYOUT-07, PLAYOUT-08
+**Success Criteria** (what must be TRUE):
+  1. Passport header is ~180px tall: avatar, four inline stat counts (Followers / Following / Stamps / Finds), username, and "Member since" — no settings gear anywhere on screen
+  2. Tapping the Followers or Following count opens the respective list screen
+  3. Two action buttons appear below the stats: "Share Passport" (gradient fill) and "Edit Profile" (surface fill)
+  4. Scrolling past the header causes the tab bar to stick to the top of the screen
+  5. Swiping left or right switches between tabs with a smooth animated transition; the active tab has a pink underline
+**Plans**: TBD
+
+#### Phase 12: Passport Grid & Cards
+**Goal**: Each passport tab renders a dense, uniform 3-column image grid where every cell tells the story of a collection entry at a glance
+**Depends on**: Phase 11
+**Requirements**: GRID-01, GRID-02, GRID-03, GRID-04, GRID-05, GRID-06, GRID-07, GRID-08
+**Success Criteria** (what must be TRUE):
+  1. Grid displays three equal-width square cells per row with ~1px gaps; artist image fills each cell completely with no letterboxing
+  2. Each cell has a bottom gradient overlay showing: Stamp cells — artist name + venue + date; Find cells — artist name + platform icon + date; Discovery cells — artist name + "via @user" + date
+  3. Cells that belong to the user's Founded artists show a gold star in the top-right corner
+  4. Tapping a cell triggers haptic feedback and a press-down scale animation
+  5. Each tab shows an empty state with an icon, message, and relevant CTA when there are no entries; the grid loads newest-to-oldest with infinite scroll past 50 items
+**Plans**: TBD
+
+#### Phase 13: Badges Section
+**Goal**: Badges are surfaced as a dedicated 4th tab in the passport with clear earned vs locked visual states — removed entirely from the header and scroll
+**Depends on**: Phase 12
+**Requirements**: BADGE-01, BADGE-02, BADGE-03, BADGE-04, BADGE-05
+**Success Criteria** (what must be TRUE):
+  1. The sticky tab bar shows four tabs: Stamps, Finds, Discoveries, Badges — the Badges tab is reachable by tap or swipe
+  2. No badge elements appear in the passport header or anywhere in the main scroll outside the Badges tab
+  3. Earned badges render full color with a glow/shadow effect; locked badges render grayscale at 0.3 opacity — visually distinct at a glance
+  4. Tapping an earned badge opens a detail card showing how it was earned and the date; tapping a locked badge shows the requirements to unlock it
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 6 → 7 → 8 → 9
+Phases execute in numeric order: 10 → 11 → 12 → 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -176,7 +228,11 @@ Phases execute in numeric order: 6 → 7 → 8 → 9
 | 3. Check-In | v1.0 | 3/3 | Complete | 2026-03-11 |
 | 4. Passport Redesign | v1.0 | 2/2 | Complete | 2026-03-11 |
 | 5. Share + Polish | v1.0 | 3/3 | Complete | 2026-03-11 |
-| 6. Bug Fixes | 1/1 | Complete   | 2026-03-12 | - |
-| 7. Glassy Passport Redesign | 4/4 | Complete   | 2026-03-12 | - |
-| 8. Jukebox | v3.0 | 0/3 | Not started | - |
-| 9. I'm at a Show | 5/5 | Complete    | 2026-03-13 | - |
+| 6. Bug Fixes | v3.0 | 1/1 | Complete | 2026-03-12 |
+| 7. Glassy Passport Redesign | v3.0 | 4/4 | Complete | 2026-03-12 |
+| 8. Jukebox | v3.0 | 3/3 | Complete | 2026-03-13 |
+| 9. I'm at a Show | v3.0 | 5/5 | Complete | 2026-03-13 |
+| 10. Login Flow Redesign | v3.5 | 0/? | Not started | - |
+| 11. Passport Layout & Structure | v3.5 | 0/? | Not started | - |
+| 12. Passport Grid & Cards | v3.5 | 0/? | Not started | - |
+| 13. Badges Section | v3.5 | 0/? | Not started | - |

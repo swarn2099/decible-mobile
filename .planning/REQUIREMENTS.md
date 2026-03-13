@@ -132,10 +132,10 @@ Requirements for milestone v3.5 — Polish & Identity.
 | BADGE-05 | Phase 13 | Pending |
 
 **Coverage:**
-- v3.5 requirements: 21 total
-- Mapped to phases: 21
+- v3.5 requirements: 29 total (LOGIN: 8, PLAYOUT: 8, GRID: 8, BADGE: 5)
+- Mapped to phases: 29
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after initial definition*
+*Last updated: 2026-03-13 after roadmap creation*
