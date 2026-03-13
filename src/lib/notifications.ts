@@ -67,6 +67,7 @@ export function handleNotificationRoute(
     case "artist":
     case "event":
     case "tier_up":
+    case "artist_collected":
       return `/artist/${data.slug}`;
     case "passport":
     case "recap":

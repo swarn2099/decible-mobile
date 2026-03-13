@@ -26,6 +26,7 @@ export function useDiscoverArtist() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       queryClient.invalidateQueries({ queryKey: ["passport"] });
       queryClient.invalidateQueries({ queryKey: ["fanBadges"] });
+      queryClient.invalidateQueries({ queryKey: ["jukebox"] });
     },
   });
 }
