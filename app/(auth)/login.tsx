@@ -9,7 +9,6 @@ import {
   Pressable,
   ActivityIndicator,
   Animated as RNAnimated,
-  Dimensions,
   StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -18,98 +17,15 @@ import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
 import { Mail, Check } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
+import { useThemeColors } from "@/constants/colors";
+import { LoginOrbBackground } from "@/components/auth/LoginOrbBackground";
 
 const REVIEW_EMAIL = "apple-review@decibel.app";
-const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
-
-// ─── Animated Gradient Orb ───────────────────────────────────────────
-function GradientOrb({
-  color,
-  size,
-  startX,
-  startY,
-  duration,
-  delay,
-}: {
-  color: string;
-  size: number;
-  startX: number;
-  startY: number;
-  duration: number;
-  delay: number;
-}) {
-  const translateX = useRef(new RNAnimated.Value(0)).current;
-  const translateY = useRef(new RNAnimated.Value(0)).current;
-
-  useEffect(() => {
-    const driftX = RNAnimated.loop(
-      RNAnimated.sequence([
-        RNAnimated.delay(delay),
-        RNAnimated.timing(translateX, {
-          toValue: 40,
-          duration,
-          useNativeDriver: true,
-        }),
-        RNAnimated.timing(translateX, {
-          toValue: -30,
-          duration: duration * 0.8,
-          useNativeDriver: true,
-        }),
-        RNAnimated.timing(translateX, {
-          toValue: 0,
-          duration: duration * 0.6,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    const driftY = RNAnimated.loop(
-      RNAnimated.sequence([
-        RNAnimated.delay(delay + 500),
-        RNAnimated.timing(translateY, {
-          toValue: -35,
-          duration: duration * 0.9,
-          useNativeDriver: true,
-        }),
-        RNAnimated.timing(translateY, {
-          toValue: 25,
-          duration,
-          useNativeDriver: true,
-        }),
-        RNAnimated.timing(translateY, {
-          toValue: 0,
-          duration: duration * 0.7,
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    driftX.start();
-    driftY.start();
-    return () => {
-      driftX.stop();
-      driftY.stop();
-    };
-  }, []);
-
-  return (
-    <RNAnimated.View
-      style={{
-        position: "absolute",
-        left: startX - size / 2,
-        top: startY - size / 2,
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        backgroundColor: color,
-        opacity: 0.18,
-        transform: [{ translateX }, { translateY }],
-      }}
-    />
-  );
-}
 
 // ─── Login Screen ────────────────────────────────────────────────────
 export default function LoginScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -208,16 +124,15 @@ export default function LoginScreen() {
 
   const isDisabled = !email.trim() || loading || sent;
 
-  return (
-    <View style={{ flex: 1, backgroundColor: "#0B0B0F" }}>
-      <StatusBar barStyle="light-content" />
+  // Input border color: error -> pink, focused -> pink, default -> inputBorder
+  const inputBorderColor = error ? colors.pink : isFocused ? colors.pink : colors.inputBorder;
 
-      {/* Animated gradient orbs */}
-      <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, overflow: "hidden" }}>
-        <GradientOrb color="#FF4D6A" size={280} startX={SCREEN_W * 0.2} startY={SCREEN_H * 0.15} duration={8000} delay={0} />
-        <GradientOrb color="#9B6DFF" size={320} startX={SCREEN_W * 0.75} startY={SCREEN_H * 0.3} duration={10000} delay={1000} />
-        <GradientOrb color="#4D9AFF" size={240} startX={SCREEN_W * 0.5} startY={SCREEN_H * 0.65} duration={9000} delay={500} />
-      </View>
+  return (
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <StatusBar barStyle={colors.isDark ? "light-content" : "dark-content"} />
+
+      {/* Reanimated gradient orbs */}
+      <LoginOrbBackground isDark={colors.isDark} />
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -245,7 +160,7 @@ export default function LoginScreen() {
                 fontFamily: "Poppins_700Bold",
                 fontSize: 28,
                 letterSpacing: 8,
-                color: "#FFFFFF",
+                color: colors.textPrimary,
               }}
             >
               D E C I B E L
@@ -254,7 +169,7 @@ export default function LoginScreen() {
 
           {/* Tagline */}
           <RNAnimated.View style={{ alignItems: "center", marginBottom: 48, opacity: taglineOpacity }}>
-            <Text style={{ fontFamily: "Poppins_400Regular", fontSize: 14, color: "#8E8E93" }}>
+            <Text style={{ fontFamily: "Poppins_400Regular", fontSize: 14, color: colors.textSecondary }}>
               Your Live Music Passport
             </Text>
           </RNAnimated.View>
@@ -271,19 +186,15 @@ export default function LoginScreen() {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                backgroundColor: "#1A1A1F",
+                backgroundColor: colors.inputBg,
                 borderRadius: 12,
                 height: 52,
                 paddingHorizontal: 16,
                 borderWidth: 1,
-                borderColor: error
-                  ? "#FF4D6A"
-                  : isFocused
-                    ? "#FF4D6A"
-                    : "rgba(255,255,255,0.12)",
+                borderColor: inputBorderColor,
                 ...(isFocused && !error
                   ? {
-                      shadowColor: "#FF4D6A",
+                      shadowColor: colors.pink,
                       shadowOffset: { width: 0, height: 0 },
                       shadowOpacity: 0.3,
                       shadowRadius: 8,
@@ -292,18 +203,18 @@ export default function LoginScreen() {
                   : {}),
               }}
             >
-              <Mail size={20} color="#8E8E93" style={{ marginRight: 12 }} />
+              <Mail size={20} color={colors.gray} style={{ marginRight: 12 }} />
               <TextInput
                 style={{
                   flex: 1,
                   fontFamily: "Poppins_400Regular",
                   fontSize: 16,
-                  color: "#FFFFFF",
+                  color: colors.textPrimary,
                   height: "100%",
                   padding: 0,
                 }}
                 placeholder="Email address"
-                placeholderTextColor="#8E8E93"
+                placeholderTextColor={colors.gray}
                 value={email}
                 onChangeText={(t) => {
                   setEmail(t);
@@ -321,7 +232,7 @@ export default function LoginScreen() {
                 style={{
                   fontFamily: "Poppins_400Regular",
                   fontSize: 13,
-                  color: "#FF4D6A",
+                  color: colors.pink,
                   marginTop: 6,
                   marginLeft: 4,
                 }}
@@ -383,7 +294,7 @@ export default function LoginScreen() {
               style={{
                 fontFamily: "Poppins_400Regular",
                 fontSize: 12,
-                color: "#8E8E93",
+                color: colors.gray,
                 textAlign: "center",
                 marginBottom: 48,
               }}
@@ -398,14 +309,14 @@ export default function LoginScreen() {
               style={{
                 fontFamily: "Poppins_400Regular",
                 fontSize: 11,
-                color: "#6E6E73",
+                color: colors.gray,
                 textAlign: "center",
               }}
             >
               By continuing, you agree to{" "}
-              <Text style={{ color: "#FF4D6A" }}>Terms of Service</Text>
+              <Text style={{ color: colors.pink }}>Terms of Service</Text>
               {" & "}
-              <Text style={{ color: "#FF4D6A" }}>Privacy Policy</Text>
+              <Text style={{ color: colors.pink }}>Privacy Policy</Text>
             </Text>
           </RNAnimated.View>
         </ScrollView>
