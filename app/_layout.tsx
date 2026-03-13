@@ -83,6 +83,10 @@ function RootNavigator() {
           options={{ presentation: "card", animation: "slide_from_right" }}
         />
         <Stack.Screen
+          name="jukebox"
+          options={{ presentation: "card", animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="profile/[id]"
           options={{ presentation: "card", animation: "slide_from_right" }}
         />
