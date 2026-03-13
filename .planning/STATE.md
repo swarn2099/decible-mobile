@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.5
 milestone_name: Polish & Identity
-status: ready_to_plan
-stopped_at: null
-last_updated: "2026-03-13"
-last_activity: "2026-03-13 — Roadmap created for v3.5, Phase 10 ready to plan"
+status: planning
+stopped_at: Completed 10-login-flow-redesign/10-01-PLAN.md
+last_updated: "2026-03-13T22:36:50.333Z"
+last_activity: 2026-03-13 — Roadmap created, v3.5 phases 10-13 defined
 progress:
-  total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 13
+  completed_phases: 9
+  total_plans: 25
+  completed_plans: 25
   percent: 0
 ---
 
@@ -50,6 +50,8 @@ Progress: [░░░░░░░░░░] 0%
 - OrbBackground uses LinearGradient radial falloff (no BlurView on orbs) — low overhead
 - PassportPager tab pill: tabOffset SharedValue drives smooth mid-swipe animation
 - passport.tsx no-parent-ScrollView pattern: OrbBackground sibling behind SafeAreaView
+- [Phase 10-login-flow-redesign]: LoginOrbBackground separate from passport OrbBackground to avoid coupling auth to passport internals
+- [Phase 10-login-flow-redesign]: isDark boolean prop on LoginOrbBackground rather than calling useThemeColors() internally
 
 ### Pending Todos
 
@@ -61,6 +63,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13
-Stopped at: Roadmap creation for v3.5
+Last session: 2026-03-13T22:36:50.327Z
+Stopped at: Completed 10-login-flow-redesign/10-01-PLAN.md
 Resume file: None
