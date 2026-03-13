@@ -8,15 +8,15 @@ Decibel is a mobile app (React Native + Expo) that serves as a live music passpo
 
 Every interaction in Decibel revolves around live music — discovering underground artists before they blow up (Finds) and proving you were at the show (Stamps). The Founder badge (one-of-one, first person to add an artist) is the app's most valuable social currency.
 
-## Current Milestone: v3.0 — The Living Passport
+## Current Milestone: v3.5 — Polish & Identity
 
-**Goal:** Transform Decibel from a static collection app into a living, social music discovery platform with three major features: Glassy Passport redesign, Jukebox social feed, and magic check-in flow.
+**Goal:** Redesign the login flow and passport screen to set the brand tone and maximize information density — Instagram-style compact layout, 3-column grid, animated login, and badges as a dedicated tab.
 
 **Target features:**
-- Glassy Passport Redesign (Stamps / Finds / Discoveries tabs, frosted glass cards, View More pages)
-- Jukebox (social music discovery feed, embedded players, one-tap Discover collect)
-- "I'm at a Show" magic check-in (location-based, scraping waterfall on VM, manual fallback)
-- Bug fixes (Discover button, Listen links, share modal, leaderboard API)
+- Login Flow Redesign (animated gradient orbs, branded input/button, light/dark themed, magic link flow)
+- Passport Layout & Structure (compact Instagram-style header, sticky tabs, stats reorder, no settings gear, no badge teaser)
+- Passport Grid & Cards (3-column square grid, 1px gaps, cell overlays per tab, empty states)
+- Badges Section (4th tab in sticky tab bar, earned vs locked styling, removed from header/scroll)
 
 ## Requirements
 
@@ -44,22 +44,21 @@ Every interaction in Decibel revolves around live music — discovering undergro
 
 ### Active
 
-- [ ] Fix Discover button (non-functional)
-- [ ] Fix Listen links (broken)
-- [ ] Fix share modal (broken)
-- [ ] Fix leaderboard API (non-functional)
-- [ ] Glassy Passport: Three-tab layout (Stamps / Finds / Discoveries)
-- [ ] Glassy Passport: Frosted glass cards with expo-blur
-- [ ] Glassy Passport: View More pages with search + infinite scroll
-- [ ] Glassy Passport: Animated gradient orbs background
-- [ ] Jukebox: Social music discovery feed from followed users' Finds
-- [ ] Jukebox: Embedded players (Spotify, SoundCloud, Apple Music)
-- [ ] Jukebox: One-tap Discover collect
-- [ ] "I'm at a Show": Magic check-in with scraping waterfall
-- [ ] "I'm at a Show": VM scraper service (7 layers, 15s timeout)
-- [ ] "I'm at a Show": Manual fallback form
-- [ ] "I'm at a Show": Supabase realtime for async scrape results
-- [ ] Collection type: Discovery (collected via Jukebox/browse)
+- [ ] Login: Animated gradient orbs background (both themes)
+- [ ] Login: Branded input + gradient button with haptic + loading/success states
+- [ ] Login: Stagger fade-in animations + keyboard avoidance
+- [ ] Passport: Compact Instagram-style header (~180px) with avatar + inline stats
+- [ ] Passport: Stats order — Followers, Following, Stamps, Finds (tappable social counts)
+- [ ] Passport: Share Passport (gradient) + Edit Profile (surface) action buttons
+- [ ] Passport: No settings gear, no badge teaser row
+- [ ] Passport: Sticky tab bar (Stamps / Finds / Discoveries) with swipe gestures
+- [ ] Passport: 3-column square grid with 1px uniform gaps
+- [ ] Passport: Cell overlays — artist name, context (venue/platform/via), date, founder badge
+- [ ] Passport: Empty states per tab with relevant CTA
+- [ ] Passport: Haptic + press animation on cell tap
+- [ ] Badges: 4th tab in sticky tab bar
+- [ ] Badges: Earned (full color, glow) vs locked (grayscale, 0.3 opacity) styling
+- [ ] Badges: Tap earned → detail card, tap locked → requirements
 
 ### Out of Scope
 
@@ -101,4 +100,4 @@ Every interaction in Decibel revolves around live music — discovering undergro
 | Coarse phase structure | PRD already defines 6 clear phases with natural boundaries | — Pending |
 
 ---
-*Last updated: 2026-03-12 after milestone v3.0 initialization*
+*Last updated: 2026-03-13 after milestone v3.5 initialization*
