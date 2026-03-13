@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: The Living Passport
 status: executing
-stopped_at: Completed 09-04-PLAN.md
-last_updated: "2026-03-13T16:14:18.724Z"
+stopped_at: Completed 09-05-PLAN.md
+last_updated: "2026-03-13T16:23:08.892Z"
 last_activity: "2026-03-12 — Plan 07-01 complete: DB migrations applied, pager-view installed, passport API extended, BlurTargetView fix on 3 modals"
 progress:
   total_phases: 9
-  completed_phases: 7
+  completed_phases: 8
   total_plans: 24
-  completed_plans: 23
+  completed_plans: 24
   percent: 14
 ---
 
@@ -57,6 +57,7 @@ Progress: [██░░░░░░░░] 14%
 | Phase 09-im-at-a-show P02 | 274 | 2 tasks | 5 files |
 | Phase 09-im-at-a-show P03 | 420 | 2 tasks | 5 files |
 | Phase 09-im-at-a-show P04 | 202 | 2 tasks | 4 files |
+| Phase 09-im-at-a-show P05 | 395 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,8 @@ Progress: [██░░░░░░░░] 14%
 - [Phase 09-im-at-a-show]: show-checkin POST enriches performers with is_founder_available for instant UI state without extra roundtrip
 - [Phase 09-im-at-a-show]: lastPositionRef stores lat/lng from GPS scan for startCheckin() call — avoids second GPS request in handleConfirmVenue
 - [Phase 09-im-at-a-show]: show_result placeholder in CheckInWizard until Plan 09-05 confidence-aware collection UI
+- [Phase 09-im-at-a-show]: postStampSummaryRef pattern: stamp animation onViewPassport/onDismiss checks a ref for summary data — avoids adding summary state to the stamp modal itself
+- [Phase 09-im-at-a-show]: ManualFallbackForm routes new artists through tag-performer endpoint, known artists through show-checkin PUT — keeps collection logic server-side
 
 ### Pending Todos
 
@@ -108,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T16:14:18.718Z
-Stopped at: Completed 09-04-PLAN.md
+Last session: 2026-03-13T16:23:03.419Z
+Stopped at: Completed 09-05-PLAN.md
 Resume file: None

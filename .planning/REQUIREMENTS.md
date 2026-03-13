@@ -62,10 +62,10 @@
 - [x] **SHOW-02**: Location permission requested with custom pre-prompt explainer screen
 - [x] **SHOW-03**: Happy path: venue + event + lineup resolved from DB in <1 second (Layer 1)
 - [x] **SHOW-04**: Each artist in lineup shows Founder availability or existing founder info
-- [ ] **SHOW-05**: "Collect All" button stamps entire lineup in one tap
+- [x] **SHOW-05**: "Collect All" button stamps entire lineup in one tap
 - [x] **SHOW-06**: Founder Badge + Stamp awarded simultaneously when eligible
-- [ ] **SHOW-07**: Confetti + haptic on Founder, subtle haptic on Stamp
-- [ ] **SHOW-08**: Summary screen shows results after collection
+- [x] **SHOW-07**: Confetti + haptic on Founder, subtle haptic on Stamp
+- [x] **SHOW-08**: Summary screen shows results after collection
 - [x] **SHOW-09**: Scraping waterfall fires on VM when DB has no match (Layers 2-6)
 - [x] **SHOW-10**: Layer 2: Event platform APIs (RA GraphQL, DICE, EDMTrain, Songkick, Bandsintown)
 - [x] **SHOW-11**: Layer 3: Google Places reverse geocode for venue enrichment
@@ -74,11 +74,11 @@
 - [x] **SHOW-14**: Layer 6: Claude API with web search for venue + date query
 - [x] **SHOW-15**: App shows "Finding out what's playing here..." loading state during scrape
 - [x] **SHOW-16**: Results appear via Supabase Realtime subscription within 15 seconds
-- [ ] **SHOW-17**: Confidence levels displayed (high = auto, medium = confirm, low = form prefill with link required)
-- [ ] **SHOW-18**: Manual fallback form appears after 15-second timeout
-- [ ] **SHOW-19**: Manual form has venue autocomplete + artist link paste
-- [ ] **SHOW-20**: New venues and artists created from manual submissions
-- [ ] **SHOW-21**: Crowdsource data saved to venue_submissions for pattern detection
+- [x] **SHOW-17**: Confidence levels displayed (high = auto, medium = confirm, low = form prefill with link required)
+- [x] **SHOW-18**: Manual fallback form appears after 15-second timeout
+- [x] **SHOW-19**: Manual form has venue autocomplete + artist link paste
+- [x] **SHOW-20**: New venues and artists created from manual submissions
+- [x] **SHOW-21**: Crowdsource data saved to venue_submissions for pattern detection
 - [x] **SHOW-22**: POST /api/mobile/show-checkin Vercel endpoint with fire-and-forget VM dispatch
 - [x] **SHOW-23**: VM scraper service at ~/decibel/scraper/ with PM2 process management
 - [x] **SHOW-24**: Shared secret auth header on VM scraper endpoint
@@ -172,10 +172,10 @@
 | SHOW-02 | Phase 9 | Complete |
 | SHOW-03 | Phase 9 | Complete |
 | SHOW-04 | Phase 9 | Complete |
-| SHOW-05 | Phase 9 | Pending |
+| SHOW-05 | Phase 9 | Complete |
 | SHOW-06 | Phase 9 | Complete |
-| SHOW-07 | Phase 9 | Pending |
-| SHOW-08 | Phase 9 | Pending |
+| SHOW-07 | Phase 9 | Complete |
+| SHOW-08 | Phase 9 | Complete |
 | SHOW-09 | Phase 9 | Complete |
 | SHOW-10 | Phase 9 | Complete |
 | SHOW-11 | Phase 9 | Complete |
@@ -184,11 +184,11 @@
 | SHOW-14 | Phase 9 | Complete |
 | SHOW-15 | Phase 9 | Complete |
 | SHOW-16 | Phase 9 | Complete |
-| SHOW-17 | Phase 9 | Pending |
-| SHOW-18 | Phase 9 | Pending |
-| SHOW-19 | Phase 9 | Pending |
-| SHOW-20 | Phase 9 | Pending |
-| SHOW-21 | Phase 9 | Pending |
+| SHOW-17 | Phase 9 | Complete |
+| SHOW-18 | Phase 9 | Complete |
+| SHOW-19 | Phase 9 | Complete |
+| SHOW-20 | Phase 9 | Complete |
+| SHOW-21 | Phase 9 | Complete |
 | SHOW-22 | Phase 9 | Complete |
 | SHOW-23 | Phase 9 | Complete |
 | SHOW-24 | Phase 9 | Complete |
