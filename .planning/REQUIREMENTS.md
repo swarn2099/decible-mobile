@@ -9,14 +9,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 
 ### Login
 
-- [ ] **LOGIN-01**: Login screen respects device light/dark mode (#0B0B0F dark, #FFFFFF light)
-- [ ] **LOGIN-02**: Animated gradient orbs float behind content (pink/purple/blue, lower opacity in light mode)
-- [ ] **LOGIN-03**: Tracked-out "D E C I B E L" wordmark + "Your Live Music Passport" tagline in upper third
-- [ ] **LOGIN-04**: Themed email input with mail icon, focus state with pink border glow
-- [ ] **LOGIN-05**: Brand gradient (pink→purple) "Send Magic Link" button with press animation + haptic
-- [ ] **LOGIN-06**: Loading state (spinner in button) and success state (checkmark + "Check your email")
-- [ ] **LOGIN-07**: Content stagger-fades in on mount (wordmark → input → button)
-- [ ] **LOGIN-08**: Keyboard avoidance works smoothly on iOS and Android
+- [x] **LOGIN-01**: Login screen respects device light/dark mode (#0B0B0F dark, #FFFFFF light)
+- [x] **LOGIN-02**: Animated gradient orbs float behind content (pink/purple/blue, lower opacity in light mode)
+- [x] **LOGIN-03**: Tracked-out "D E C I B E L" wordmark + "Your Live Music Passport" tagline in upper third
+- [x] **LOGIN-04**: Themed email input with mail icon, focus state with pink border glow
+- [x] **LOGIN-05**: Brand gradient (pink→purple) "Send Magic Link" button with press animation + haptic
+- [x] **LOGIN-06**: Loading state (spinner in button) and success state (checkmark + "Check your email")
+- [x] **LOGIN-07**: Content stagger-fades in on mount (wordmark → input → button)
+- [x] **LOGIN-08**: Keyboard avoidance works smoothly on iOS and Android
 
 ### Passport Layout
 
@@ -101,14 +101,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LOGIN-01 | Phase 10 | Pending |
-| LOGIN-02 | Phase 10 | Pending |
-| LOGIN-03 | Phase 10 | Pending |
-| LOGIN-04 | Phase 10 | Pending |
-| LOGIN-05 | Phase 10 | Pending |
-| LOGIN-06 | Phase 10 | Pending |
-| LOGIN-07 | Phase 10 | Pending |
-| LOGIN-08 | Phase 10 | Pending |
+| LOGIN-01 | Phase 10 | Complete |
+| LOGIN-02 | Phase 10 | Complete |
+| LOGIN-03 | Phase 10 | Complete |
+| LOGIN-04 | Phase 10 | Complete |
+| LOGIN-05 | Phase 10 | Complete |
+| LOGIN-06 | Phase 10 | Complete |
+| LOGIN-07 | Phase 10 | Complete |
+| LOGIN-08 | Phase 10 | Complete |
 | PLAYOUT-01 | Phase 11 | Pending |
 | PLAYOUT-02 | Phase 11 | Pending |
 | PLAYOUT-03 | Phase 11 | Pending |
