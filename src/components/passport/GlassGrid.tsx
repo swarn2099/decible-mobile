@@ -2,12 +2,17 @@ import {
   View,
   Text,
   Pressable,
+  FlatList,
   StyleSheet,
   useWindowDimensions,
+  ActivityIndicator,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Star, Stamp, Compass, Music } from "lucide-react-native";
+import { BlurView } from "expo-blur";
+import { Star, Ticket, Music, Compass } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, {
@@ -15,9 +20,10 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
+import { useThemeColors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
 
-const CELL_GAP = 2;
+const CELL_GAP = 1;
 const COLUMNS = 3;
 
 // ─── Gradient fallback colors ────────────────────────────────────────
@@ -41,15 +47,19 @@ function getGradientForName(name: string): [string, string] {
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "";
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
-function getPlatformDot(url: string | null): { color: string } {
-  if (!url) return { color: "#1DB954" };
-  if (url.includes("spotify.com")) return { color: "#1DB954" };
-  if (url.includes("soundcloud.com")) return { color: "#FF5500" };
-  if (url.includes("music.apple.com")) return { color: "#FC3C44" };
-  return { color: "#9B6DFF" };
+function getPlatformInfo(url: string | null): { color: string; name: string } {
+  if (!url) return { color: "#1DB954", name: "Music" };
+  if (url.includes("spotify.com")) return { color: "#1DB954", name: "Spotify" };
+  if (url.includes("soundcloud.com")) return { color: "#FF5500", name: "SoundCloud" };
+  if (url.includes("music.apple.com")) return { color: "#FC3C44", name: "Apple Music" };
+  return { color: "#9B6DFF", name: "Music" };
 }
 
 // ─── Grid Cell ───────────────────────────────────────────────────────
@@ -69,6 +79,7 @@ function GridCell({
   }));
 
   const gradientColors = getGradientForName(item.performer.name);
+  const platformInfo = getPlatformInfo(item.performer.platform_url);
 
   const handlePressIn = () => {
     scale.value = withSpring(0.97, { damping: 15, stiffness: 300 });
@@ -81,6 +92,35 @@ function GridCell({
     router.push(`/artist/${item.performer.slug}`);
   };
 
+  // Line 2: context varies by type
+  const renderContextLine = () => {
+    if (type === "stamp") {
+      return (
+        <Text style={styles.cellSecondary} numberOfLines={1}>
+          {item.venue?.name ?? "Live Show"}
+        </Text>
+      );
+    }
+    if (type === "find") {
+      return (
+        <View style={styles.platformRow}>
+          <View
+            style={[styles.platformDot, { backgroundColor: platformInfo.color }]}
+          />
+          <Text style={styles.cellSecondary} numberOfLines={1}>
+            {platformInfo.name}
+          </Text>
+        </View>
+      );
+    }
+    // discovery
+    return (
+      <Text style={styles.cellSecondary} numberOfLines={1}>
+        {item.finder_username ? `via @${item.finder_username}` : "Discovered"}
+      </Text>
+    );
+  };
+
   return (
     <Animated.View style={animatedStyle}>
       <Pressable
@@ -90,8 +130,8 @@ function GridCell({
         style={{
           width: cellSize,
           height: cellSize,
+          borderRadius: 6,
           overflow: "hidden",
-          opacity: type === "discovery" ? 0.85 : 1,
         }}
       >
         {/* Full-bleed artist image */}
@@ -109,51 +149,31 @@ function GridCell({
           />
         )}
 
-        {/* Founder badge — top right */}
+        {/* Founder badge — top right with shadow */}
         {item.is_founder && (
           <View style={styles.founderBadge}>
-            <Star size={12} color="#FFD700" fill="#FFD700" />
+            <Star size={16} color="#FFD700" fill="#FFD700" />
           </View>
         )}
 
-        {/* Bottom gradient overlay with metadata */}
-        <LinearGradient
-          colors={["transparent", "rgba(0,0,0,0.7)"]}
-          style={styles.overlay}
-        >
-          <Text style={styles.cellName} numberOfLines={1}>
-            {item.performer.name}
-          </Text>
-
-          {/* Type-specific secondary info */}
-          {type === "stamp" && (
-            <Text style={styles.cellSecondary} numberOfLines={1}>
-              {item.venue?.name
-                ? `${item.venue.name} · ${formatDate(item.event_date)}`
-                : formatDate(item.event_date)}
+        {/* Frosted glass bottom section (~35%) */}
+        <View style={styles.frostWrapper}>
+          <BlurView intensity={40} tint="dark" style={StyleSheet.absoluteFillObject} />
+          {/* Android fallback overlay */}
+          <View style={styles.frostOverlay} />
+          <View style={styles.frostContent}>
+            {/* Line 1: Artist name */}
+            <Text style={styles.cellName} numberOfLines={1}>
+              {item.performer.name}
             </Text>
-          )}
-          {type === "find" && (
-            <View style={styles.platformRow}>
-              <View
-                style={[
-                  styles.platformDot,
-                  { backgroundColor: getPlatformDot(item.performer.platform_url).color },
-                ]}
-              />
-              <Text style={styles.cellSecondary} numberOfLines={1}>
-                {formatDate(item.created_at)}
-              </Text>
-            </View>
-          )}
-          {type === "discovery" && (
-            <Text style={styles.cellSecondary} numberOfLines={1}>
-              {item.finder_username
-                ? `via @${item.finder_username}`
-                : formatDate(item.created_at)}
+            {/* Line 2: Context */}
+            {renderContextLine()}
+            {/* Line 3: Date */}
+            <Text style={styles.cellDate} numberOfLines={1}>
+              {formatDate(item.created_at)}
             </Text>
-          )}
-        </LinearGradient>
+          </View>
+        </View>
       </Pressable>
     </Animated.View>
   );
@@ -162,27 +182,25 @@ function GridCell({
 // ─── Empty State ─────────────────────────────────────────────────────
 function EmptyState({ type }: { type: "stamp" | "find" | "discovery" }) {
   const router = useRouter();
+  const colors = useThemeColors();
 
   const config = {
     stamp: {
-      icon: <Stamp size={48} color="#8E8E93" />,
-      message: "No stamps yet",
-      cta: "Go to a show to earn stamps",
-      color: "#FF4D6A",
+      icon: <Ticket size={48} color={colors.textTertiary} />,
+      message: "No shows yet",
+      cta: "Check in at a show",
       onPress: () => router.push("/(tabs)/add"),
     },
     find: {
-      icon: <Music size={48} color="#8E8E93" />,
+      icon: <Music size={48} color={colors.textTertiary} />,
       message: "No finds yet",
-      cta: "Add an artist to start finding",
-      color: "#9B6DFF",
+      cta: "Add an artist",
       onPress: () => router.push("/(tabs)/add"),
     },
     discovery: {
-      icon: <Compass size={48} color="#8E8E93" />,
+      icon: <Compass size={48} color={colors.textTertiary} />,
       message: "No discoveries yet",
-      cta: "Follow people to discover artists",
-      color: "#4D9AFF",
+      cta: "Discover artists",
       onPress: () => router.push("/(tabs)/index" as any),
     },
   }[type];
@@ -190,86 +208,107 @@ function EmptyState({ type }: { type: "stamp" | "find" | "discovery" }) {
   return (
     <View style={styles.emptyState}>
       {config.icon}
-      <Text style={styles.emptyMessage}>{config.message}</Text>
-      <Text style={styles.emptyCta}>{config.cta}</Text>
+      <Text
+        style={[styles.emptyMessage, { color: colors.textSecondary }]}
+      >
+        {config.message}
+      </Text>
+      <Pressable onPress={config.onPress} style={styles.ctaButton}>
+        <Text style={styles.ctaText}>{config.cta}</Text>
+      </Pressable>
     </View>
   );
 }
 
-// ─── GlassGrid (3-column Instagram grid) ─────────────────────────────
-interface GlassGridProps {
+// ─── CollectionGrid (new primary export) ─────────────────────────────
+interface CollectionGridProps {
   items: CollectionStamp[];
   type: "stamp" | "find" | "discovery";
-  onViewMore: () => void;
+  onEndReached?: () => void;
+  isLoadingMore?: boolean;
+  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
-export function GlassGrid({ items, type }: GlassGridProps) {
+export function CollectionGrid({
+  items,
+  type,
+  onEndReached,
+  isLoadingMore,
+  onScroll,
+}: CollectionGridProps) {
   const { width: screenWidth } = useWindowDimensions();
-  // Grid takes full width with minimal gap
   const cellSize = (screenWidth - CELL_GAP * (COLUMNS - 1)) / COLUMNS;
 
-  if (items.length === 0) {
-    return <EmptyState type={type} />;
-  }
-
-  // Build rows of 3
-  const rows: CollectionStamp[][] = [];
-  for (let i = 0; i < items.length; i += COLUMNS) {
-    rows.push(items.slice(i, i + COLUMNS));
-  }
-
   return (
-    <View>
-      {rows.map((row, rowIdx) => (
-        <View
-          key={rowIdx}
-          style={{
-            flexDirection: "row",
-            gap: CELL_GAP,
-            marginBottom: CELL_GAP,
-          }}
-        >
-          {row.map((item) => (
-            <GridCell
-              key={item.id}
-              item={item}
-              type={type}
-              cellSize={cellSize}
-            />
-          ))}
-        </View>
-      ))}
-    </View>
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      numColumns={COLUMNS}
+      columnWrapperStyle={{ gap: CELL_GAP }}
+      contentContainerStyle={{ gap: CELL_GAP, paddingBottom: 120 }}
+      showsVerticalScrollIndicator={false}
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
+      scrollEventThrottle={16}
+      onScroll={onScroll}
+      renderItem={({ item }) => (
+        <GridCell item={item} type={type} cellSize={cellSize} />
+      )}
+      ListEmptyComponent={<EmptyState type={type} />}
+      ListFooterComponent={
+        isLoadingMore ? (
+          <View style={styles.loadingMore}>
+            <ActivityIndicator color="#8E8E93" />
+          </View>
+        ) : null
+      }
+    />
   );
 }
 
+// Backward compatibility alias
+export { CollectionGrid as GlassGrid };
+
+// ─── Styles ─────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  overlay: {
+  frostWrapper: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
+    height: "35%",
+    overflow: "hidden",
+  },
+  frostOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  frostContent: {
+    flex: 1,
     paddingHorizontal: 6,
-    paddingBottom: 6,
-    paddingTop: 24,
-    justifyContent: "flex-end",
+    paddingVertical: 4,
+    justifyContent: "center",
+    gap: 1,
   },
   cellName: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: "Poppins_600SemiBold",
     color: "#FFFFFF",
   },
   cellSecondary: {
-    fontSize: 10,
+    fontSize: 9,
     fontFamily: "Poppins_400Regular",
-    color: "rgba(255,255,255,0.7)",
-    marginTop: 1,
+    color: "rgba(255,255,255,0.8)",
+  },
+  cellDate: {
+    fontSize: 9,
+    fontFamily: "Poppins_400Regular",
+    color: "rgba(255,255,255,0.6)",
   },
   platformRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginTop: 1,
   },
   platformDot: {
     width: 6,
@@ -278,9 +317,14 @@ const styles = StyleSheet.create({
   },
   founderBadge: {
     position: "absolute",
-    top: 6,
-    right: 6,
-    zIndex: 1,
+    top: 4,
+    right: 4,
+    zIndex: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 3,
   },
   emptyState: {
     alignItems: "center",
@@ -290,11 +334,21 @@ const styles = StyleSheet.create({
   emptyMessage: {
     fontSize: 16,
     fontFamily: "Poppins_500Medium",
-    color: "#8E8E93",
   },
-  emptyCta: {
-    fontSize: 13,
-    fontFamily: "Poppins_400Regular",
-    color: "rgba(255,255,255,0.4)",
+  ctaButton: {
+    backgroundColor: "#FF4D6A",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 8,
+  },
+  ctaText: {
+    fontSize: 14,
+    fontFamily: "Poppins_500Medium",
+    color: "#FFFFFF",
+  },
+  loadingMore: {
+    padding: 16,
+    alignItems: "center",
   },
 });
