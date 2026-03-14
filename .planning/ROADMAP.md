@@ -182,7 +182,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 10-01-PLAN.md — Theme-aware login with Reanimated orbs, stagger animations, keyboard avoidance
+- [x] 10-01-PLAN.md — Theme-aware login with Reanimated orbs, stagger animations, keyboard avoidance
 
 #### Phase 11: Passport Layout & Structure
 **Goal**: The Passport header and tab bar are rebuilt in an Instagram-style compact layout that pins to the top and supports swipe navigation
@@ -197,7 +197,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 11-01-PLAN.md — Instagram-style header + 4-tab sticky pager + themed bg (no orbs)
+- [x] 11-01-PLAN.md — Instagram-style header + 4-tab sticky pager + themed bg (no orbs)
 
 #### Phase 12: Passport Grid & Cards
 **Goal**: Each passport tab renders a dense, uniform 3-column image grid where every cell tells the story of a collection entry at a glance
@@ -209,7 +209,10 @@ Plans:
   3. Cells that belong to the user's Founded artists show a gold star in the top-right corner
   4. Tapping a cell triggers haptic feedback and a press-down scale animation
   5. Each tab shows an empty state with an icon, message, and relevant CTA when there are no entries; the grid loads newest-to-oldest with infinite scroll past 50 items
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 12-01-PLAN.md — BlurView frost grid cells + 3-line text + CTA empty states + infinite scroll wiring
 
 #### Phase 13: Badges Section
 **Goal**: Badges are surfaced as a dedicated 4th tab in the passport with clear earned vs locked visual states — removed entirely from the header and scroll
@@ -239,6 +242,6 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13
 | 8. Jukebox | v3.0 | 3/3 | Complete | 2026-03-13 |
 | 9. I'm at a Show | v3.0 | 5/5 | Complete | 2026-03-13 |
 | 10. Login Flow Redesign | v3.5 | 1/1 | Complete | 2026-03-13 |
-| 11. Passport Layout & Structure | 1/1 | Complete    | 2026-03-14 | - |
-| 12. Passport Grid & Cards | v3.5 | 0/? | Not started | - |
+| 11. Passport Layout & Structure | v3.5 | 1/1 | Complete | 2026-03-14 |
+| 12. Passport Grid & Cards | v3.5 | 0/1 | Not started | - |
 | 13. Badges Section | v3.5 | 0/? | Not started | - |
