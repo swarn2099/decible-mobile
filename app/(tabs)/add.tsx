@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Music, MapPin, X } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
+import { extractUrlFromSharedText } from "@/lib/urlParser";
 import { useThemeColors } from "@/constants/colors";
 import { useValidateArtistLink } from "@/hooks/useValidateArtistLink";
 import { useAddArtist } from "@/hooks/useAddArtist";
@@ -95,17 +96,19 @@ function AddArtistView() {
   async function handlePaste() {
     if (validateMutation.isPending) return;
     Keyboard.dismiss();
-    const text = await Clipboard.getStringAsync();
-    if (text) {
-      setPastedUrl(text);
-      validateMutation.mutate({ url: text });
-    }
+    const raw = await Clipboard.getStringAsync();
+    if (!raw) return;
+    // Extract URL from shared text (e.g. "Listen to X on Apple Music. https://...")
+    const url = extractUrlFromSharedText(raw) || raw.trim();
+    setPastedUrl(url);
+    validateMutation.mutate({ url });
   }
 
   function handleSubmitUrl() {
     if (!pastedUrl.trim() || validateMutation.isPending) return;
     Keyboard.dismiss();
-    validateMutation.mutate({ url: pastedUrl.trim() });
+    const url = extractUrlFromSharedText(pastedUrl) || pastedUrl.trim();
+    validateMutation.mutate({ url });
   }
 
   function handleReset() {
