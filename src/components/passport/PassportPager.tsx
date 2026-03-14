@@ -4,6 +4,7 @@ import {
   Text,
   Pressable,
   ScrollView,
+  TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
 import PagerView from "react-native-pager-view";
@@ -11,38 +12,216 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  interpolate,
+  Extrapolation,
   type SharedValue,
 } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import { GlassGrid } from "./GlassGrid";
+import { useThemeColors } from "@/constants/colors";
+import { RARITY_COLORS } from "@/constants/badges";
 import type { CollectionStamp } from "@/types/passport";
+import type { BadgeWithStatus } from "@/types/badges";
+
+const TAB_LABELS = ["Stamps", "Finds", "Discoveries", "Badges"] as const;
+
+// ─── Badge Tab Grid ────────────────────────────────────────────────────
+function BadgeGrid({
+  badges,
+  onBadgeTap,
+}: {
+  badges: BadgeWithStatus[];
+  onBadgeTap: (badge: BadgeWithStatus) => void;
+}) {
+  const colors = useThemeColors();
+  const sorted = [...badges].sort((a, b) => {
+    if (a.earned && !b.earned) return -1;
+    if (!a.earned && b.earned) return 1;
+    return 0;
+  });
+
+  // Build rows of 3
+  const rows: BadgeWithStatus[][] = [];
+  for (let i = 0; i < sorted.length; i += 3) {
+    rows.push(sorted.slice(i, i + 3));
+  }
+
+  if (badges.length === 0) {
+    return (
+      <View style={{ alignItems: "center", paddingVertical: 64, gap: 12 }}>
+        <Text style={{ fontSize: 40 }}>🏅</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            fontFamily: "Poppins_500Medium",
+            color: colors.textSecondary,
+          }}
+        >
+          No badges yet
+        </Text>
+        <Text
+          style={{
+            fontSize: 13,
+            fontFamily: "Poppins_400Regular",
+            color: colors.textTertiary,
+          }}
+        >
+          Keep collecting to earn badges
+        </Text>
+      </View>
+    );
+  }
+
+  const earnedCount = badges.filter((b) => b.earned).length;
+
+  return (
+    <View style={{ padding: 16, paddingBottom: 40 }}>
+      {/* Count header */}
+      <Text
+        style={{
+          fontSize: 13,
+          fontFamily: "Poppins_500Medium",
+          color: colors.textSecondary,
+          marginBottom: 16,
+        }}
+      >
+        {earnedCount} of {badges.length} earned
+      </Text>
+
+      {rows.map((row, rowIdx) => (
+        <View
+          key={rowIdx}
+          style={{
+            flexDirection: "row",
+            gap: 12,
+            marginBottom: 20,
+            justifyContent: "center",
+          }}
+        >
+          {row.map((badge) => {
+            const rarityColor = RARITY_COLORS[badge.rarity];
+            return (
+              <TouchableOpacity
+                key={badge.id}
+                style={{ width: "30%", alignItems: "center" }}
+                onPress={() => onBadgeTap(badge)}
+                activeOpacity={0.7}
+              >
+                <View
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 32,
+                    overflow: "hidden",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    ...(badge.earned
+                      ? {
+                          borderWidth: 2,
+                          borderColor: rarityColor,
+                          shadowColor: rarityColor,
+                          shadowOffset: { width: 0, height: 0 },
+                          shadowOpacity: 0.4,
+                          shadowRadius: 8,
+                          elevation: 4,
+                        }
+                      : {
+                          backgroundColor: colors.card,
+                        }),
+                  }}
+                >
+                  {badge.earned && (
+                    <LinearGradient
+                      colors={[`${rarityColor}33`, `${rarityColor}15`]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                      }}
+                    />
+                  )}
+                  <Text
+                    style={{
+                      fontSize: 28,
+                      opacity: badge.earned ? 1 : 0.3,
+                    }}
+                  >
+                    {badge.icon}
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontFamily: badge.earned
+                      ? "Poppins_500Medium"
+                      : "Poppins_400Regular",
+                    fontSize: 11,
+                    color: badge.earned ? colors.text : colors.textSecondary,
+                    marginTop: 6,
+                    textAlign: "center",
+                  }}
+                  numberOfLines={1}
+                >
+                  {badge.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      ))}
+    </View>
+  );
+}
+
+// ─── Passport Pager ────────────────────────────────────────────────────
 interface PassportPagerProps {
   stamps: CollectionStamp[];
   finds: CollectionStamp[];
   discoveries: CollectionStamp[];
+  badges: BadgeWithStatus[];
   onViewMore: (type: "stamp" | "find" | "discovery") => void;
+  onBadgeTap: (badge: BadgeWithStatus) => void;
   activeTabIndex: SharedValue<number>;
   onTabChange: (index: number) => void;
+  scrollY: SharedValue<number>;
+  headerHeight: number;
 }
-
-const TAB_LABELS = ["Stamps", "Finds", "Discoveries"] as const;
 
 export function PassportPager({
   stamps,
   finds,
   discoveries,
+  badges,
   onViewMore,
+  onBadgeTap,
   activeTabIndex,
   onTabChange,
+  scrollY,
+  headerHeight,
 }: PassportPagerProps) {
   const { width: screenWidth } = useWindowDimensions();
+  const colors = useThemeColors();
   const pagerRef = useRef<PagerView>(null);
   const [activeTab, setActiveTab] = useState(0);
 
-  const TAB_WIDTH = screenWidth / 3;
+  const TAB_WIDTH = screenWidth / 4;
   const underlineX = useSharedValue(0);
 
   const underlineStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: underlineX.value }],
+  }));
+
+  // Tab bar bottom border — appears when header is fully scrolled
+  const tabBarBorderStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(
+      scrollY.value,
+      [headerHeight * 0.8, headerHeight],
+      [0, 1],
+      Extrapolation.CLAMP
+    ),
   }));
 
   const handleTabPress = (index: number) => {
@@ -67,41 +246,41 @@ export function PassportPager({
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Tab bar — underline style */}
+      {/* Tab bar */}
       <View
         style={{
-          flexDirection: "row",
-          borderBottomWidth: 1,
-          borderBottomColor: "rgba(255,255,255,0.08)",
+          backgroundColor: colors.card,
           position: "relative",
         }}
       >
-        {TAB_LABELS.map((label, i) => (
-          <Pressable
-            key={i}
-            onPress={() => handleTabPress(i)}
-            style={{
-              flex: 1,
-              alignItems: "center",
-              paddingVertical: 12,
-            }}
-          >
-            <Text
+        <View style={{ flexDirection: "row" }}>
+          {TAB_LABELS.map((label, i) => (
+            <Pressable
+              key={i}
+              onPress={() => handleTabPress(i)}
               style={{
-                fontSize: 14,
-                fontFamily:
-                  activeTab === i
-                    ? "Poppins_600SemiBold"
-                    : "Poppins_500Medium",
-                color: activeTab === i ? "#FFFFFF" : "#8E8E93",
+                flex: 1,
+                alignItems: "center",
+                paddingVertical: 12,
               }}
             >
-              {label}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily:
+                    activeTab === i
+                      ? "Poppins_600SemiBold"
+                      : "Poppins_500Medium",
+                  color: activeTab === i ? colors.text : colors.textSecondary,
+                }}
+              >
+                {label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
 
-        {/* Animated underline indicator */}
+        {/* Animated pink underline */}
         <Animated.View
           style={[
             {
@@ -110,10 +289,25 @@ export function PassportPager({
               height: 2,
               width: TAB_WIDTH * 0.5,
               marginLeft: TAB_WIDTH * 0.25,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: colors.pink,
               borderRadius: 1,
             },
             underlineStyle,
+          ]}
+        />
+
+        {/* Pinned-state bottom divider — fades in when header collapses */}
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 1,
+              backgroundColor: colors.divider,
+            },
+            tabBarBorderStyle,
           ]}
         />
       </View>
@@ -131,13 +325,16 @@ export function PassportPager({
           key="0"
           contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={(e) => {
+            scrollY.value = e.nativeEvent.contentOffset.y;
+          }}
         >
           <GlassGrid
             items={stamps}
             type="stamp"
             onViewMore={() => onViewMore("stamp")}
           />
-
         </ScrollView>
 
         {/* Page 1 — Finds */}
@@ -145,13 +342,16 @@ export function PassportPager({
           key="1"
           contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={(e) => {
+            scrollY.value = e.nativeEvent.contentOffset.y;
+          }}
         >
           <GlassGrid
             items={finds}
             type="find"
             onViewMore={() => onViewMore("find")}
           />
-
         </ScrollView>
 
         {/* Page 2 — Discoveries */}
@@ -159,13 +359,29 @@ export function PassportPager({
           key="2"
           contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={(e) => {
+            scrollY.value = e.nativeEvent.contentOffset.y;
+          }}
         >
           <GlassGrid
             items={discoveries}
             type="discovery"
             onViewMore={() => onViewMore("discovery")}
           />
+        </ScrollView>
 
+        {/* Page 3 — Badges */}
+        <ScrollView
+          key="3"
+          contentContainerStyle={{ paddingBottom: 120 }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={(e) => {
+            scrollY.value = e.nativeEvent.contentOffset.y;
+          }}
+        >
+          <BadgeGrid badges={badges} onBadgeTap={onBadgeTap} />
         </ScrollView>
       </PagerView>
     </View>

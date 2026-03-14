@@ -3,9 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   ActivityIndicator,
-  useWindowDimensions,
   Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,16 +13,15 @@ import {
   ChevronLeft,
   UserPlus,
   UserCheck,
-  Disc,
 } from "lucide-react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import Animated, { useSharedValue } from "react-native-reanimated";
 import { useThemeColors, Colors } from "@/constants/colors";
 import { apiCall } from "@/lib/api";
 import { useFollow, useSocialCounts } from "@/hooks/useUserSearch";
-import { FindsGrid } from "@/components/passport/FindsGrid";
-import { StampsSection } from "@/components/passport/StampsSection";
-import { EmptyState } from "@/components/ui/EmptyState";
+import { OrbBackground } from "@/components/passport/OrbBackground";
+import { PassportPager } from "@/components/passport/PassportPager";
 import type { CollectionStamp as CollectionStampType } from "@/types/passport";
 
 const GRADIENT_PAIRS = [
@@ -123,6 +120,9 @@ export default function UserProfileScreen() {
   const { followMutation, unfollowMutation } = useFollow();
 
   const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
+  const activeTabIndex = useSharedValue(0);
+  const profileScrollY = useSharedValue(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const currentFollowing = isFollowing ?? profile?.is_following ?? false;
 
@@ -141,6 +141,21 @@ export default function UserProfileScreen() {
       setIsFollowing(!newState);
     }
   }, [id, currentFollowing, followMutation, unfollowMutation, queryClient]);
+
+  const handleViewMore = useCallback(
+    (type: "stamp" | "find" | "discovery") => {
+      const routeMap = {
+        stamp: "/collection/stamps",
+        find: "/collection/finds",
+        discovery: "/collection/discoveries",
+      };
+      router.push({
+        pathname: routeMap[type] as any,
+        params: { fanId: id },
+      });
+    },
+    [router, id]
+  );
 
   if (isLoading || !profile) {
     return (
@@ -170,44 +185,58 @@ export default function UserProfileScreen() {
   const gradientColors = getGradientForName(displayName);
 
   const collections = profile.collections;
-  const finds = collections.filter((c) => !c.verified);
-  const stamps = collections.filter((c) => c.verified);
+  const stamps = collections.filter(
+    (c) => c.collection_type === "stamp" || (c.verified === true && !c.collection_type)
+  );
+  const finds = collections.filter(
+    (c) => c.collection_type === "find" || (c.is_founder === true && !c.collection_type)
+  );
+  const discoveries = collections.filter(
+    (c) =>
+      c.collection_type === "discovery" ||
+      (!c.collection_type && !c.verified && !c.is_founder && c.capture_method === "online")
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
-      {/* Header with back button */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-          gap: 12,
-        }}
-      >
-        <TouchableOpacity onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 18,
-            fontFamily: "Poppins_700Bold",
-            color: colors.text,
-            flex: 1,
-          }}
-          numberOfLines={1}
-        >
-          {displayName}
-        </Text>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      {/* Orb background — same as passport screen */}
+      <OrbBackground activeTabIndex={activeTabIndex} />
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Instagram-style header: Avatar left, stats right */}
+      <SafeAreaView
+        style={{ flex: 1, backgroundColor: "transparent" }}
+        edges={["top"]}
+      >
+        {/* Header with back button */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            gap: 12,
+          }}
+        >
+          <TouchableOpacity onPress={() => router.back()} hitSlop={8}>
+            <ChevronLeft size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 18,
+              fontFamily: "Poppins_700Bold",
+              color: colors.text,
+              flex: 1,
+            }}
+            numberOfLines={1}
+          >
+            {displayName}
+          </Text>
+        </View>
+
+        {/* Profile header: Avatar + Stats + Follow */}
         <View
           style={{
             paddingHorizontal: 20,
-            paddingTop: 8,
-            paddingBottom: 16,
+            paddingBottom: 12,
           }}
         >
           {/* Row 1: Avatar + Stats */}
@@ -291,26 +320,14 @@ export default function UserProfileScreen() {
             </View>
           </View>
 
-          {/* Row 2: Username */}
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_700Bold",
-              color: colors.text,
-              marginTop: 14,
-            }}
-          >
-            {displayName}
-          </Text>
-
-          {/* Row 3: City */}
+          {/* City */}
           {fan.city && (
             <Text
               style={{
                 fontSize: 12,
                 fontFamily: "Poppins_400Regular",
                 color: colors.textSecondary,
-                marginTop: 2,
+                marginTop: 10,
               }}
             >
               {fan.city}
@@ -326,7 +343,7 @@ export default function UserProfileScreen() {
               alignItems: "center",
               justifyContent: "center",
               gap: 6,
-              marginTop: 16,
+              marginTop: 14,
               paddingVertical: 10,
               borderRadius: 12,
               backgroundColor: currentFollowing ? colors.card : colors.pink,
@@ -351,92 +368,20 @@ export default function UserProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Finds section */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 16,
-            paddingTop: 16,
-            paddingBottom: 8,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_700Bold",
-              color: colors.text,
-            }}
-          >
-            Finds
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontFamily: "Poppins_400Regular",
-              color: colors.textSecondary,
-            }}
-          >
-            {finds.length} artist{finds.length !== 1 ? "s" : ""}
-          </Text>
-        </View>
-
-        {finds.length > 0 ? (
-          <FindsGrid finds={finds.slice(0, 6)} totalCount={finds.length} fanId={id} />
-        ) : (
-          <EmptyState
-            icon={<Disc size={32} color={colors.textSecondary} />}
-            title="No finds yet"
-            subtitle="This user hasn't found any artists yet"
-          />
-        )}
-
-        {/* Stamps section */}
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 16,
-            paddingTop: 24,
-            paddingBottom: 8,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_700Bold",
-              color: colors.text,
-            }}
-          >
-            Stamps
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontFamily: "Poppins_400Regular",
-              color: colors.textSecondary,
-            }}
-          >
-            {stamps.length} show{stamps.length !== 1 ? "s" : ""}
-          </Text>
-        </View>
-
-        {stamps.length > 0 ? (
-          <StampsSection
-            stamps={stamps.slice(0, 5)}
-            totalCount={stamps.length}
-            fanId={id}
-          />
-        ) : (
-          <EmptyState
-            icon={<Disc size={32} color={colors.textSecondary} />}
-            title="No stamps yet"
-            subtitle="This user hasn't checked in at any shows yet"
-          />
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        {/* 4-tab pager with glass cards — same as passport */}
+        <PassportPager
+          stamps={stamps}
+          finds={finds}
+          discoveries={discoveries}
+          badges={[]}
+          activeTabIndex={activeTabIndex}
+          onTabChange={setActiveTab}
+          onViewMore={handleViewMore}
+          onBadgeTap={() => {}}
+          scrollY={profileScrollY}
+          headerHeight={0}
+        />
+      </SafeAreaView>
+    </View>
   );
 }
