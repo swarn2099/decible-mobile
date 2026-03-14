@@ -56,6 +56,8 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
   const iconScale = useSharedValue(1);
   // Grayscale-to-color overlay (opacity fades out to reveal color)
   const colorOverlayOpacity = useSharedValue(0);
+  // Locked content fade-in
+  const lockedFadeIn = useSharedValue(0);
 
   useEffect(() => {
     if (badge && justEarned) {
@@ -66,6 +68,7 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
       glowOpacity.value = 0;
       iconScale.value = 0.5;
       colorOverlayOpacity.value = 0.85;
+      lockedFadeIn.value = 0;
 
       // Badge icon pops in
       iconScale.value = withDelay(100, withSpring(1, { damping: 10, stiffness: 200 }));
@@ -100,6 +103,13 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
       rayOpacity.value = 0;
       glowOpacity.value = 0;
       colorOverlayOpacity.value = 0;
+      // Fade in locked content on open
+      if (!badge.earned) {
+        lockedFadeIn.value = 0;
+        lockedFadeIn.value = withTiming(1, { duration: 300 });
+      } else {
+        lockedFadeIn.value = 1;
+      }
     }
   }, [badge, justEarned]);
 
@@ -115,6 +125,11 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
   // Overlay fades from opaque (card color = grayscale mask) to transparent (reveals color)
   const colorOverlayStyle = useAnimatedStyle(() => ({
     opacity: colorOverlayOpacity.value,
+  }));
+
+  // Locked content fade-in style
+  const lockedFadeStyle = useAnimatedStyle(() => ({
+    opacity: lockedFadeIn.value,
   }));
 
   if (!badge) return null;
@@ -360,7 +375,7 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
               )}
             </>
           ) : (
-            <>
+            <Animated.View style={[lockedFadeStyle, { alignItems: "center", width: "100%" }]}>
               <View
                 style={{
                   backgroundColor: colors.isDark ? colors.cardHover : colors.bg,
@@ -380,18 +395,7 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
                   Locked
                 </Text>
               </View>
-              <Text
-                style={{
-                  fontFamily: "Poppins_400Regular",
-                  fontSize: 14,
-                  color: colors.pink,
-                  textAlign: "center",
-                  marginBottom: 8,
-                  lineHeight: 20,
-                }}
-              >
-                {badge.criteria}
-              </Text>
+              {/* Requirement description */}
               <Text
                 style={{
                   fontFamily: "Poppins_400Regular",
@@ -404,7 +408,32 @@ export function BadgeDetailModal({ badge, onClose, onShare, justEarned }: Props)
               >
                 {badge.description}
               </Text>
-            </>
+              {/* Criteria — what needs to happen to unlock */}
+              <Text
+                style={{
+                  fontFamily: "Poppins_500Medium",
+                  fontSize: 13,
+                  color: colors.pink,
+                  textAlign: "center",
+                  marginBottom: 8,
+                  lineHeight: 18,
+                }}
+              >
+                {badge.criteria}
+              </Text>
+              {/* Motivational progress text */}
+              <Text
+                style={{
+                  fontFamily: "Poppins_400Regular",
+                  fontSize: 13,
+                  color: colors.textTertiary,
+                  textAlign: "center",
+                  fontStyle: "italic",
+                }}
+              >
+                Keep collecting to unlock
+              </Text>
+            </Animated.View>
           )}
         </TouchableOpacity>
       </TouchableOpacity>
