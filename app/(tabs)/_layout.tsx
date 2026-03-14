@@ -33,7 +33,7 @@ function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         styles.tabBar,
         {
           paddingBottom: Math.max(insets.bottom, 8),
-          backgroundColor: colors.isDark ? "#15151C" : "#FFFFFF",
+          backgroundColor: colors.isDark ? "#0B0B0F" : "#FFFFFF",
           borderTopColor: colors.isDark
             ? "rgba(255,255,255,0.06)"
             : "rgba(0,0,0,0.06)",
@@ -72,13 +72,13 @@ function BottomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           >
             <config.Icon
               size={iconSize}
-              color={isCenter ? activeColor : color}
+              color={color}
               strokeWidth={isFocused ? 2.5 : 2}
             />
             <Text
               style={[
                 styles.label,
-                { color: isCenter ? activeColor : color },
+                { color },
               ]}
             >
               {config.title}

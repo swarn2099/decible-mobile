@@ -20,6 +20,7 @@ export type ArtistProfile = {
   city: string | null;
   genres: string[] | null;
   follower_count: number | null;
+  spotify_monthly_listeners: number | null;
   claimed: boolean;
   is_chicago_resident: boolean;
   created_at: string;

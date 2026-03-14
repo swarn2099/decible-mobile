@@ -67,6 +67,12 @@ function getGradientForName(name: string): [string, string] {
   ];
 }
 
+function formatListeners(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+  return String(n);
+}
+
 function formatMonth(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
   return date.toLocaleDateString("en-US", { month: "short" }).toUpperCase();
@@ -443,6 +449,9 @@ export default function ArtistProfileScreen() {
           >
             {[
               { value: fanCount ?? 0, label: "Fans" },
+              ...(artist.spotify_monthly_listeners
+                ? [{ value: formatListeners(artist.spotify_monthly_listeners), label: "Listeners" }]
+                : []),
               { value: events.length, label: "Shows" },
               { value: artist.genres?.length ?? 0, label: "Genres" },
             ].map((stat, i) => (
