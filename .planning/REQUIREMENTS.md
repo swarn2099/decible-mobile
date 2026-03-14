@@ -31,14 +31,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 
 ### Grid & Cards
 
-- [ ] **GRID-01**: 3-column grid with square cells (1:1 aspect ratio), ~1px uniform gaps
-- [ ] **GRID-02**: Artist image fills each cell completely (cover/crop)
-- [ ] **GRID-03**: Bottom gradient overlay with artist name + context text + date per cell
-- [ ] **GRID-04**: Stamp cells show artist + venue + date; Find cells show artist + platform icon + date; Discovery cells show artist + "via @user" + date
-- [ ] **GRID-05**: Founder badge (gold star) in top-right corner of cell when applicable
-- [ ] **GRID-06**: Haptic feedback + press-down scale animation on cell tap
-- [ ] **GRID-07**: Empty states per tab with icon, message, and CTA
-- [ ] **GRID-08**: Grid scrolls all entries newest-to-oldest, paginated at 50+ with infinite scroll
+- [x] **GRID-01**: 3-column grid with square cells (1:1 aspect ratio), ~1px uniform gaps
+- [x] **GRID-02**: Artist image fills each cell completely (cover/crop)
+- [x] **GRID-03**: Bottom gradient overlay with artist name + context text + date per cell
+- [x] **GRID-04**: Stamp cells show artist + venue + date; Find cells show artist + platform icon + date; Discovery cells show artist + "via @user" + date
+- [x] **GRID-05**: Founder badge (gold star) in top-right corner of cell when applicable
+- [x] **GRID-06**: Haptic feedback + press-down scale animation on cell tap
+- [x] **GRID-07**: Empty states per tab with icon, message, and CTA
+- [x] **GRID-08**: Grid scrolls all entries newest-to-oldest, paginated at 50+ with infinite scroll
 
 ### Badges
 
@@ -117,14 +117,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 | PLAYOUT-06 | Phase 11 | Complete |
 | PLAYOUT-07 | Phase 11 | Complete |
 | PLAYOUT-08 | Phase 11 | Complete |
-| GRID-01 | Phase 12 | Pending |
-| GRID-02 | Phase 12 | Pending |
-| GRID-03 | Phase 12 | Pending |
-| GRID-04 | Phase 12 | Pending |
-| GRID-05 | Phase 12 | Pending |
-| GRID-06 | Phase 12 | Pending |
-| GRID-07 | Phase 12 | Pending |
-| GRID-08 | Phase 12 | Pending |
+| GRID-01 | Phase 12 | Complete |
+| GRID-02 | Phase 12 | Complete |
+| GRID-03 | Phase 12 | Complete |
+| GRID-04 | Phase 12 | Complete |
+| GRID-05 | Phase 12 | Complete |
+| GRID-06 | Phase 12 | Complete |
+| GRID-07 | Phase 12 | Complete |
+| GRID-08 | Phase 12 | Complete |
 | BADGE-01 | Phase 13 | Pending |
 | BADGE-02 | Phase 13 | Pending |
 | BADGE-03 | Phase 13 | Pending |

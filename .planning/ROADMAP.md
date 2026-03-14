@@ -243,5 +243,5 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13
 | 9. I'm at a Show | v3.0 | 5/5 | Complete | 2026-03-13 |
 | 10. Login Flow Redesign | v3.5 | 1/1 | Complete | 2026-03-13 |
 | 11. Passport Layout & Structure | v3.5 | 1/1 | Complete | 2026-03-14 |
-| 12. Passport Grid & Cards | v3.5 | 0/1 | Not started | - |
+| 12. Passport Grid & Cards | 1/1 | Complete   | 2026-03-14 | - |
 | 13. Badges Section | v3.5 | 0/? | Not started | - |
