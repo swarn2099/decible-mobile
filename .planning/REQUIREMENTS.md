@@ -20,14 +20,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 
 ### Passport Layout
 
-- [ ] **PLAYOUT-01**: Compact header (~180px): avatar (60x60, no ring) + inline stats (Followers/Following/Stamps/Finds)
-- [ ] **PLAYOUT-02**: Followers and Following counts are tappable (open list screens)
-- [ ] **PLAYOUT-03**: Username + "Member since" below avatar row, no settings gear icon
-- [ ] **PLAYOUT-04**: Share Passport (gradient) + Edit Profile (surface fill) action buttons
-- [ ] **PLAYOUT-05**: Sticky tab bar pins to top when scrolled past header
-- [ ] **PLAYOUT-06**: Swipe left/right switches between tabs (gesture navigation)
-- [ ] **PLAYOUT-07**: Active tab has pink underline indicator, inactive tabs muted
-- [ ] **PLAYOUT-08**: Passport respects device light/dark mode (themed backgrounds, surfaces, text)
+- [x] **PLAYOUT-01**: Compact header (~180px): avatar (60x60, no ring) + inline stats (Followers/Following/Stamps/Finds)
+- [x] **PLAYOUT-02**: Followers and Following counts are tappable (open list screens)
+- [x] **PLAYOUT-03**: Username + "Member since" below avatar row, no settings gear icon
+- [x] **PLAYOUT-04**: Share Passport (gradient) + Edit Profile (surface fill) action buttons
+- [x] **PLAYOUT-05**: Sticky tab bar pins to top when scrolled past header
+- [x] **PLAYOUT-06**: Swipe left/right switches between tabs (gesture navigation)
+- [x] **PLAYOUT-07**: Active tab has pink underline indicator, inactive tabs muted
+- [x] **PLAYOUT-08**: Passport respects device light/dark mode (themed backgrounds, surfaces, text)
 
 ### Grid & Cards
 
@@ -109,14 +109,14 @@ Requirements for milestone v3.5 — Polish & Identity.
 | LOGIN-06 | Phase 10 | Complete |
 | LOGIN-07 | Phase 10 | Complete |
 | LOGIN-08 | Phase 10 | Complete |
-| PLAYOUT-01 | Phase 11 | Pending |
-| PLAYOUT-02 | Phase 11 | Pending |
-| PLAYOUT-03 | Phase 11 | Pending |
-| PLAYOUT-04 | Phase 11 | Pending |
-| PLAYOUT-05 | Phase 11 | Pending |
-| PLAYOUT-06 | Phase 11 | Pending |
-| PLAYOUT-07 | Phase 11 | Pending |
-| PLAYOUT-08 | Phase 11 | Pending |
+| PLAYOUT-01 | Phase 11 | Complete |
+| PLAYOUT-02 | Phase 11 | Complete |
+| PLAYOUT-03 | Phase 11 | Complete |
+| PLAYOUT-04 | Phase 11 | Complete |
+| PLAYOUT-05 | Phase 11 | Complete |
+| PLAYOUT-06 | Phase 11 | Complete |
+| PLAYOUT-07 | Phase 11 | Complete |
+| PLAYOUT-08 | Phase 11 | Complete |
 | GRID-01 | Phase 12 | Pending |
 | GRID-02 | Phase 12 | Pending |
 | GRID-03 | Phase 12 | Pending |

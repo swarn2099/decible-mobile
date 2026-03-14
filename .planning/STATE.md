@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.5
 milestone_name: Polish & Identity
 status: planning
-stopped_at: Phase 11 context gathered
-last_updated: "2026-03-13T23:58:46.258Z"
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-14T00:11:20.422Z"
 last_activity: 2026-03-13 — Roadmap created, v3.5 phases 10-13 defined
 progress:
   total_phases: 13
-  completed_phases: 9
-  total_plans: 25
-  completed_plans: 25
+  completed_phases: 10
+  total_plans: 26
+  completed_plans: 26
   percent: 0
 ---
 
@@ -52,6 +52,8 @@ Progress: [░░░░░░░░░░] 0%
 - passport.tsx no-parent-ScrollView pattern: OrbBackground sibling behind SafeAreaView
 - [Phase 10-login-flow-redesign]: LoginOrbBackground separate from passport OrbBackground to avoid coupling auth to passport internals
 - [Phase 10-login-flow-redesign]: isDark boolean prop on LoginOrbBackground rather than calling useThemeColors() internally
+- [Phase 11-passport-layout-structure]: Collapsible header via Animated.View interpolating height+opacity from scrollY — avoids PagerView-inside-ScrollView issues
+- [Phase 11-passport-layout-structure]: Badges tab inline in PassportPager replaces BadgesModal — fewer taps to view badges
 
 ### Pending Todos
 
@@ -63,6 +65,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-13T23:58:46.252Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-passport-layout-structure/11-CONTEXT.md
+Last session: 2026-03-14T00:11:20.416Z
+Stopped at: Completed 11-01-PLAN.md
+Resume file: None
