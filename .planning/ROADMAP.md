@@ -247,4 +247,4 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13
 | 10. Login Flow Redesign | v3.5 | 1/1 | Complete | 2026-03-13 |
 | 11. Passport Layout & Structure | v3.5 | 1/1 | Complete | 2026-03-14 |
 | 12. Passport Grid & Cards | v3.5 | 1/1 | Complete | 2026-03-14 |
-| 13. Badges Section | 1/1 | Complete   | 2026-03-14 | - |
+| 13. Badges Section | 1/1 | Complete    | 2026-03-14 | - |
