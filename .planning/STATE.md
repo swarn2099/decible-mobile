@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.5
 milestone_name: Polish & Identity
 status: planning
-stopped_at: Phase 13 context gathered
-last_updated: "2026-03-14T01:22:21.086Z"
+stopped_at: Completed 13-badges-section 13-01-PLAN.md
+last_updated: "2026-03-14T01:32:46.196Z"
 last_activity: 2026-03-13 — Roadmap created, v3.5 phases 10-13 defined
 progress:
   total_phases: 13
-  completed_phases: 11
-  total_plans: 27
-  completed_plans: 27
+  completed_phases: 12
+  total_plans: 28
+  completed_plans: 28
   percent: 0
 ---
 
@@ -56,6 +56,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 11-passport-layout-structure]: Badges tab inline in PassportPager replaces BadgesModal — fewer taps to view badges
 - [Phase 12-passport-grid-cards]: CollectionGrid as primary export; GlassGrid alias for backward compat
 - [Phase 12-passport-grid-cards]: BlurView + rgba(0,0,0,0.2) overlay for Android fallback in frost section
+- [Phase 13-badges-section]: Rarity-scaled glow: common=subtle (shadowOpacity 0.2), legendary=max (shadowOpacity 0.7, shadowRadius 18) for earned badges in BadgeGrid
+- [Phase 13-badges-section]: Locked badges: transparent bg + no border + 0.3 opacity icon (ghost treatment, maximum contrast vs earned)
 
 ### Pending Todos
 
@@ -67,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T01:22:21.080Z
-Stopped at: Phase 13 context gathered
-Resume file: .planning/phases/13-badges-section/13-CONTEXT.md
+Last session: 2026-03-14T01:32:46.190Z
+Stopped at: Completed 13-badges-section 13-01-PLAN.md
+Resume file: None

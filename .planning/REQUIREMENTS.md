@@ -42,11 +42,11 @@ Requirements for milestone v3.5 — Polish & Identity.
 
 ### Badges
 
-- [ ] **BADGE-01**: Badges accessible via 4th tab in sticky tab bar (Stamps | Finds | Discoveries | Badges)
-- [ ] **BADGE-02**: All badge elements removed from passport header and main scroll
-- [ ] **BADGE-03**: Earned badges display full color with glow/shadow
-- [ ] **BADGE-04**: Locked badges display grayscale at 0.3 opacity (not beige circles)
-- [ ] **BADGE-05**: Tap earned badge shows detail card (how earned, date); tap locked shows requirements
+- [x] **BADGE-01**: Badges accessible via 4th tab in sticky tab bar (Stamps | Finds | Discoveries | Badges)
+- [x] **BADGE-02**: All badge elements removed from passport header and main scroll
+- [x] **BADGE-03**: Earned badges display full color with glow/shadow
+- [x] **BADGE-04**: Locked badges display grayscale at 0.3 opacity (not beige circles)
+- [x] **BADGE-05**: Tap earned badge shows detail card (how earned, date); tap locked shows requirements
 
 ## v3.0 Requirements (Completed)
 
@@ -125,11 +125,11 @@ Requirements for milestone v3.5 — Polish & Identity.
 | GRID-06 | Phase 12 | Complete |
 | GRID-07 | Phase 12 | Complete |
 | GRID-08 | Phase 12 | Complete |
-| BADGE-01 | Phase 13 | Pending |
-| BADGE-02 | Phase 13 | Pending |
-| BADGE-03 | Phase 13 | Pending |
-| BADGE-04 | Phase 13 | Pending |
-| BADGE-05 | Phase 13 | Pending |
+| BADGE-01 | Phase 13 | Complete |
+| BADGE-02 | Phase 13 | Complete |
+| BADGE-03 | Phase 13 | Complete |
+| BADGE-04 | Phase 13 | Complete |
+| BADGE-05 | Phase 13 | Complete |
 
 **Coverage:**
 - v3.5 requirements: 29 total (LOGIN: 8, PLAYOUT: 8, GRID: 8, BADGE: 5)
