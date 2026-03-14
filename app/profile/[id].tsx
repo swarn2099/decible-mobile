@@ -380,6 +380,8 @@ export default function UserProfileScreen() {
           onBadgeTap={() => {}}
           scrollY={profileScrollY}
           headerHeight={0}
+          onFetchMore={undefined}
+          isFetchingMore={false}
         />
       </SafeAreaView>
     </View>

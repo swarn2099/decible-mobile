@@ -17,7 +17,7 @@ import Animated, {
   type SharedValue,
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import { GlassGrid } from "./GlassGrid";
+import { CollectionGrid } from "./GlassGrid";
 import { useThemeColors } from "@/constants/colors";
 import { RARITY_COLORS } from "@/constants/badges";
 import type { CollectionStamp } from "@/types/passport";
@@ -188,6 +188,9 @@ interface PassportPagerProps {
   onTabChange: (index: number) => void;
   scrollY: SharedValue<number>;
   headerHeight: number;
+  // Infinite scroll support
+  onFetchMore?: () => void;
+  isFetchingMore?: boolean;
 }
 
 export function PassportPager({
@@ -195,12 +198,13 @@ export function PassportPager({
   finds,
   discoveries,
   badges,
-  onViewMore,
   onBadgeTap,
   activeTabIndex,
   onTabChange,
   scrollY,
   headerHeight,
+  onFetchMore,
+  isFetchingMore,
 }: PassportPagerProps) {
   const { width: screenWidth } = useWindowDimensions();
   const colors = useThemeColors();
@@ -242,6 +246,10 @@ export function PassportPager({
     const continuous = e.nativeEvent.position + e.nativeEvent.offset;
     underlineX.value = continuous * TAB_WIDTH;
     activeTabIndex.value = continuous;
+  };
+
+  const handleScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
+    scrollY.value = e.nativeEvent.contentOffset.y;
   };
 
   return (
@@ -321,55 +329,37 @@ export function PassportPager({
         onPageScroll={handlePageScroll}
       >
         {/* Page 0 — Stamps */}
-        <ScrollView
-          key="0"
-          contentContainerStyle={{ paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={(e) => {
-            scrollY.value = e.nativeEvent.contentOffset.y;
-          }}
-        >
-          <GlassGrid
+        <View key="0" style={{ flex: 1 }}>
+          <CollectionGrid
             items={stamps}
             type="stamp"
-            onViewMore={() => onViewMore("stamp")}
+            onEndReached={onFetchMore}
+            isLoadingMore={isFetchingMore}
+            onScroll={handleScroll}
           />
-        </ScrollView>
+        </View>
 
         {/* Page 1 — Finds */}
-        <ScrollView
-          key="1"
-          contentContainerStyle={{ paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={(e) => {
-            scrollY.value = e.nativeEvent.contentOffset.y;
-          }}
-        >
-          <GlassGrid
+        <View key="1" style={{ flex: 1 }}>
+          <CollectionGrid
             items={finds}
             type="find"
-            onViewMore={() => onViewMore("find")}
+            onEndReached={onFetchMore}
+            isLoadingMore={isFetchingMore}
+            onScroll={handleScroll}
           />
-        </ScrollView>
+        </View>
 
         {/* Page 2 — Discoveries */}
-        <ScrollView
-          key="2"
-          contentContainerStyle={{ paddingBottom: 120 }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={(e) => {
-            scrollY.value = e.nativeEvent.contentOffset.y;
-          }}
-        >
-          <GlassGrid
+        <View key="2" style={{ flex: 1 }}>
+          <CollectionGrid
             items={discoveries}
             type="discovery"
-            onViewMore={() => onViewMore("discovery")}
+            onEndReached={onFetchMore}
+            isLoadingMore={isFetchingMore}
+            onScroll={handleScroll}
           />
-        </ScrollView>
+        </View>
 
         {/* Page 3 — Badges */}
         <ScrollView
@@ -377,9 +367,7 @@ export function PassportPager({
           contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          onScroll={(e) => {
-            scrollY.value = e.nativeEvent.contentOffset.y;
-          }}
+          onScroll={handleScroll}
         >
           <BadgeGrid badges={badges} onBadgeTap={onBadgeTap} />
         </ScrollView>

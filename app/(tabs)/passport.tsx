@@ -88,7 +88,14 @@ export default function PassportScreen() {
     isError: collectionsError,
     refetch: refetchCollections,
   } = usePassportCollections();
-  const { stamps, finds, discoveries } = usePassportCollectionsSplit();
+  const {
+    stamps,
+    finds,
+    discoveries,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = usePassportCollectionsSplit();
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();
 
@@ -226,6 +233,10 @@ export default function PassportScreen() {
           onBadgeTap={(badge) => setSelectedBadge(badge)}
           scrollY={scrollY}
           headerHeight={HEADER_HEIGHT}
+          onFetchMore={() => {
+            if (hasNextPage) fetchNextPage();
+          }}
+          isFetchingMore={isFetchingNextPage}
         />
       </SafeAreaView>
 
