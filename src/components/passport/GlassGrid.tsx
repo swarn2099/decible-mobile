@@ -127,7 +127,7 @@ function GridCell({
         onPress={handlePress}
         style={{
           width: cellSize,
-          height: cellSize,
+          height: cellSize * 1.25,
           borderRadius: 6,
           overflow: "hidden",
         }}
@@ -241,7 +241,7 @@ export function CollectionGrid({
       keyExtractor={(item) => item.id}
       numColumns={COLUMNS}
       columnWrapperStyle={{ gap: CELL_GAP }}
-      contentContainerStyle={{ gap: CELL_GAP, paddingBottom: 120 }}
+      contentContainerStyle={{ gap: CELL_GAP, paddingTop: 8, paddingBottom: 120 }}
       showsVerticalScrollIndicator={false}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}

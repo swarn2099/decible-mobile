@@ -361,7 +361,7 @@ export function PassportPager({
         {/* Page 3 — Badges */}
         <ScrollView
           key="3"
-          contentContainerStyle={{ paddingBottom: 120 }}
+          contentContainerStyle={{ paddingTop: 8, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >
           <BadgeGrid badges={badges} onBadgeTap={onBadgeTap} />
