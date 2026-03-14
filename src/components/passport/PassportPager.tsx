@@ -21,9 +21,29 @@ import { CollectionGrid } from "./GlassGrid";
 import { useThemeColors } from "@/constants/colors";
 import { RARITY_COLORS } from "@/constants/badges";
 import type { CollectionStamp } from "@/types/passport";
-import type { BadgeWithStatus } from "@/types/badges";
+import type { BadgeRarity, BadgeWithStatus } from "@/types/badges";
 
 const TAB_LABELS = ["Stamps", "Finds", "Discoveries", "Badges"] as const;
+
+// ─── Rarity glow config ────────────────────────────────────────────────
+function getGlowConfig(rarity: BadgeRarity) {
+  switch (rarity) {
+    case "common":    return { shadowOpacity: 0.2, shadowRadius: 4,  elevation: 2 };
+    case "rare":      return { shadowOpacity: 0.35, shadowRadius: 8,  elevation: 4 };
+    case "epic":      return { shadowOpacity: 0.5,  shadowRadius: 12, elevation: 6 };
+    case "legendary": return { shadowOpacity: 0.7,  shadowRadius: 18, elevation: 8 };
+  }
+}
+
+// Rarity weight for sorting locked badges (legendary first = lowest weight)
+function getRarityWeight(rarity: BadgeRarity): number {
+  switch (rarity) {
+    case "legendary": return 0;
+    case "epic":      return 1;
+    case "rare":      return 2;
+    case "common":    return 3;
+  }
+}
 
 // ─── Badge Tab Grid ────────────────────────────────────────────────────
 function BadgeGrid({
@@ -34,10 +54,19 @@ function BadgeGrid({
   onBadgeTap: (badge: BadgeWithStatus) => void;
 }) {
   const colors = useThemeColors();
+
+  // Sort: earned first (newest first), then locked (legendary first by rarity weight)
   const sorted = [...badges].sort((a, b) => {
     if (a.earned && !b.earned) return -1;
     if (!a.earned && b.earned) return 1;
-    return 0;
+    if (a.earned && b.earned) {
+      // Both earned: sort by earned_at descending (newest first)
+      const aDate = a.earned_at ? new Date(a.earned_at).getTime() : 0;
+      const bDate = b.earned_at ? new Date(b.earned_at).getTime() : 0;
+      return bDate - aDate;
+    }
+    // Both locked: sort by rarity weight (legendary=0 first)
+    return getRarityWeight(a.rarity) - getRarityWeight(b.rarity);
   });
 
   // Build rows of 3
@@ -76,7 +105,7 @@ function BadgeGrid({
 
   return (
     <View style={{ padding: 16, paddingBottom: 40 }}>
-      {/* Count header */}
+      {/* Count header — "Badges (3/12)" format */}
       <Text
         style={{
           fontSize: 13,
@@ -85,7 +114,7 @@ function BadgeGrid({
           marginBottom: 16,
         }}
       >
-        {earnedCount} of {badges.length} earned
+        Badges ({earnedCount}/{badges.length})
       </Text>
 
       {rows.map((row, rowIdx) => (
@@ -100,6 +129,7 @@ function BadgeGrid({
         >
           {row.map((badge) => {
             const rarityColor = RARITY_COLORS[badge.rarity];
+            const glowConfig = getGlowConfig(badge.rarity);
             return (
               <TouchableOpacity
                 key={badge.id}
@@ -117,16 +147,19 @@ function BadgeGrid({
                     justifyContent: "center",
                     ...(badge.earned
                       ? {
+                          // Earned: full color with rarity-scaled glow
                           borderWidth: 2,
                           borderColor: rarityColor,
                           shadowColor: rarityColor,
                           shadowOffset: { width: 0, height: 0 },
-                          shadowOpacity: 0.4,
-                          shadowRadius: 8,
-                          elevation: 4,
+                          shadowOpacity: glowConfig.shadowOpacity,
+                          shadowRadius: glowConfig.shadowRadius,
+                          elevation: glowConfig.elevation,
                         }
                       : {
-                          backgroundColor: colors.card,
+                          // Locked: no border, no background, no glow — pure ghost
+                          borderWidth: 0,
+                          backgroundColor: "transparent",
                         }),
                   }}
                 >
@@ -147,6 +180,7 @@ function BadgeGrid({
                   <Text
                     style={{
                       fontSize: 28,
+                      // Locked badges: 0.3 opacity ghost icon
                       opacity: badge.earned ? 1 : 0.3,
                     }}
                   >
