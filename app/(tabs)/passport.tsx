@@ -1,12 +1,7 @@
 import { useState, useCallback } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  interpolate,
-  Extrapolation,
-} from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { useAuthStore } from "@/stores/authStore";
 import {
@@ -27,9 +22,6 @@ import { useThemeColors } from "@/constants/colors";
 import { apiCall } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import type { BadgeWithStatus } from "@/types/badges";
-
-// Height of the collapsible header section
-const HEADER_HEIGHT = 180;
 
 type FanProfile = {
   id: string;
@@ -71,9 +63,8 @@ export default function PassportScreen() {
   const [shareUrl, setShareUrl] = useState<string | undefined>(undefined);
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
 
-  // Shared values for collapsible header + tab tracking
+  // Shared value for tab tracking
   const activeTabIndex = useSharedValue(0);
-  const scrollY = useSharedValue(0);
   const [_activeTab, setActiveTab] = useState(0);
 
   const { data: fanProfile } = useFanProfile();
@@ -103,23 +94,6 @@ export default function PassportScreen() {
   const user = useAuthStore((s) => s.user);
   const fanSlug = user?.email?.split("@")[0] ?? "user";
   const allCollections = [...stamps, ...finds, ...discoveries];
-
-  // Collapsible header animation: slides up as user scrolls
-  const headerAnimatedStyle = useAnimatedStyle(() => ({
-    height: interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT],
-      [HEADER_HEIGHT, 0],
-      Extrapolation.CLAMP
-    ),
-    opacity: interpolate(
-      scrollY.value,
-      [0, HEADER_HEIGHT * 0.7],
-      [1, 0],
-      Extrapolation.CLAMP
-    ),
-    overflow: "hidden",
-  }));
 
   const handleSharePassport = useCallback(async () => {
     if (!stats) return;
@@ -201,8 +175,8 @@ export default function PassportScreen() {
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
       >
-        {/* Collapsible header — animates to height:0 on scroll */}
-        <Animated.View style={headerAnimatedStyle}>
+        {/* Static header */}
+        <View>
           <PassportHeader
             displayName={fanProfile?.name ?? null}
             avatarUrl={fanProfile?.avatar_url ?? null}
@@ -219,9 +193,9 @@ export default function PassportScreen() {
             onSharePress={handleSharePassport}
             isSharing={passportShare.isLoading || isGeneratingCard}
           />
-        </Animated.View>
+        </View>
 
-        {/* Tab pager — fills remaining space, tab bar sticks as header collapses */}
+        {/* Tab pager */}
         <PassportPager
           stamps={stamps}
           finds={finds}
@@ -231,8 +205,6 @@ export default function PassportScreen() {
           onTabChange={setActiveTab}
           onViewMore={handleViewMore}
           onBadgeTap={(badge) => setSelectedBadge(badge)}
-          scrollY={scrollY}
-          headerHeight={HEADER_HEIGHT}
           onFetchMore={() => {
             if (hasNextPage) fetchNextPage();
           }}

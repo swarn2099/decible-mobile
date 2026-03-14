@@ -16,11 +16,10 @@ import {
 } from "lucide-react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { useSharedValue } from "react-native-reanimated";
+import { useSharedValue } from "react-native-reanimated";
 import { useThemeColors, Colors } from "@/constants/colors";
 import { apiCall } from "@/lib/api";
 import { useFollow, useSocialCounts } from "@/hooks/useUserSearch";
-import { OrbBackground } from "@/components/passport/OrbBackground";
 import { PassportPager } from "@/components/passport/PassportPager";
 import type { CollectionStamp as CollectionStampType } from "@/types/passport";
 
@@ -121,7 +120,6 @@ export default function UserProfileScreen() {
 
   const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
   const activeTabIndex = useSharedValue(0);
-  const profileScrollY = useSharedValue(0);
   const [activeTab, setActiveTab] = useState(0);
 
   const currentFollowing = isFollowing ?? profile?.is_following ?? false;
@@ -199,9 +197,6 @@ export default function UserProfileScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      {/* Orb background — same as passport screen */}
-      <OrbBackground activeTabIndex={activeTabIndex} />
-
       <SafeAreaView
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
@@ -378,8 +373,6 @@ export default function UserProfileScreen() {
           onTabChange={setActiveTab}
           onViewMore={handleViewMore}
           onBadgeTap={() => {}}
-          scrollY={profileScrollY}
-          headerHeight={0}
           onFetchMore={undefined}
           isFetchingMore={false}
         />

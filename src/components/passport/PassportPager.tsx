@@ -12,8 +12,6 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  interpolate,
-  Extrapolation,
   type SharedValue,
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
@@ -220,8 +218,6 @@ interface PassportPagerProps {
   onBadgeTap: (badge: BadgeWithStatus) => void;
   activeTabIndex: SharedValue<number>;
   onTabChange: (index: number) => void;
-  scrollY: SharedValue<number>;
-  headerHeight: number;
   // Infinite scroll support
   onFetchMore?: () => void;
   isFetchingMore?: boolean;
@@ -235,8 +231,6 @@ export function PassportPager({
   onBadgeTap,
   activeTabIndex,
   onTabChange,
-  scrollY,
-  headerHeight,
   onFetchMore,
   isFetchingMore,
 }: PassportPagerProps) {
@@ -250,16 +244,6 @@ export function PassportPager({
 
   const underlineStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: underlineX.value }],
-  }));
-
-  // Tab bar bottom border — appears when header is fully scrolled
-  const tabBarBorderStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      scrollY.value,
-      [headerHeight * 0.8, headerHeight],
-      [0, 1],
-      Extrapolation.CLAMP
-    ),
   }));
 
   const handleTabPress = (index: number) => {
@@ -282,16 +266,12 @@ export function PassportPager({
     activeTabIndex.value = continuous;
   };
 
-  const handleScroll = (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-    scrollY.value = e.nativeEvent.contentOffset.y;
-  };
-
   return (
     <View style={{ flex: 1 }}>
       {/* Tab bar */}
       <View
         style={{
-          backgroundColor: colors.card,
+          backgroundColor: colors.bg,
           position: "relative",
         }}
       >
@@ -338,20 +318,6 @@ export function PassportPager({
           ]}
         />
 
-        {/* Pinned-state bottom divider — fades in when header collapses */}
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 1,
-              backgroundColor: colors.divider,
-            },
-            tabBarBorderStyle,
-          ]}
-        />
       </View>
 
       {/* PagerView */}
@@ -369,7 +335,6 @@ export function PassportPager({
             type="stamp"
             onEndReached={onFetchMore}
             isLoadingMore={isFetchingMore}
-            onScroll={handleScroll}
           />
         </View>
 
@@ -380,7 +345,6 @@ export function PassportPager({
             type="find"
             onEndReached={onFetchMore}
             isLoadingMore={isFetchingMore}
-            onScroll={handleScroll}
           />
         </View>
 
@@ -391,7 +355,6 @@ export function PassportPager({
             type="discovery"
             onEndReached={onFetchMore}
             isLoadingMore={isFetchingMore}
-            onScroll={handleScroll}
           />
         </View>
 
@@ -400,8 +363,6 @@ export function PassportPager({
           key="3"
           contentContainerStyle={{ paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onScroll={handleScroll}
         >
           <BadgeGrid badges={badges} onBadgeTap={onBadgeTap} />
         </ScrollView>

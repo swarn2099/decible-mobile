@@ -210,116 +210,96 @@ export function PassportHeader({
         </View>
       </View>
 
-      {/* Row 2: Username + Member since */}
-      <View style={{ marginTop: 10 }}>
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: "Poppins_600SemiBold",
-            color: colors.text,
-          }}
-          numberOfLines={1}
-        >
-          {name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontFamily: "Poppins_400Regular",
-            color: colors.textSecondary,
-            marginTop: 2,
-          }}
-        >
-          Member since {memberLabel}
-        </Text>
-      </View>
-
-      {/* Row 3: Action buttons */}
-      <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
-        {/* Share Passport — gradient */}
-        <Animated.View style={[{ flex: 1 }, shareAnimStyle]}>
-          <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              onSharePress?.();
+      {/* Row 2: Username + Member since (left) + icon buttons (right) */}
+      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: "Poppins_600SemiBold",
+              color: colors.text,
             }}
-            onPressIn={() => {
-              shareScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-            }}
-            onPressOut={() => {
-              shareScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
-            }}
-            disabled={isSharing}
-            style={{ flex: 1 }}
+            numberOfLines={1}
           >
-            <LinearGradient
-              colors={["#FF4D6A", "#9B6DFF"]}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={{
-                borderRadius: 18,
-                height: 36,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
+            {name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: "Poppins_400Regular",
+              color: colors.textSecondary,
+              marginTop: 2,
+            }}
+          >
+            Member since {memberLabel}
+          </Text>
+        </View>
+
+        {/* Icon buttons */}
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {/* Share — gradient circle */}
+          <Animated.View style={shareAnimStyle}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onSharePress?.();
               }}
+              onPressIn={() => {
+                shareScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+              }}
+              onPressOut={() => {
+                shareScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+              }}
+              disabled={isSharing}
             >
-              <Share2 size={14} color="#FFFFFF" />
-              <Text
+              <LinearGradient
+                colors={["#FF4D6A", "#9B6DFF"]}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
                 style={{
-                  fontSize: 13,
-                  fontFamily: "Poppins_600SemiBold",
-                  color: "#FFFFFF",
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                {isSharing ? "Generating..." : "Share Passport"}
-              </Text>
-            </LinearGradient>
-          </Pressable>
-        </Animated.View>
+                <Share2 size={14} color="#FFFFFF" />
+              </LinearGradient>
+            </Pressable>
+          </Animated.View>
 
-        {/* Edit Profile — surface fill */}
-        <Animated.View style={[{ flex: 1 }, editAnimStyle]}>
-          <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              router.push("/settings" as any);
-            }}
-            onPressIn={() => {
-              editScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-            }}
-            onPressOut={() => {
-              editScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
-            }}
-            style={{ flex: 1 }}
-          >
-            <View
-              style={{
-                borderRadius: 18,
-                height: 36,
-                backgroundColor: colors.card,
-                borderWidth: 1,
-                borderColor: colors.cardBorder,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
+          {/* Edit — surface circle */}
+          <Animated.View style={editAnimStyle}>
+            <Pressable
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                router.push("/settings" as any);
+              }}
+              onPressIn={() => {
+                editScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+              }}
+              onPressOut={() => {
+                editScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
               }}
             >
-              <UserPen size={14} color={colors.text} />
-              <Text
+              <View
                 style={{
-                  fontSize: 13,
-                  fontFamily: "Poppins_600SemiBold",
-                  color: colors.text,
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: colors.card,
+                  borderWidth: 1,
+                  borderColor: colors.cardBorder,
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                Edit Profile
-              </Text>
-            </View>
-          </Pressable>
-        </Animated.View>
+                <UserPen size={14} color={colors.text} />
+              </View>
+            </Pressable>
+          </Animated.View>
+        </View>
       </View>
     </View>
   );

@@ -6,8 +6,6 @@ import {
   StyleSheet,
   useWindowDimensions,
   ActivityIndicator,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -23,7 +21,7 @@ import Animated, {
 import { useThemeColors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
 
-const CELL_GAP = 1;
+const CELL_GAP = 4;
 const COLUMNS = 3;
 
 // ─── Gradient fallback colors ────────────────────────────────────────
@@ -226,7 +224,6 @@ interface CollectionGridProps {
   type: "stamp" | "find" | "discovery";
   onEndReached?: () => void;
   isLoadingMore?: boolean;
-  onScroll?: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
 }
 
 export function CollectionGrid({
@@ -234,7 +231,6 @@ export function CollectionGrid({
   type,
   onEndReached,
   isLoadingMore,
-  onScroll,
 }: CollectionGridProps) {
   const { width: screenWidth } = useWindowDimensions();
   const cellSize = (screenWidth - CELL_GAP * (COLUMNS - 1)) / COLUMNS;
@@ -249,8 +245,6 @@ export function CollectionGrid({
       showsVerticalScrollIndicator={false}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
-      scrollEventThrottle={16}
-      onScroll={onScroll}
       renderItem={({ item }) => (
         <GridCell item={item} type={type} cellSize={cellSize} />
       )}
