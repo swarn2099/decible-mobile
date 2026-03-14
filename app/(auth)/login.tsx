@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Animated as RNAnimated,
   StatusBar,
+  type TextInput as TextInputType,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Linking from "expo-linking";
@@ -31,6 +32,7 @@ export default function LoginScreen() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<TextInputType>(null);
 
   // Stagger fade-in
   const wordmarkOpacity = useRef(new RNAnimated.Value(0)).current;
@@ -182,7 +184,8 @@ export default function LoginScreen() {
               transform: [{ translateY: inputY }],
             }}
           >
-            <View
+            <Pressable
+              onPress={() => inputRef.current?.focus()}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -205,12 +208,13 @@ export default function LoginScreen() {
             >
               <Mail size={20} color={colors.gray} style={{ marginRight: 12 }} />
               <TextInput
+                ref={inputRef}
                 style={{
                   flex: 1,
                   fontFamily: "Poppins_400Regular",
                   fontSize: 16,
                   color: colors.textPrimary,
-                  height: "100%",
+                  height: 52,
                   padding: 0,
                 }}
                 placeholder="Email address"
@@ -226,7 +230,7 @@ export default function LoginScreen() {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
               />
-            </View>
+            </Pressable>
             {error ? (
               <Text
                 style={{
