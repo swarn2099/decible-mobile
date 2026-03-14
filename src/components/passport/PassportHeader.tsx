@@ -1,8 +1,16 @@
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { useRef } from "react";
+import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Settings, Share2, UserPen, Award, ChevronRight } from "lucide-react-native";
+import { Share2, UserPen } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
+import { useThemeColors } from "@/constants/colors";
 
 const GRADIENT_PAIRS: [string, string][] = [
   ["#FF4D6A", "#9B6DFF"],
@@ -25,10 +33,12 @@ function StatCell({
   value,
   label,
   onPress,
+  colors,
 }: {
   value: string;
   label: string;
   onPress?: () => void;
+  colors: ReturnType<typeof useThemeColors>;
 }) {
   const Wrapper = onPress ? Pressable : View;
 
@@ -40,8 +50,8 @@ function StatCell({
       <Text
         style={{
           fontSize: 17,
-          fontFamily: "Poppins_700Bold",
-          color: "#FFFFFF",
+          fontFamily: "Poppins_600SemiBold",
+          color: colors.text,
           lineHeight: 22,
         }}
       >
@@ -49,9 +59,9 @@ function StatCell({
       </Text>
       <Text
         style={{
-          fontSize: 12,
+          fontSize: 11,
           fontFamily: "Poppins_400Regular",
-          color: "#8E8E93",
+          color: colors.textSecondary,
           marginTop: 1,
         }}
       >
@@ -66,15 +76,12 @@ type Props = {
   avatarUrl: string | null;
   memberSince: string;
   followersCount: number;
+  followingCount: number;
   findsCount: number;
   stampsCount: number;
   fanId: string;
-  onSettingsPress: () => void;
   onSharePress?: () => void;
   isSharing?: boolean;
-  badgesEarned?: number;
-  badgesTotal?: number;
-  onBadgesPress?: () => void;
 };
 
 export function PassportHeader({
@@ -82,17 +89,15 @@ export function PassportHeader({
   avatarUrl,
   memberSince,
   followersCount,
+  followingCount,
   findsCount,
   stampsCount,
   fanId,
-  onSettingsPress,
   onSharePress,
   isSharing,
-  badgesEarned = 0,
-  badgesTotal = 0,
-  onBadgesPress,
 }: Props) {
   const router = useRouter();
+  const colors = useThemeColors();
   const name = displayName || "Fan";
   const initial = name.charAt(0).toUpperCase();
   const gradientColors = getGradientForName(name);
@@ -103,11 +108,23 @@ export function PassportHeader({
     year: "numeric",
   });
 
+  // Press animation for Share button
+  const shareScale = useSharedValue(1);
+  const shareAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: shareScale.value }],
+  }));
+
+  // Press animation for Edit button
+  const editScale = useSharedValue(1);
+  const editAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: editScale.value }],
+  }));
+
   return (
     <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}>
       {/* Row 1: Avatar (left) + Stats (right) */}
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-        {/* Avatar — 60x60, no colored ring */}
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
+        {/* Avatar — 60x60, plain circle */}
         <View
           style={{
             width: 60,
@@ -115,7 +132,7 @@ export function PassportHeader({
             borderRadius: 30,
             overflow: "hidden",
             borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.15)",
+            borderColor: colors.cardBorder,
           }}
         >
           {avatarUrl ? (
@@ -150,13 +167,18 @@ export function PassportHeader({
           )}
         </View>
 
-        {/* Stats — 3 columns: Finds, Stamps, Followers */}
-        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-around" }}>
-          <StatCell value={String(findsCount)} label="Finds" />
-          <StatCell value={String(stampsCount)} label="Stamps" />
+        {/* Stats — 4 columns: Followers / Following / Stamps / Finds */}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "space-around",
+          }}
+        >
           <StatCell
             value={String(followersCount)}
             label="Followers"
+            colors={colors}
             onPress={() =>
               router.push({
                 pathname: "/followers" as any,
@@ -164,53 +186,70 @@ export function PassportHeader({
               })
             }
           />
+          <StatCell
+            value={String(followingCount)}
+            label="Following"
+            colors={colors}
+            onPress={() =>
+              router.push({
+                pathname: "/following" as any,
+                params: { fanId },
+              })
+            }
+          />
+          <StatCell
+            value={String(stampsCount)}
+            label="Stamps"
+            colors={colors}
+          />
+          <StatCell
+            value={String(findsCount)}
+            label="Finds"
+            colors={colors}
+          />
         </View>
       </View>
 
-      {/* Row 2: Username + Settings gear */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: 12,
-        }}
-      >
+      {/* Row 2: Username + Member since */}
+      <View style={{ marginTop: 10 }}>
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 16,
             fontFamily: "Poppins_600SemiBold",
-            color: "#FFFFFF",
+            color: colors.text,
           }}
           numberOfLines={1}
         >
           {name}
         </Text>
-        <Pressable onPress={onSettingsPress} hitSlop={12}>
-          <Settings size={20} color="#8E8E93" />
-        </Pressable>
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: "Poppins_400Regular",
+            color: colors.textSecondary,
+            marginTop: 2,
+          }}
+        >
+          Member since {memberLabel}
+        </Text>
       </View>
 
-      {/* Row 3: Member since */}
-      <Text
-        style={{
-          fontSize: 13,
-          fontFamily: "Poppins_400Regular",
-          color: "#8E8E93",
-          marginTop: 2,
-        }}
-      >
-        Member since {memberLabel}
-      </Text>
-
-      {/* Row 4: Action buttons — Share Passport + Edit Profile */}
-      <View style={{ flexDirection: "row", gap: 10, marginTop: 14 }}>
+      {/* Row 3: Action buttons */}
+      <View style={{ flexDirection: "row", gap: 10, marginTop: 12 }}>
         {/* Share Passport — gradient */}
-        {onSharePress && (
-          <TouchableOpacity
-            onPress={onSharePress}
+        <Animated.View style={[{ flex: 1 }, shareAnimStyle]}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSharePress?.();
+            }}
+            onPressIn={() => {
+              shareScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+            }}
+            onPressOut={() => {
+              shareScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+            }}
             disabled={isSharing}
-            activeOpacity={0.85}
             style={{ flex: 1 }}
           >
             <LinearGradient
@@ -218,7 +257,7 @@ export function PassportHeader({
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={{
-                borderRadius: 8,
+                borderRadius: 18,
                 height: 36,
                 flexDirection: "row",
                 alignItems: "center",
@@ -237,74 +276,51 @@ export function PassportHeader({
                 {isSharing ? "Generating..." : "Share Passport"}
               </Text>
             </LinearGradient>
-          </TouchableOpacity>
-        )}
+          </Pressable>
+        </Animated.View>
 
-        {/* Edit Profile — dark fill */}
-        <TouchableOpacity
-          onPress={() => router.push("/settings" as any)}
-          activeOpacity={0.85}
-          style={{ flex: 1 }}
-        >
-          <View
-            style={{
-              borderRadius: 8,
-              height: 36,
-              backgroundColor: "#1A1A1F",
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.15)",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
+        {/* Edit Profile — surface fill */}
+        <Animated.View style={[{ flex: 1 }, editAnimStyle]}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/settings" as any);
             }}
+            onPressIn={() => {
+              editScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+            }}
+            onPressOut={() => {
+              editScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+            }}
+            style={{ flex: 1 }}
           >
-            <UserPen size={14} color="#FFFFFF" />
-            <Text
+            <View
               style={{
-                fontSize: 13,
-                fontFamily: "Poppins_600SemiBold",
-                color: "#FFFFFF",
+                borderRadius: 18,
+                height: 36,
+                backgroundColor: colors.card,
+                borderWidth: 1,
+                borderColor: colors.cardBorder,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
               }}
             >
-              Edit Profile
-            </Text>
-          </View>
-        </TouchableOpacity>
+              <UserPen size={14} color={colors.text} />
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily: "Poppins_600SemiBold",
+                  color: colors.text,
+                }}
+              >
+                Edit Profile
+              </Text>
+            </View>
+          </Pressable>
+        </Animated.View>
       </View>
-
-      {/* Row 5: Badges teaser */}
-      {badgesTotal > 0 && onBadgesPress && (
-        <Pressable
-          onPress={onBadgesPress}
-          style={({ pressed }) => ({
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: 12,
-            paddingVertical: 10,
-            paddingHorizontal: 12,
-            backgroundColor: "#1A1A1F",
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: "rgba(255,255,255,0.08)",
-            opacity: pressed ? 0.7 : 1,
-          })}
-        >
-          <Award size={16} color="#FFD700" />
-          <Text
-            style={{
-              flex: 1,
-              marginLeft: 8,
-              fontSize: 13,
-              fontFamily: "Poppins_500Medium",
-              color: "#FFFFFF",
-            }}
-          >
-            {badgesEarned} of {badgesTotal} badges earned
-          </Text>
-          <ChevronRight size={16} color="#8E8E93" />
-        </Pressable>
-      )}
     </View>
   );
 }
