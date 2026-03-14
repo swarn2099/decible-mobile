@@ -166,7 +166,7 @@ Plans:
 
 ---
 
-### 🚧 v3.5 Polish & Identity (In Progress)
+### v3.5 Polish & Identity (In Progress)
 
 **Milestone Goal:** Redesign the login flow and passport screen to establish brand tone and maximize information density — animated login, Instagram-style compact layout, 3-column grid, and badges as a dedicated tab.
 
@@ -194,7 +194,10 @@ Plans:
   3. Two action buttons appear below the stats: "Share Passport" (gradient fill) and "Edit Profile" (surface fill)
   4. Scrolling past the header causes the tab bar to stick to the top of the screen
   5. Swiping left or right switches between tabs with a smooth animated transition; the active tab has a pink underline
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 11-01-PLAN.md — Instagram-style header + 4-tab sticky pager + themed bg (no orbs)
 
 #### Phase 12: Passport Grid & Cards
 **Goal**: Each passport tab renders a dense, uniform 3-column image grid where every cell tells the story of a collection entry at a glance
@@ -222,7 +225,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 10 → 11 → 12 → 13
+Phases execute in numeric order: 10 -> 11 -> 12 -> 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -235,7 +238,7 @@ Phases execute in numeric order: 10 → 11 → 12 → 13
 | 7. Glassy Passport Redesign | v3.0 | 4/4 | Complete | 2026-03-12 |
 | 8. Jukebox | v3.0 | 3/3 | Complete | 2026-03-13 |
 | 9. I'm at a Show | v3.0 | 5/5 | Complete | 2026-03-13 |
-| 10. Login Flow Redesign | 1/1 | Complete    | 2026-03-13 | - |
-| 11. Passport Layout & Structure | v3.5 | 0/? | Not started | - |
+| 10. Login Flow Redesign | v3.5 | 1/1 | Complete | 2026-03-13 |
+| 11. Passport Layout & Structure | v3.5 | 0/1 | Planning | - |
 | 12. Passport Grid & Cards | v3.5 | 0/? | Not started | - |
 | 13. Badges Section | v3.5 | 0/? | Not started | - |
