@@ -80,7 +80,7 @@ export default function HomeScreen() {
           paddingHorizontal: 20,
         }}
       >
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flex: 1, flexDirection: "row", gap: 8 }}>
           <Pressable
             onPress={() => router.push("/jukebox")}
             hitSlop={12}
@@ -117,22 +117,24 @@ export default function HomeScreen() {
 
         <GradientTitle />
 
-        <Pressable
-          onPress={() => router.push("/search")}
-          hitSlop={12}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: colors.card,
-            borderWidth: 1,
-            borderColor: colors.cardBorder,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Search size={20} color={colors.textSecondary} />
-        </Pressable>
+        <View style={{ flex: 1, alignItems: "flex-end" }}>
+          <Pressable
+            onPress={() => router.push("/search")}
+            hitSlop={12}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              backgroundColor: colors.card,
+              borderWidth: 1,
+              borderColor: colors.cardBorder,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Search size={20} color={colors.textSecondary} />
+          </Pressable>
+        </View>
       </View>
 
       {/* Discovery Feed Header */}
