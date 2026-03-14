@@ -16,7 +16,7 @@ import { useRouter } from "expo-router";
 import { ChevronLeft, Camera } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { readAsStringAsync } from "expo-file-system";
+import { readAsStringAsync } from "expo-file-system/legacy";
 import { decode } from "base64-arraybuffer";
 
 import { useThemeColors } from "@/constants/colors";

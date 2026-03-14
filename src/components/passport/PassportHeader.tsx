@@ -49,17 +49,17 @@ function StatCell({
     >
       <Text
         style={{
-          fontSize: 17,
+          fontSize: 20,
           fontFamily: "Poppins_600SemiBold",
           color: colors.text,
-          lineHeight: 22,
+          lineHeight: 26,
         }}
       >
         {value}
       </Text>
       <Text
         style={{
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: "Poppins_400Regular",
           color: colors.textSecondary,
           marginTop: 1,
@@ -124,12 +124,12 @@ export function PassportHeader({
     <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}>
       {/* Row 1: Avatar (left) + Stats (right) */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-        {/* Avatar — 60x60, plain circle */}
+        {/* Avatar — 80x80, plain circle */}
         <View
           style={{
-            width: 60,
-            height: 60,
-            borderRadius: 30,
+            width: 80,
+            height: 80,
+            borderRadius: 40,
             overflow: "hidden",
             borderWidth: 1,
             borderColor: colors.cardBorder,
@@ -138,7 +138,7 @@ export function PassportHeader({
           {avatarUrl ? (
             <Image
               source={{ uri: avatarUrl }}
-              style={{ width: 60, height: 60 }}
+              style={{ width: 80, height: 80 }}
               contentFit="cover"
               transition={200}
             />
@@ -148,15 +148,15 @@ export function PassportHeader({
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={{
-                width: 60,
-                height: 60,
+                width: 80,
+                height: 80,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
               <Text
                 style={{
-                  fontSize: 24,
+                  fontSize: 32,
                   fontFamily: "Poppins_700Bold",
                   color: "rgba(255,255,255,0.8)",
                 }}
@@ -215,7 +215,7 @@ export function PassportHeader({
         <View style={{ flex: 1 }}>
           <Text
             style={{
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: "Poppins_600SemiBold",
               color: colors.text,
             }}
@@ -225,7 +225,7 @@ export function PassportHeader({
           </Text>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 13,
               fontFamily: "Poppins_400Regular",
               color: colors.textSecondary,
               marginTop: 2,
@@ -257,14 +257,14 @@ export function PassportHeader({
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 1, y: 0.5 }}
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Share2 size={14} color="#FFFFFF" />
+                <Share2 size={16} color="#FFFFFF" />
               </LinearGradient>
             </Pressable>
           </Animated.View>
@@ -285,9 +285,9 @@ export function PassportHeader({
             >
               <View
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
                   backgroundColor: colors.card,
                   borderWidth: 1,
                   borderColor: colors.cardBorder,
@@ -295,7 +295,7 @@ export function PassportHeader({
                   justifyContent: "center",
                 }}
               >
-                <UserPen size={14} color={colors.text} />
+                <UserPen size={16} color={colors.text} />
               </View>
             </Pressable>
           </Animated.View>

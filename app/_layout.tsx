@@ -14,6 +14,8 @@ import {
 import { Image } from "expo-image";
 import NetInfo from "@react-native-community/netinfo";
 
+import { useQuery } from "@tanstack/react-query";
+
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { QueryProvider } from "@/providers/QueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
@@ -22,6 +24,7 @@ import { useUIStore } from "@/stores/uiStore";
 import { useAuthRecovery } from "@/hooks/useAuthRecovery";
 import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { ReAuthModal } from "@/components/auth/ReAuthModal";
+import { apiCall } from "@/lib/api";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -32,6 +35,16 @@ function RootNavigator() {
   const segments = useSegments();
 
   useAuthRecovery();
+
+  const { data: fanProfile, isLoading: profileLoading } = useQuery({
+    queryKey: ["fanProfile", session?.user?.email],
+    queryFn: async () => {
+      const data = await apiCall<{ fan: { name: string | null } }>("/mobile/passport?page=0");
+      return data.fan;
+    },
+    enabled: !!session?.user?.email,
+    staleTime: 5 * 60 * 1000,
+  });
 
   if (isLoading) {
     return null;
@@ -47,6 +60,13 @@ function RootNavigator() {
   }
   if (session && inAuthGroup) {
     return <Redirect href="/(tabs)" />;
+  }
+
+  if (session && !inAuthGroup && !profileLoading && fanProfile && !fanProfile.name) {
+    const inSetup = segments[0] === "setup-username";
+    if (!inSetup) {
+      return <Redirect href="/setup-username" />;
+    }
   }
 
   return (
@@ -89,6 +109,10 @@ function RootNavigator() {
         <Stack.Screen
           name="profile/[id]"
           options={{ presentation: "card", animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="setup-username"
+          options={{ presentation: "card" }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>

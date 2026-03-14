@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -69,6 +69,28 @@ function AddArtistView() {
   const [pendingSlug, setPendingSlug] = useState<string | null>(null);
 
   const fanSlug = user?.email?.split("@")[0] ?? "user";
+
+  // Auto-detect music URLs from clipboard on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const hasString = await Clipboard.hasStringAsync();
+        if (!hasString) return;
+        const text = await Clipboard.getStringAsync();
+        if (!text) return;
+        const lower = text.toLowerCase();
+        const isMusicUrl =
+          lower.includes("open.spotify.com") ||
+          lower.includes("music.apple.com") ||
+          lower.includes("soundcloud.com");
+        if (isMusicUrl) {
+          setPastedUrl(text);
+        }
+      } catch {
+        // Clipboard access denied or unavailable — ignore
+      }
+    })();
+  }, []);
 
   async function handlePaste() {
     if (validateMutation.isPending) return;
