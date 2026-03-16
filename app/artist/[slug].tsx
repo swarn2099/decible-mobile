@@ -157,11 +157,19 @@ export default function ArtistProfileScreen() {
       const host = new URL(normalizeUrl(url)).hostname.toLowerCase();
       if (host.includes("spotify")) return "Listen on Spotify";
       if (host.includes("soundcloud")) return "Listen on SoundCloud";
-      if (host.includes("deezer")) return "Listen on Deezer";
       if (host.includes("mixcloud")) return "Listen on Mixcloud";
       if (host.includes("apple")) return "Listen on Apple Music";
     } catch {}
     return "Listen";
+  };
+
+  const isValidUrl = (url: string): boolean => {
+    try {
+      new URL(normalizeUrl(url));
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const musicLinks = useMemo(() => {
@@ -175,9 +183,14 @@ export default function ArtistProfileScreen() {
     ].filter(Boolean) as string[];
     const seen = new Set<string>();
     for (const rawUrl of allUrls) {
+      // Skip invalid URLs before rendering any link button
+      if (!isValidUrl(rawUrl)) continue;
       const url = normalizeUrl(rawUrl);
       if (seen.has(url)) continue;
       seen.add(url);
+      // Deezer is not supported per CLAUDE.md — skip silently
+      const hostname = new URL(url).hostname.toLowerCase();
+      if (hostname.includes("deezer")) continue;
       const label = getPlatformLabel(url);
       const host = url.toLowerCase();
       const icon = host.includes("soundcloud") ? (
@@ -192,7 +205,7 @@ export default function ArtistProfileScreen() {
       links.push({ url, label, icon });
     }
     return links;
-  }, [artist, colors]);
+  }, [artist, colors]); // isValidUrl is a pure function defined above — no closure deps
 
   const isCurrentUserFounder = useMemo(() => {
     if (!founder || !user) return false;

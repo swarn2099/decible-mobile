@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Share, ActivityIndicator, View, Text, Modal, StyleSheet } from "react-native";
-import { BlurView, BlurTargetView } from "expo-blur";
+import { BlurView } from "expo-blur";
 import { useThemeColors } from "@/constants/colors";
 import { supabase } from "@/lib/supabase";
 
@@ -19,7 +19,6 @@ export function SharePrompt({
 }: SharePromptProps) {
   const colors = useThemeColors();
   const [loading, setLoading] = useState(false);
-  const bgRef = useRef<View>(null);
 
   useEffect(() => {
     if (visible) {
@@ -30,15 +29,15 @@ export function SharePrompt({
   const triggerShare = async () => {
     setLoading(true);
 
+    // Determine share content (with optional image card)
+    let imageUrl: string | null = null;
     try {
-      // Get auth session for Bearer token
       const { data: { session } } = await supabase.auth.getSession();
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       if (session?.access_token) {
         headers["Authorization"] = `Bearer ${session.access_token}`;
       }
 
-      // Try to generate a shareable card from the web API
       const res = await fetch(
         "https://decibel-three.vercel.app/api/social/collection-card",
         {
@@ -50,66 +49,60 @@ export function SharePrompt({
 
       if (res.ok) {
         const data = await res.json();
-        if (data.image_url) {
-          await Share.share({
-            message: `I just collected ${performerName} on Decibel! Check them out: https://decible.live/artist/${performerSlug}`,
-            url: data.image_url,
-          });
-          return;
+        if (data?.image_url) {
+          imageUrl = data.image_url as string;
         }
       }
-
-      // Fallback: text-only share
-      await Share.share({
-        message: `I just collected ${performerName} on Decibel! Check them out: https://decible.live/artist/${performerSlug}`,
-      });
     } catch {
-      // Fallback: text-only share (card generation failed or user cancelled)
-      try {
-        await Share.share({
-          message: `I just collected ${performerName} on Decibel! Check them out: https://decible.live/artist/${performerSlug}`,
-        });
-      } catch {
-        // User cancelled or share failed — that's fine
-      }
-    } finally {
-      setLoading(false);
-      onDone();
+      // Card generation failed — proceed with text-only share
     }
+
+    // Hide loading overlay BEFORE calling Share.share() to avoid modal conflicts on iOS
+    setLoading(false);
+    onDone();
+
+    // Small delay ensures the loading modal is dismissed before the share sheet appears
+    setTimeout(async () => {
+      try {
+        const shareContent = imageUrl
+          ? {
+              message: `I just collected ${performerName} on Decibel! Check them out: https://decible.live/artist/${performerSlug}`,
+              url: imageUrl,
+            }
+          : {
+              message: `I just collected ${performerName} on Decibel! Check them out: https://decible.live/artist/${performerSlug}`,
+            };
+        await Share.share(shareContent);
+      } catch {
+        // User cancelled or share not supported — no-op
+      }
+    }, 300);
   };
 
   if (!visible) return null;
 
-  // Show a brief loading overlay while generating card
+  // Show a brief loading overlay while generating the share card
   if (loading) {
     return (
       <Modal visible transparent animationType="fade">
-        <BlurTargetView
-          ref={bgRef}
-          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.7)" }}
+        <BlurView
+          intensity={30}
+          tint="dark"
+          style={[StyleSheet.absoluteFill, { justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" }]}
         >
-          <BlurView
-            blurTarget={bgRef}
-            intensity={30}
-            tint="dark"
-            blurMethod="dimezisBlurViewSdk31Plus"
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <View style={{ alignItems: "center", gap: 16 }}>
-              <ActivityIndicator size="large" color={colors.purple} />
-              <Text
-                style={{
-                  color: colors.white,
-                  fontFamily: "Poppins_500Medium",
-                  fontSize: 16,
-                }}
-              >
-                Preparing share...
-              </Text>
-            </View>
+          <View style={{ alignItems: "center", gap: 16 }}>
+            <ActivityIndicator size="large" color={colors.purple} />
+            <Text
+              style={{
+                color: "#FFFFFF",
+                fontFamily: "Poppins_500Medium",
+                fontSize: 16,
+              }}
+            >
+              Preparing share...
+            </Text>
           </View>
-        </BlurTargetView>
+        </BlurView>
       </Modal>
     );
   }
