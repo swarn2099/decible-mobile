@@ -268,10 +268,11 @@ Plans:
   2. Passport matches Instagram-style compact header with inline stats (no settings gear, no badge teaser, no colored avatar ring)
   3. 3-column grid shows correct overlays per tab — Finds, Founders (gold star), Discoveries — with swipe gestures between all four tabs
   4. Sticky tab bar pins during scroll and swipe transitions are smooth with a pink active underline
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 15-01: TBD
+- [ ] 15-01-PLAN.md — Polish login screen verification + redesign passport header buttons to text style + light/dark mode audit
+- [ ] 15-02-PLAN.md — Fix grid cells to 1:1 square with 1px gaps + verify sticky tab bar and swipe gestures
 
 #### Phase 16: Home Screen & Feed
 **Goal**: The Home screen surfaces the user's social music discovery feed, personal stats, trending artists, and a Jukebox — replacing the map-centric layout
@@ -283,7 +284,7 @@ Plans:
   3. Trending Artists row displays and is tappable, navigating to the artist profile
   4. Jukebox button opens the Jukebox screen with embedded players; max 3 WebViews active at once
   5. One-tap Collect from a feed card or Jukebox card creates a Discovery in the user's passport and notifies the original finder
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 16-01: TBD
@@ -297,7 +298,7 @@ Plans:
   2. Top 3 entries have distinct styling; user's own position is visible at the bottom if outside the visible list
   3. Tapping a leaderboard entry navigates to that user's passport
   4. Founder Share Card (1080x1920) generates on founding; Passport Summary Card generates on demand; both open in the native share sheet targeting Instagram Stories
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 17-01: TBD
@@ -312,7 +313,7 @@ Plans:
   3. Artist's public page at decibel.live/[artistslug] loads with correct SSR content and OG meta tags that render previews correctly in iMessage and Twitter
   4. "Collect on Decibel" button on the public page deep-links to the app or redirects to the App Store if the app is not installed
   5. User's passport web page at decibel.live/@username is publicly accessible and correctly renders their finds and founders
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 18-01: TBD
@@ -329,7 +330,7 @@ Plans:
   5. Artist messages appear in the fan's Home feed alongside organic activity
   6. Smart Flyer lets artist create a show listing and push it to collectors within a specified radius
   7. Stripe Checkout handles the $29/month subscription; 14-day free trial requires no credit card; locked features are inaccessible after trial expires; verified badge appears on the artist's in-app profile after claiming
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 19-01: TBD
@@ -343,7 +344,7 @@ Plans:
   2. Instagram DM queue is generated for manual sending with pre-written, personalized messages
   3. Artists receive milestone notifications (from Decibel) at 25, 50, and 100 collector thresholds; no artist receives duplicate outreach at the same threshold
   4. Milestone share card images generate correctly with the right artist name and collector count
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 20-01: TBD
