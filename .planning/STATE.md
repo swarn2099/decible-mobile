@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.5
-milestone_name: Polish & Identity
+milestone: v6.0
+milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 13-badges-section 13-01-PLAN.md
-last_updated: "2026-03-14T01:35:45.141Z"
-last_activity: 2026-03-13 — Roadmap created, v3.5 phases 10-13 defined
+stopped_at: null
+last_updated: "2026-03-16"
+last_activity: 2026-03-16 — Milestone v6.0 started
 progress:
-  total_phases: 13
-  completed_phases: 12
-  total_plans: 28
-  completed_plans: 28
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -18,25 +18,26 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-13)
+See: .planning/PROJECT.md (updated 2026-03-16)
 
-**Core value:** Discover underground artists before anyone else (Finds) and prove you were at the show (Stamps) — a live music passport.
-**Current focus:** Milestone v3.5 — Polish & Identity (Phase 10: Login Flow Redesign)
+**Core value:** Fans compete to discover underground artists (Founder badge = social currency). Artists get fan intelligence and direct reach worth $29/month.
+**Current focus:** Milestone v6.0 — The Artist Growth Platform (defining requirements)
 
 ## Current Position
 
-Phase: 10 of 13 (Login Flow Redesign)
-Plan: — (not yet planned)
-Status: Ready to plan
-Last activity: 2026-03-13 — Roadmap created, v3.5 phases 10-13 defined
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-16 — Milestone v6.0 started
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity (from v1.0 + v3.0):**
-- v1.0: 5 phases, 12 plans completed
+**Velocity (from v1.0 + v3.0 + v3.5):**
+- v1.0: 5 phases (1-5), 12 plans completed
 - v3.0: 4 phases (6-9), 14 plans completed
+- v3.5: 4 phases (10-13), completed
 
 ## Accumulated Context
 
@@ -47,17 +48,9 @@ Progress: [░░░░░░░░░░] 0%
 - Finds vs Stamps visual separation: different aesthetics match different user motivations
 - collection_type 3-way split: stamp (verified live), find (online+founder), discovery (online no-founder)
 - apiCall pattern: all mobile API mutations use apiCall from @/lib/api — never raw fetch with manual auth
-- OrbBackground uses LinearGradient radial falloff (no BlurView on orbs) — low overhead
-- PassportPager tab pill: tabOffset SharedValue drives smooth mid-swipe animation
-- passport.tsx no-parent-ScrollView pattern: OrbBackground sibling behind SafeAreaView
-- [Phase 10-login-flow-redesign]: LoginOrbBackground separate from passport OrbBackground to avoid coupling auth to passport internals
-- [Phase 10-login-flow-redesign]: isDark boolean prop on LoginOrbBackground rather than calling useThemeColors() internally
-- [Phase 11-passport-layout-structure]: Collapsible header via Animated.View interpolating height+opacity from scrollY — avoids PagerView-inside-ScrollView issues
-- [Phase 11-passport-layout-structure]: Badges tab inline in PassportPager replaces BadgesModal — fewer taps to view badges
-- [Phase 12-passport-grid-cards]: CollectionGrid as primary export; GlassGrid alias for backward compat
-- [Phase 12-passport-grid-cards]: BlurView + rgba(0,0,0,0.2) overlay for Android fallback in frost section
-- [Phase 13-badges-section]: Rarity-scaled glow: common=subtle (shadowOpacity 0.2), legendary=max (shadowOpacity 0.7, shadowRadius 18) for earned badges in BadgeGrid
-- [Phase 13-badges-section]: Locked badges: transparent bg + no border + 0.3 opacity icon (ghost treatment, maximum contrast vs earned)
+- v6.0: Stamps removed from UI (data preserved), passport tabs = Finds | Founders | Discoveries | Badges
+- v6.0: Two repos — decibel-mobile (fan app) and decibel (web/API/dashboard)
+- v6.0: Artist dashboard monetization at $29/month, Stripe billing
 
 ### Pending Todos
 
@@ -69,6 +62,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T01:32:46.190Z
-Stopped at: Completed 13-badges-section 13-01-PLAN.md
+Last session: 2026-03-16
+Stopped at: Milestone initialization
 Resume file: None

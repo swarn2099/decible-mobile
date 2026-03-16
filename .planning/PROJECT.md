@@ -1,22 +1,29 @@
-# Decibel — Live Music Passport
+# Decibel — The Artist Growth Platform
 
 ## What This Is
 
-Decibel is a mobile app (React Native + Expo) that serves as a live music passport for discovering underground artists and logging shows attended. It targets two audiences: Artist Hunters who compete to discover and claim emerging artists (Finds), and Night-Out Loggers who keep a diary of live shows (Stamps). Same app, same data, two lenses.
+Decibel is a two-sided music platform. The fan-facing mobile app (React Native + Expo) lets users discover and collect underground artists, building a passport of Finds and Founders. The artist-facing web dashboard (Next.js) gives independent artists fan intelligence, push notifications, smart flyers, and a link-in-bio page. The fan app generates the data; the artist dashboard monetizes it.
 
 ## Core Value
 
-Every interaction in Decibel revolves around live music — discovering underground artists before they blow up (Finds) and proving you were at the show (Stamps). The Founder badge (one-of-one, first person to add an artist) is the app's most valuable social currency.
+Fans compete to discover underground artists before they blow up (Founder badge = one-of-one social currency). Artists get direct access to their most engaged fans and actionable growth intelligence — worth $29/month.
 
-## Current Milestone: v3.5 — Polish & Identity
+## Current Milestone: v6.0 — The Artist Growth Platform
 
-**Goal:** Redesign the login flow and passport screen to set the brand tone and maximize information density — Instagram-style compact layout, 3-column grid, animated login, and badges as a dedicated tab.
+**Goal:** Transform Decibel from a fan-only collection app to a two-sided artist growth platform with monetization. Ship fan app improvements (Phases 1-4), then build artist dashboard with $29/month subscriptions (Phases 5-7). Target: $5-10K MRR by September 2026.
 
 **Target features:**
-- Login Flow Redesign (animated gradient orbs, branded input/button, light/dark themed, magic link flow)
-- Passport Layout & Structure (compact Instagram-style header, sticky tabs, stats reorder, no settings gear, no badge teaser)
-- Passport Grid & Cards (3-column square grid, 1px gaps, cell overlays per tab, empty states)
-- Badges Section (4th tab in sticky tab bar, earned vs locked styling, removed from header/scroll)
+- Bug fixes & cleanup: Apple Music URLs, stat mismatch, remove stamps from UI, song/album link support, share modal, listen links
+- Passport redesign: v3.5 spec (login, Instagram-style layout, 3-column grid, sticky tabs)
+- Home screen & feed: activity feed from followed users, stats bar, trending artists, Jukebox
+- Leaderboard & share cards: 3 ranking views, time filters, auto-generated share cards
+- Artist profile & link-in-bio: in-app artist pages, public SSR web pages at decibel.live
+- Artist dashboard & monetization: claiming flow, fan intelligence, push notifications, Stripe billing
+- Outreach & growth engine: automated artist outreach, milestone notifications
+
+**Two repos:**
+- `/home/swarn/decibel-mobile` — React Native fan app (Phases 1-4 primarily)
+- `/home/swarn/decibel` — Next.js web app, API routes, artist dashboard (Phases 5-7 primarily)
 
 ## Requirements
 
@@ -41,63 +48,57 @@ Every interaction in Decibel revolves around live music — discovering undergro
 - ✓ Post-found celebration (confetti, badge reveal, share prompt) — v1.0
 - ✓ Artist fans list screen — v1.0
 - ✓ Home search bar relocation (top bar) — v1.0
+- ✓ Login flow redesign (animated orbs, branded input/button) — v3.5
+- ✓ Passport Instagram-style layout (compact header, sticky tabs, 3-col grid) — v3.5
+- ✓ Badges as 4th tab in sticky tab bar — v3.5
 
 ### Active
 
-- [ ] Login: Animated gradient orbs background (both themes)
-- [ ] Login: Branded input + gradient button with haptic + loading/success states
-- [ ] Login: Stagger fade-in animations + keyboard avoidance
-- [ ] Passport: Compact Instagram-style header (~180px) with avatar + inline stats
-- [ ] Passport: Stats order — Followers, Following, Stamps, Finds (tappable social counts)
-- [ ] Passport: Share Passport (gradient) + Edit Profile (surface) action buttons
-- [ ] Passport: No settings gear, no badge teaser row
-- [ ] Passport: Sticky tab bar (Stamps / Finds / Discoveries) with swipe gestures
-- [ ] Passport: 3-column square grid with 1px uniform gaps
-- [ ] Passport: Cell overlays — artist name, context (venue/platform/via), date, founder badge
-- [ ] Passport: Empty states per tab with relevant CTA
-- [ ] Passport: Haptic + press animation on cell tap
-- [ ] Badges: 4th tab in sticky tab bar
-- [ ] Badges: Earned (full color, glow) vs locked (grayscale, 0.3 opacity) styling
-- [ ] Badges: Tap earned → detail card, tap locked → requirements
+See `.planning/REQUIREMENTS.md` for v6.0 requirements with REQ-IDs.
 
 ### Out of Scope
 
-- Fantasy Music League — Beta 2 feature, requires daily Spotify scraper cron
-- Volume Rating System — Beta 2, mixing console fader UI
-- "Who's Out Tonight" live friend map — Beta 2
-- Weekly recap notifications — Beta 2
-- DJ monetization (Pro/Agency tiers) — needs 500+ active users
-- Instagram auto-posting — Beta 2
-- Website conversion funnel — separate project
+- Fantasy Music League — requires daily Spotify scraper cron, defer to future
+- Volume Rating System — mixing console fader UI, future
+- "Who's Out Tonight" live friend map — future
+- Weekly recap notifications — future
+- Instagram auto-posting — future
 - Text search for external artist catalogs — replaced by link paste
 - Deezer API — eliminated entirely
+- Fan premium subscription ($2.99/month) — nice-to-have, not the business (defer)
 
 ## Context
 
-- **Existing app:** Phase 1 complete and deployed. 3-tab nav, activity feed, artist profiles, passport, search all working.
-- **Backend:** Next.js API on Vercel at decible.live/api. Supabase DB. Several mobile endpoints already built.
-- **Scraping infra:** SoundCloud API, RA GraphQL, DICE API, EDMTrain, 19hz.info scrapers on DigitalOcean VM.
-- **Old codebase:** ~/decibel-mobile-v4/ available for reference (auth, API layer, types, location services).
-- **Known bugs fixed in Phase 1:** Card spacing, user profile queries, listen links, following screen, discover button hierarchy.
+- **Two repos:** Mobile (decibel-mobile) and Web (decibel) are separate projects. Phases 1-4 are mobile-first, Phases 5-7 are web-first.
+- **Backend API:** Next.js API routes at decible.live/api (being migrated to decibel-three.vercel.app). Supabase DB.
+- **Revenue model:** Artists pay $29/month for Decibel Pro (fan intelligence, push notifications, smart flyer, link-in-bio). Target 175-345 paying artists = $5-10K MRR.
+- **Core loop:** Fans find artists → artists accumulate collectors → Decibel outreach at 10+ collectors → artists claim + start trial → artists push notify collectors → fans re-engage → cycle repeats.
+- **Stamps deprecated from UI:** v6.0 removes stamps/events/venue detection from UI. Data preserved in DB. Passport tabs become: Finds | Founders | Discoveries | Badges.
+- **2,164+ artists** already in database — each becomes an indexable link-in-bio page for SEO.
 
 ## Constraints
 
-- **Tech stack:** React Native + Expo (SDK 55), TypeScript, Expo Router, Nativewind
-- **Backend:** Next.js API routes on Vercel (no server changes to framework)
-- **Database:** Supabase (read-only MCP, service role for API endpoints)
-- **No external search:** Adding artists is link-paste only — no Deezer, no Spotify search API
-- **Location:** "While Using" permission only for check-in
-- **Theme:** Every screen must work in both dark and light mode
-- **Font:** Poppins throughout (Regular, Medium, SemiBold, Bold)
+- **Tech stack (mobile):** React Native + Expo (SDK 55), TypeScript, Expo Router, Nativewind
+- **Tech stack (web):** Next.js, TypeScript, Tailwind CSS, Vercel
+- **Database:** Supabase (auth, Postgres, Realtime, Storage)
+- **Payments:** Stripe Checkout for artist subscriptions
+- **Push notifications:** Expo Push API
+- **No external search:** Adding artists is link-paste only
+- **Theme:** Every mobile screen must work in both dark and light mode
+- **Font:** Poppins throughout
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Link paste over text search | Prevents adding mainstream artists, creates intentional friction that filters for real fans | — Pending |
-| 3 tabs (Home, +, Passport) | Simpler than v4's 4 tabs, + button emphasizes primary action | ✓ Good |
-| Finds vs Stamps separation | Different visual treatments match different user motivations (discovery vs attendance) | — Pending |
-| Coarse phase structure | PRD already defines 6 clear phases with natural boundaries | — Pending |
+| Link paste over text search | Prevents adding mainstream artists, intentional friction | ✓ Good |
+| 3 tabs (Home, +, Passport) | Simpler, + button emphasizes primary action | ✓ Good |
+| Remove stamps from UI | Simplify app, focus on discovery. Data preserved in DB. | — Pending |
+| Two-sided platform pivot | Fan app generates data, artist dashboard monetizes | — Pending |
+| $29/month artist pricing | 175-345 artists = $5-10K MRR target | — Pending |
+| Stripe for billing | Handles everything — billing, receipts, cancellations | — Pending |
+| Manual artist verification (MVP) | Automated verification deferred to month 2-3 | — Pending |
+| Song/album link support | People share songs, not profiles — reduces friction | — Pending |
 
 ---
-*Last updated: 2026-03-13 after milestone v3.5 initialization*
+*Last updated: 2026-03-16 after milestone v6.0 initialization*
