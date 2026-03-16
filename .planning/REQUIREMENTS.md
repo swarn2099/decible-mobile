@@ -93,8 +93,8 @@
 - [ ] **OUT-03**: Email sending works via VM
 - [ ] **OUT-04**: Instagram DM queue created for manual sending
 - [ ] **OUT-05**: Milestone notifications at 25, 50, 100 collector thresholds
-- [ ] **OUT-06**: Artist milestone share cards generated as images
-- [ ] **OUT-07**: No duplicate outreach (one contact per threshold)
+- [x] **OUT-06**: Artist milestone share cards generated as images
+- [x] **OUT-07**: No duplicate outreach (one contact per threshold)
 
 ## Future Requirements
 
@@ -177,8 +177,8 @@ None — v6.0 is comprehensive.
 | OUT-03 | Phase 20 | Pending |
 | OUT-04 | Phase 20 | Pending |
 | OUT-05 | Phase 20 | Pending |
-| OUT-06 | Phase 20 | Pending |
-| OUT-07 | Phase 20 | Pending |
+| OUT-06 | Phase 20 | Complete |
+| OUT-07 | Phase 20 | Complete |
 
 **Coverage:**
 - v6.0 requirements: 51 total

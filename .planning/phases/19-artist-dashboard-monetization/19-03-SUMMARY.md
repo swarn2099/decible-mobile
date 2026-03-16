@@ -88,6 +88,10 @@ completed: 2026-03-16
 - **Files modified:** both API route files
 - **Commit:** 81c9c01 (already in the Task 1 commit)
 
+## Self-Check: PASSED
+
+All 4 modified files exist on disk. Both task commits (81c9c01, a6d1377) verified in git log.
+
 ## Issues Encountered
 
 - Next.js 16.1.6 Turbopack has an intermittent race condition writing `_buildManifest.js.tmp.*` files on this VM. TypeScript passes clean (`tsc --noEmit` zero errors). This same issue was present in prior plans and does not affect Vercel deployments. Noted in previous session context.

@@ -115,3 +115,10 @@ None beyond the TypeScript iteration issue (handled as deviation above).
 ---
 *Phase: 17-leaderboard-share-cards*
 *Completed: 2026-03-16*
+
+## Self-Check: PASSED
+- All 5 files confirmed present on disk
+- Commit 489ea1d (API rewrite) — FOUND
+- Commit 620145f (mobile redesign) — FOUND
+- API deployed to decible.live (Vercel production)
+- Mobile deployed via EAS update group ID 92c30f71-a02a-41e8-8715-7dd352279730
