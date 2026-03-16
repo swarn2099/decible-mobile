@@ -4,6 +4,7 @@ import {
   ScrollView,
   Pressable,
   Text,
+  FlatList,
   Dimensions,
   ActivityIndicator,
   Alert,
@@ -31,7 +32,10 @@ import {
   useArtistFanCount,
   useArtistFounder,
   useMyArtistStatus,
+  useArtistFans,
+  type ArtistFan,
 } from "@/hooks/useArtistProfile";
+import { EmbeddedPlayer } from "@/components/jukebox/EmbeddedPlayer";
 import { useCollect, useDiscover } from "@/hooks/useCollection";
 import { useAuthStore } from "@/stores/authStore";
 import { ConfirmationModal } from "@/components/collection/ConfirmationModal";
@@ -81,6 +85,31 @@ function formatMonth(dateStr: string): string {
 function formatDay(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00");
   return date.getDate().toString();
+}
+
+function formatFounderDate(isoDate: string): string {
+  try {
+    const d = new Date(isoDate);
+    return d.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return "";
+  }
+}
+
+function detectPlatform(
+  url: string
+): "spotify" | "soundcloud" | "apple_music" | null {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    if (host.includes("spotify")) return "spotify";
+    if (host.includes("soundcloud")) return "soundcloud";
+    if (host.includes("apple")) return "apple_music";
+  } catch {}
+  return null;
 }
 
 type ConfirmationData = {
@@ -134,6 +163,7 @@ export default function ArtistProfileScreen() {
   const { data: fanCount } = useArtistFanCount(artist?.id);
   const { data: founder } = useArtistFounder(artist?.id);
   const { data: myStatus } = useMyArtistStatus(artist?.id);
+  const { data: fans } = useArtistFans(artist?.id);
 
   const collect = useCollect();
   const discover = useDiscover();
@@ -211,6 +241,24 @@ export default function ArtistProfileScreen() {
     if (!founder || !user) return false;
     return myStatus === "founded";
   }, [founder, user, myStatus]);
+
+  const primaryUrl = useMemo(() => {
+    if (!artist) return null;
+    const candidates = [
+      artist.spotify_url,
+      artist.soundcloud_url,
+      artist.apple_music_url,
+    ].filter(Boolean) as string[];
+    for (const raw of candidates) {
+      if (isValidUrl(raw)) return normalizeUrl(raw);
+    }
+    return null;
+  }, [artist]);
+
+  const primaryPlatform = useMemo(() => {
+    if (!primaryUrl) return null;
+    return detectPlatform(primaryUrl);
+  }, [primaryUrl]);
 
   if (isLoading) {
     return (
@@ -431,6 +479,7 @@ export default function ArtistProfileScreen() {
                   params: {
                     performerId: artist.id,
                     artistName: artist.name,
+                    artistSlug: artist.slug,
                   },
                 })
               }
@@ -540,34 +589,100 @@ export default function ArtistProfileScreen() {
             )}
           </Pressable>
 
-          {/* Founder Badge */}
+          {/* Founder Attribution */}
           {founder && (
             <View
               style={{
-                backgroundColor: colors.card,
-                borderRadius: 14,
-                padding: 16,
                 flexDirection: "row",
                 alignItems: "center",
-                gap: 12,
-                marginBottom: 20,
-                borderLeftWidth: 3,
-                borderLeftColor: colors.gold,
+                gap: 6,
+                marginBottom: 8,
               }}
             >
-              <Crown size={20} color={colors.gold} />
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontFamily: "Poppins_500Medium",
-                  color: colors.gold,
-                  flex: 1,
-                }}
-              >
-                {isCurrentUserFounder
-                  ? "You brought this artist to Decibel \u2605"
-                  : `Added to Decibel by ${founder.name ?? "A fan"}`}
-              </Text>
+              <Crown size={16} color={colors.gold} />
+              {isCurrentUserFounder ? (
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "Poppins_500Medium",
+                    color: colors.gold,
+                    flex: 1,
+                  }}
+                >
+                  You founded this artist on{" "}
+                  {formatFounderDate(founder.awarded_at)}
+                </Text>
+              ) : (
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "Poppins_500Medium",
+                    color: colors.gold,
+                    flex: 1,
+                  }}
+                >
+                  Founded by{" "}
+                  <Text
+                    onPress={() => {
+                      const founderFan = fans?.find(
+                        (f) => f.type === "founded"
+                      );
+                      if (founderFan?.id) {
+                        router.push({
+                          pathname: "/profile/[id]",
+                          params: { id: founderFan.id },
+                        });
+                      }
+                    }}
+                    style={{
+                      textDecorationLine: "underline",
+                      color: colors.gold,
+                    }}
+                  >
+                    @{founder.name ?? "a fan"}
+                  </Text>{" "}
+                  on {formatFounderDate(founder.awarded_at)}
+                </Text>
+              )}
+            </View>
+          )}
+
+          {/* Collector Count Social Proof */}
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: "/artist/fans",
+                params: {
+                  performerId: artist.id,
+                  artistName: artist.name,
+                  artistSlug: artist.slug,
+                },
+              })
+            }
+            style={{ marginBottom: 20 }}
+          >
+            <Text
+              style={{
+                fontSize: 13,
+                fontFamily: "Poppins_400Regular",
+                color: colors.textSecondary,
+              }}
+            >
+              Collected by {fanCount ?? 0}{" "}
+              {(fanCount ?? 0) === 1 ? "person" : "people"} on Decibel
+            </Text>
+          </Pressable>
+
+          {/* Embedded Listen Button (primary CTA) */}
+          {primaryUrl && (
+            <View style={{ marginBottom: 20 }}>
+              <EmbeddedPlayer
+                embedUrl={primaryUrl}
+                listenUrl={primaryUrl}
+                platform={primaryPlatform}
+                isActive={true}
+                height={80}
+              />
             </View>
           )}
 
@@ -621,6 +736,155 @@ export default function ArtistProfileScreen() {
                   </Text>
                 </Pressable>
               ))}
+            </View>
+          )}
+
+          {/* Collectors Avatar Row */}
+          {fans && fans.length > 0 && (
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Poppins_600SemiBold",
+                  color: colors.textSecondary,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  marginBottom: 12,
+                }}
+              >
+                Collectors
+              </Text>
+              <FlatList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={fans.slice(0, 8)}
+                keyExtractor={(item) => item.id}
+                ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
+                renderItem={({ item }: { item: ArtistFan }) => {
+                  const isFounder = item.type === "founded";
+                  return (
+                    <Pressable
+                      onPress={() =>
+                        router.push({
+                          pathname: "/profile/[id]",
+                          params: { id: item.id },
+                        })
+                      }
+                      style={{ alignItems: "center", width: 56 }}
+                    >
+                      <View
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 22,
+                          overflow: "hidden",
+                          backgroundColor: colors.card,
+                          borderWidth: isFounder ? 2 : 0,
+                          borderColor: isFounder ? colors.gold : "transparent",
+                        }}
+                      >
+                        {item.avatar_url ? (
+                          <Image
+                            source={{ uri: item.avatar_url }}
+                            style={{ width: 44, height: 44 }}
+                            contentFit="cover"
+                          />
+                        ) : (
+                          <LinearGradient
+                            colors={getGradientForName(item.name ?? "?")}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            style={{
+                              width: 44,
+                              height: 44,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontFamily: "Poppins_700Bold",
+                                color: "rgba(255,255,255,0.85)",
+                              }}
+                            >
+                              {(item.name ?? "?").charAt(0).toUpperCase()}
+                            </Text>
+                          </LinearGradient>
+                        )}
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontFamily: "Poppins_400Regular",
+                          color: colors.textSecondary,
+                          marginTop: 4,
+                          textAlign: "center",
+                        }}
+                        numberOfLines={1}
+                      >
+                        {item.name ?? "Fan"}
+                      </Text>
+                    </Pressable>
+                  );
+                }}
+                ListFooterComponent={
+                  (fanCount ?? 0) > 8 ? (
+                    <Pressable
+                      onPress={() =>
+                        router.push({
+                          pathname: "/artist/fans",
+                          params: {
+                            performerId: artist.id,
+                            artistName: artist.name,
+                            artistSlug: artist.slug,
+                          },
+                        })
+                      }
+                      style={{
+                        width: 56,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginLeft: 12,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 22,
+                          backgroundColor: colors.card,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          borderWidth: 1,
+                          borderColor: colors.cardBorder,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            fontFamily: "Poppins_600SemiBold",
+                            color: colors.textSecondary,
+                          }}
+                        >
+                          All
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontFamily: "Poppins_400Regular",
+                          color: colors.textSecondary,
+                          marginTop: 4,
+                          textAlign: "center",
+                        }}
+                      >
+                        See all
+                      </Text>
+                    </Pressable>
+                  ) : null
+                }
+              />
             </View>
           )}
 
