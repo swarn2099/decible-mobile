@@ -181,6 +181,13 @@ export function ArtistPreviewCard({ result, onAdd, onDiscover, isLoading }: Arti
         {/* Stats */}
         <Text style={[styles.statsText, { color: colors.textSecondary }]}>{statsText}</Text>
 
+        {/* Found via track — shown when user pasted a song link */}
+        {result.found_via_track ? (
+          <Text style={[styles.foundViaText, { color: colors.textSecondary }]}>
+            ♪ Found via "{result.found_via_track}"
+          </Text>
+        ) : null}
+
         {/* Genres */}
         {artist.genres.length > 0 && (
           <View style={styles.genreRow}>
@@ -266,6 +273,11 @@ const styles = StyleSheet.create({
   statsText: {
     fontSize: 13,
     fontFamily: "Poppins_400Regular",
+  },
+  foundViaText: {
+    fontSize: 12,
+    fontFamily: "Poppins_400Regular",
+    fontStyle: "italic",
   },
   genreRow: {
     flexDirection: "row",

@@ -6,6 +6,7 @@ import { apiCall } from "@/lib/api";
 export type ValidateArtistLinkResult = {
   eligible: boolean;
   rejection_reason?: "over_threshold" | "unsupported_platform";
+  found_via_track?: string; // present when user pasted a song/track link
   artist?: {
     name: string;
     photo_url: string | null;
