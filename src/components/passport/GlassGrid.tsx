@@ -21,7 +21,7 @@ import Animated, {
 import { useThemeColors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
 
-const CELL_GAP = 4;
+const CELL_GAP = 1;
 const COLUMNS = 3;
 
 // ─── Gradient fallback colors ────────────────────────────────────────
@@ -127,7 +127,7 @@ function GridCell({
         onPress={handlePress}
         style={{
           width: cellSize,
-          height: cellSize * 1.25,
+          height: cellSize,
           borderRadius: 6,
           overflow: "hidden",
         }}
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: "35%",
+    height: "40%",
     overflow: "hidden",
   },
   frostOverlay: {
