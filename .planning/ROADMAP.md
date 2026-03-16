@@ -230,7 +230,7 @@ Plans:
 
 ---
 
-### 🚧 v6.0 The Artist Growth Platform (In Progress)
+### v6.0 The Artist Growth Platform (In Progress)
 
 **Milestone Goal:** Transform Decibel from a fan-only collection app into a two-sided artist growth platform. Fan app improvements ship first (Phases 14-17), then artist-facing web dashboard and monetization (Phases 18-20). Target: $5-10K MRR by September 2026.
 
@@ -287,7 +287,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 16-01: TBD
+- [ ] 16-01-PLAN.md — Backend: user-stats endpoint, trending-artists endpoint, activity-feed followed-user filtering with fallback
+- [ ] 16-02-PLAN.md — Mobile: StatsBar + TrendingArtistsRow components, feed Collect button, Home screen rebuild
 
 #### Phase 17: Leaderboard & Share Cards
 **Goal**: Users can compete on ranked leaderboards and share generated cards that prove their collector status — completing the fan app for public launch
@@ -373,7 +374,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 | 13. Badges Section | v3.5 | 1/1 | Complete | 2026-03-14 |
 | 14. Bug Fixes & Cleanup | 3/3 | Complete    | 2026-03-16 | - |
 | 15. Passport Redesign | 2/2 | Complete    | 2026-03-16 | - |
-| 16. Home Screen & Feed | v6.0 | 0/TBD | Not started | - |
+| 16. Home Screen & Feed | v6.0 | 0/2 | Not started | - |
 | 17. Leaderboard & Share Cards | v6.0 | 0/TBD | Not started | - |
 | 18. Artist Profile & Link-in-Bio | v6.0 | 0/TBD | Not started | - |
 | 19. Artist Dashboard & Monetization | v6.0 | 0/TBD | Not started | - |
