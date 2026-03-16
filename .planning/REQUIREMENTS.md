@@ -58,9 +58,9 @@
 
 ### Share Cards
 
-- [ ] **SHARE-01**: Founder Share Card generates on founding with correct data (1080x1920)
-- [ ] **SHARE-02**: Passport Summary Card generates on demand (1080x1920)
-- [ ] **SHARE-03**: Share sheet opens with card image, Instagram Stories as target
+- [x] **SHARE-01**: Founder Share Card generates on founding with correct data (1080x1920)
+- [x] **SHARE-02**: Passport Summary Card generates on demand (1080x1920)
+- [x] **SHARE-03**: Share sheet opens with card image, Instagram Stories as target
 
 ### Artist Profile & Link-in-Bio
 
@@ -151,9 +151,9 @@ None — v6.0 is comprehensive.
 | LEAD-03 | Phase 17 | Complete |
 | LEAD-04 | Phase 17 | Complete |
 | LEAD-05 | Phase 17 | Complete |
-| SHARE-01 | Phase 17 | Pending |
-| SHARE-02 | Phase 17 | Pending |
-| SHARE-03 | Phase 17 | Pending |
+| SHARE-01 | Phase 17 | Complete |
+| SHARE-02 | Phase 17 | Complete |
+| SHARE-03 | Phase 17 | Complete |
 | ARTIST-01 | Phase 18 | Pending |
 | ARTIST-02 | Phase 18 | Pending |
 | ARTIST-03 | Phase 18 | Pending |
