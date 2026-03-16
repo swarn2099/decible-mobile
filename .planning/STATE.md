@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 19-03-PLAN.md
-last_updated: "2026-03-16T03:44:04.109Z"
+stopped_at: Completed 19-04-PLAN.md
+last_updated: "2026-03-16T03:45:14.913Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
   completed_phases: 17
   total_plans: 47
-  completed_plans: 43
+  completed_plans: 44
   percent: 0
 ---
 
@@ -63,6 +63,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 19-artist-dashboard-monetization P01 | 12m | 2 tasks | 3 files |
 | Phase 19-artist-dashboard-monetization P02 | 4m | 2 tasks | 6 files |
 | Phase 19-artist-dashboard-monetization P03 | 13m | 2 tasks | 4 files |
+| Phase 19-artist-dashboard-monetization P04 | 6m | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -101,6 +102,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 19-artist-dashboard-monetization]: Trial subscription created at claim time (not at verification) — 14-day clock starts on claim
 - [Phase 19-artist-dashboard-monetization]: Fan Intelligence loaded client-side on tab click — avoids blocking initial dashboard render with heavy cross-collect joins
 - [Phase 19-artist-dashboard-monetization]: Growth chart uses pure SVG polyline with linearGradient defs — no external chart library added to bundle
+- [Phase 19-artist-dashboard-monetization]: Activity feed artist_message items merged in JS (not SQL) sorted by timestamp — keeps feed endpoint stateless and avoids complex cross-table JOIN pagination
+- [Phase 19-artist-dashboard-monetization]: ActivityFeedItem type extended with optional fields (type/artist_message/artist_slug) rather than union type — avoids breaking all existing feed renders
 
 ### Pending Todos
 
@@ -112,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T03:44:04.101Z
-Stopped at: Completed 19-03-PLAN.md
+Last session: 2026-03-16T03:45:14.905Z
+Stopped at: Completed 19-04-PLAN.md
 Resume file: None
