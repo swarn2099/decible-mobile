@@ -182,10 +182,15 @@ export default function UserProfileScreen() {
   const gradientColors = getGradientForName(displayName);
 
   const collections = profile.collections;
-  // Finds: artists this user added to Decibel (they were the founder)
-  const finds = collections.filter((c) => c.is_founder === true);
-  // Discoveries: artists they found on Decibel that someone else added
-  const discoveries = collections.filter((c) => !c.is_founder);
+  // Finds: artists this user added to the platform via the Add flow
+  const finds = collections.filter(
+    (c) => c.collection_type === "find" || c.is_founder === true
+  );
+  // Discoveries: artists they collected via the Discover button
+  const discoveries = collections.filter(
+    (c) => c.collection_type === "discovery" ||
+      (!c.collection_type && !c.is_founder && c.capture_method === "online")
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>

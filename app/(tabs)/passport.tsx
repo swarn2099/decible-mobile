@@ -85,10 +85,15 @@ export default function PassportScreen() {
   // Flat list of all collections (deduped by prestige in the hook)
   const flatCollections: CollectionStamp[] = usePassportCollections().data?.pages.flat() ?? [];
 
-  // Finds: artists YOU added to Decibel (you were the founder / first person)
-  const finds = flatCollections.filter((c) => c.is_founder === true);
-  // Discoveries: artists you found on Decibel that someone else added first
-  const discoveries = flatCollections.filter((c) => !c.is_founder);
+  // Finds: artists you added to the platform via the Add flow
+  const finds = flatCollections.filter(
+    (c) => c.collection_type === "find" || c.is_founder === true
+  );
+  // Discoveries: artists you collected via the Discover button (someone else added them)
+  const discoveries = flatCollections.filter(
+    (c) => c.collection_type === "discovery" ||
+      (!c.collection_type && !c.is_founder && c.capture_method === "online")
+  );
 
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();

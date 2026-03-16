@@ -185,7 +185,7 @@ export default function HomeScreen() {
 
       {/* Stats Bar */}
       <StatsBar
-        finds={userStats.finds}
+        artists={userStats.finds}
         founders={userStats.founders}
         influence={userStats.influence}
         isLoading={userStats.isLoading}

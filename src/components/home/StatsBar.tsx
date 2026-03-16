@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { useThemeColors } from "@/constants/colors";
 
 type StatsBarProps = {
-  finds: number;
+  artists: number;
   founders: number;
   influence: number;
   isLoading: boolean;
@@ -46,7 +46,7 @@ function StatItem({ value, label, accentColor, isLoading }: StatItemProps) {
   );
 }
 
-export function StatsBar({ finds, founders, influence, isLoading }: StatsBarProps) {
+export function StatsBar({ artists, founders, influence, isLoading }: StatsBarProps) {
   const colors = useThemeColors();
 
   return (
@@ -62,8 +62,8 @@ export function StatsBar({ finds, founders, influence, isLoading }: StatsBarProp
       }}
     >
       <StatItem
-        value={finds}
-        label="Finds"
+        value={artists}
+        label="Artists"
         accentColor={colors.pink}
         isLoading={isLoading}
       />

@@ -21,7 +21,7 @@ import Animated, {
 import { useThemeColors } from "@/constants/colors";
 import type { CollectionStamp } from "@/types/passport";
 
-const CELL_GAP = 1;
+const CELL_GAP = 3;
 const COLUMNS = 3;
 
 // ─── Gradient fallback colors ────────────────────────────────────────
