@@ -8,9 +8,9 @@
 ### Bug Fixes
 
 - [ ] **BUG-01**: Apple Music URLs parse correctly for artists, songs, and albums across regional variants
-- [ ] **BUG-02**: Stat counts match between search results and profile pages
-- [ ] **BUG-03**: Share modal works correctly for passport and individual artist cards
-- [ ] **BUG-04**: Listen links open correct platform (Spotify/Apple Music/SoundCloud)
+- [x] **BUG-02**: Stat counts match between search results and profile pages
+- [x] **BUG-03**: Share modal works correctly for passport and individual artist cards
+- [x] **BUG-04**: Listen links open correct platform (Spotify/Apple Music/SoundCloud)
 
 ### UI Cleanup
 
@@ -119,9 +119,9 @@ None — v6.0 is comprehensive.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BUG-01 | Phase 14 | Pending |
-| BUG-02 | Phase 14 | Pending |
-| BUG-03 | Phase 14 | Pending |
-| BUG-04 | Phase 14 | Pending |
+| BUG-02 | Phase 14 | Complete |
+| BUG-03 | Phase 14 | Complete |
+| BUG-04 | Phase 14 | Complete |
 | CLEAN-01 | Phase 14 | Pending |
 | CLEAN-02 | Phase 14 | Pending |
 | CLEAN-03 | Phase 14 | Pending |
