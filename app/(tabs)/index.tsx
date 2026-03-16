@@ -97,8 +97,10 @@ export default function HomeScreen() {
             queryClient.invalidateQueries({ queryKey: ["user-stats"] });
             queryClient.invalidateQueries({ queryKey: ["myCollectedIds"] });
           },
-          onError: () => {
-            // Rollback optimistic update
+          onError: (error: Error) => {
+            // Rollback optimistic update on real failure
+            // But if it's "already discovered", keep the collected state
+            if (error.message?.includes("already")) return;
             setLocalCollected((prev) => {
               const next = new Set(prev);
               next.delete(performerId);

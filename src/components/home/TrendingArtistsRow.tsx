@@ -74,7 +74,7 @@ function ArtistCircle({ artist }: { artist: TrendingArtist }) {
           fontFamily: "Poppins_400Regular",
         }}
       >
-        {artist.collector_count}
+        {artist.collector_count} {artist.collector_count === 1 ? "fan" : "fans"}
       </Text>
     </Pressable>
   );
@@ -147,9 +147,11 @@ export function TrendingArtistsRow({ artists, isLoading }: TrendingArtistsRowPro
           ? Array.from({ length: 5 }).map((_, i) => (
               <PlaceholderCircle key={i} />
             ))
-          : artists.map((artist) => (
-              <ArtistCircle key={artist.id} artist={artist} />
-            ))}
+          : [...artists]
+              .sort((a, b) => b.collector_count - a.collector_count)
+              .map((artist) => (
+                <ArtistCircle key={artist.id} artist={artist} />
+              ))}
       </ScrollView>
     </View>
   );
