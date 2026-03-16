@@ -133,7 +133,7 @@ export function SearchResultCard({ performer, onPress, isCollected }: Props) {
       </View>
 
       {/* Fan count */}
-      {performer.follower_count != null && performer.follower_count > 0 && (
+      {performer.fan_count > 0 && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
           <Users size={13} color={colors.gray} />
           <Text
@@ -143,7 +143,7 @@ export function SearchResultCard({ performer, onPress, isCollected }: Props) {
               color: colors.gray,
             }}
           >
-            {performer.follower_count}
+            {performer.fan_count}
           </Text>
         </View>
       )}

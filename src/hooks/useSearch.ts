@@ -10,7 +10,7 @@ export type DecibelSearchResult = {
   slug: string;
   photo_url: string | null;
   genres: string[] | null;
-  follower_count: number | null;
+  fan_count: number; // actual Decibel fans (count from collections table)
 };
 
 export type SpotifyArtistResult = {
@@ -41,12 +41,19 @@ export function useDecibelSearch(query: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("performers")
-        .select("id, name, slug, photo_url, genres, follower_count")
+        .select("id, name, slug, photo_url, genres, collections(count)")
         .ilike("name", `%${query}%`)
         .limit(10);
 
       if (error) throw error;
-      return (data || []) as DecibelSearchResult[];
+
+      // Map Supabase join count to a flat fan_count number
+      return (data || []).map((row) => {
+        const countArr = row.collections as { count: number }[] | null;
+        const fan_count = countArr?.[0]?.count ?? 0;
+        const { collections: _c, ...rest } = row;
+        return { ...rest, fan_count } as DecibelSearchResult;
+      });
     },
     enabled: query.length >= 2,
     staleTime: 30 * 1000, // 30 seconds
