@@ -43,9 +43,9 @@
 - [x] **HOME-02**: Activity feed loads Find, Founder, and Collect cards from followed users
 - [x] **HOME-03**: Fallback "Trending on Decibel" when feed is empty
 - [x] **HOME-04**: Trending Artists horizontal row displays and is tappable
-- [ ] **HOME-05**: Jukebox button replaces map button, loads embedded players for recent finds
-- [ ] **HOME-06**: Max 3 WebViews active at once in Jukebox
-- [ ] **HOME-07**: One-tap Collect from feed cards and Jukebox cards creates Discovery
+- [x] **HOME-05**: Jukebox button replaces map button, loads embedded players for recent finds
+- [x] **HOME-06**: Max 3 WebViews active at once in Jukebox
+- [x] **HOME-07**: One-tap Collect from feed cards and Jukebox cards creates Discovery
 - [x] **HOME-08**: Notification sent to finder when someone collects from their find
 
 ### Leaderboard
@@ -142,9 +142,9 @@ None — v6.0 is comprehensive.
 | HOME-02 | Phase 16 | Complete |
 | HOME-03 | Phase 16 | Complete |
 | HOME-04 | Phase 16 | Complete |
-| HOME-05 | Phase 16 | Pending |
-| HOME-06 | Phase 16 | Pending |
-| HOME-07 | Phase 16 | Pending |
+| HOME-05 | Phase 16 | Complete |
+| HOME-06 | Phase 16 | Complete |
+| HOME-07 | Phase 16 | Complete |
 | HOME-08 | Phase 16 | Complete |
 | LEAD-01 | Phase 17 | Pending |
 | LEAD-02 | Phase 17 | Pending |
