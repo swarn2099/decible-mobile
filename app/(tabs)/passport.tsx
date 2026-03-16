@@ -183,8 +183,8 @@ export default function PassportScreen() {
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
       >
-        {/* Static header */}
-        <View>
+        {/* Static header — flexShrink:0 prevents flex compression */}
+        <View style={{ flexShrink: 0 }}>
           <PassportHeader
             displayName={fanProfile?.name ?? null}
             avatarUrl={fanProfile?.avatar_url ?? null}

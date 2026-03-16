@@ -275,7 +275,6 @@ export function PassportPager({
           borderTopColor: colors.cardBorder,
           borderBottomWidth: 1,
           borderBottomColor: colors.cardBorder,
-          marginTop: 8,
         }}
       >
         <View style={{ flexDirection: "row" }}>

@@ -59,9 +59,25 @@ function useUserProfile(fanId: string) {
   return useQuery<UserProfileResponse>({
     queryKey: ["userProfile", fanId],
     queryFn: async () => {
-      return apiCall<UserProfileResponse>(
+      // Fetch first page to get fan info + initial collections
+      const firstPage = await apiCall<UserProfileResponse>(
         `/mobile/passport?fan_id=${fanId}&page=0`
       );
+
+      // Fetch remaining pages to get ALL collections
+      let allCollections = [...firstPage.collections];
+      let page = 1;
+      while (true) {
+        const nextPage = await apiCall<UserProfileResponse>(
+          `/mobile/passport?fan_id=${fanId}&page=${page}`
+        );
+        if (!nextPage.collections || nextPage.collections.length === 0) break;
+        allCollections = [...allCollections, ...nextPage.collections];
+        page++;
+        if (page > 10) break; // safety limit
+      }
+
+      return { ...firstPage, collections: allCollections };
     },
     enabled: !!fanId,
   });
@@ -201,6 +217,7 @@ export default function UserProfileScreen() {
         {/* Header with back button */}
         <View
           style={{
+            flexShrink: 0,
             flexDirection: "row",
             alignItems: "center",
             paddingHorizontal: 16,
@@ -227,8 +244,9 @@ export default function UserProfileScreen() {
         {/* Profile header: Avatar + Stats + Follow */}
         <View
           style={{
+            flexShrink: 0,
             paddingHorizontal: 20,
-            paddingBottom: 12,
+            paddingBottom: 20,
           }}
         >
           {/* Row 1: Avatar + Stats */}
