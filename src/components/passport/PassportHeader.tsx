@@ -76,7 +76,7 @@ type Props = {
   followersCount: number;
   followingCount: number;
   findsCount: number;
-  foundersCount: number;
+  discoveriesCount: number;
   fanId: string;
   onSharePress?: () => void;
   isSharing?: boolean;
@@ -89,7 +89,7 @@ export function PassportHeader({
   followersCount,
   followingCount,
   findsCount,
-  foundersCount,
+  discoveriesCount,
   fanId,
   onSharePress,
   isSharing,
@@ -121,7 +121,7 @@ export function PassportHeader({
   }));
 
   return (
-    <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}>
+    <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16 }}>
       {/* Row 1: Avatar (left) + Stats (right) */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
         {/* Avatar — 80x80, plain circle with cardBorder ring */}
@@ -203,8 +203,8 @@ export function PassportHeader({
             colors={colors}
           />
           <StatCell
-            value={String(foundersCount)}
-            label="Founders"
+            value={String(discoveriesCount)}
+            label="Discoveries"
             colors={colors}
           />
         </View>

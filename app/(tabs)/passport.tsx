@@ -7,7 +7,6 @@ import { useAuthStore } from "@/stores/authStore";
 import {
   usePassportStats,
   usePassportCollections,
-  usePassportCollectionsSplit,
 } from "@/hooks/usePassport";
 import { useFanBadges } from "@/hooks/useBadges";
 import { useSocialCounts } from "@/hooks/useUserSearch";
@@ -86,14 +85,10 @@ export default function PassportScreen() {
   // Flat list of all collections (deduped by prestige in the hook)
   const flatCollections: CollectionStamp[] = usePassportCollections().data?.pages.flat() ?? [];
 
-  // Finds: all artists the user has found, including those where user is the Founder
-  const finds = flatCollections.filter(
-    (c) => c.collection_type === "find" || c.is_founder === true
-  );
-  // Founders: subset of Finds where user holds the Founder Badge
-  const founders = flatCollections.filter((c) => c.is_founder === true);
-  // Discoveries: from the split hook (doesn't overlap with founders)
-  const { discoveries } = usePassportCollectionsSplit();
+  // Finds: artists YOU added to Decibel (you were the founder / first person)
+  const finds = flatCollections.filter((c) => c.is_founder === true);
+  // Discoveries: artists you found on Decibel that someone else added first
+  const discoveries = flatCollections.filter((c) => !c.is_founder);
 
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();
@@ -101,7 +96,6 @@ export default function PassportScreen() {
   const passportShare = usePassportShareCardV2();
   const user = useAuthStore((s) => s.user);
   const fanSlug = user?.email?.split("@")[0] ?? "user";
-  const allCollections = [...finds, ...discoveries];
 
   const handleSharePassport = useCallback(async () => {
     if (!stats) return;
@@ -114,8 +108,8 @@ export default function PassportScreen() {
     setShareSheetVisible(true);
 
     try {
-      // Top photos from founders first, then other finds
-      const topPhotos = founders
+      // Top photos from finds (artists you added to Decibel)
+      const topPhotos = finds
         .map((c) => c.performer?.photo_url ?? null)
         .filter((url): url is string => !!url)
         .filter((url, idx, arr) => arr.indexOf(url) === idx)
@@ -124,8 +118,8 @@ export default function PassportScreen() {
       const uri = await passportShare.generate({
         name: displayName,
         finds: finds.length,
-        founders: founders.length,
-        influence: 0, // will be populated from leaderboard API in future phase
+        founders: finds.length, // finds = founders in the new model
+        influence: 0,
         topPhotos,
         avatarUrl: fanProfile?.avatar_url ?? undefined,
       });
@@ -135,7 +129,7 @@ export default function PassportScreen() {
     } finally {
       setIsGeneratingCard(false);
     }
-  }, [stats, fanProfile, fanSlug, allCollections, finds, passportShare]);
+  }, [stats, fanProfile, fanSlug, finds, passportShare]);
 
   const handleViewMore = useCallback(
     (type: "find" | "discovery") => {
@@ -184,8 +178,8 @@ export default function PassportScreen() {
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
       >
-        {/* Static header — marginBottom prevents tab bar overlap */}
-        <View style={{ marginBottom: 4 }}>
+        {/* Static header */}
+        <View>
           <PassportHeader
             displayName={fanProfile?.name ?? null}
             avatarUrl={fanProfile?.avatar_url ?? null}
@@ -197,7 +191,7 @@ export default function PassportScreen() {
             followersCount={socialCounts?.followers_count ?? 0}
             followingCount={socialCounts?.following_count ?? 0}
             findsCount={finds.length}
-            foundersCount={founders.length}
+            discoveriesCount={discoveries.length}
             fanId={fanProfile?.id ?? ""}
             onSharePress={handleSharePassport}
             isSharing={passportShare.isLoading || isGeneratingCard}
@@ -207,7 +201,6 @@ export default function PassportScreen() {
         {/* Tab pager */}
         <PassportPager
           finds={finds}
-          founders={founders}
           discoveries={discoveries}
           badges={badges ?? []}
           activeTabIndex={activeTabIndex}

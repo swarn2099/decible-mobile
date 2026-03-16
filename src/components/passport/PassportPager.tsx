@@ -21,7 +21,7 @@ import { RARITY_COLORS } from "@/constants/badges";
 import type { CollectionStamp } from "@/types/passport";
 import type { BadgeRarity, BadgeWithStatus } from "@/types/badges";
 
-const TAB_LABELS = ["Finds", "Founders", "Discoveries", "Badges"] as const;
+const TAB_LABELS = ["Finds", "Discoveries", "Badges"] as const;
 
 // ─── Rarity glow config ────────────────────────────────────────────────
 function getGlowConfig(rarity: BadgeRarity) {
@@ -211,7 +211,6 @@ function BadgeGrid({
 // ─── Passport Pager ────────────────────────────────────────────────────
 interface PassportPagerProps {
   finds: CollectionStamp[];
-  founders: CollectionStamp[];
   discoveries: CollectionStamp[];
   badges: BadgeWithStatus[];
   onViewMore: (type: "find" | "discovery") => void;
@@ -225,7 +224,6 @@ interface PassportPagerProps {
 
 export function PassportPager({
   finds,
-  founders,
   discoveries,
   badges,
   onBadgeTap,
@@ -239,7 +237,7 @@ export function PassportPager({
   const pagerRef = useRef<PagerView>(null);
   const [activeTab, setActiveTab] = useState(0);
 
-  const TAB_WIDTH = screenWidth / 4;
+  const TAB_WIDTH = screenWidth / 3;
   const underlineX = useSharedValue(0);
 
   const underlineStyle = useAnimatedStyle(() => ({
@@ -330,7 +328,7 @@ export function PassportPager({
         onPageSelected={handlePageSelected}
         onPageScroll={handlePageScroll}
       >
-        {/* Page 0 — Finds (all found artists, including founders) */}
+        {/* Page 0 — Finds (artists YOU added to Decibel — you were first) */}
         <View key="0" style={{ flex: 1 }}>
           <CollectionGrid
             items={finds}
@@ -340,18 +338,8 @@ export function PassportPager({
           />
         </View>
 
-        {/* Page 1 — Founders (subset of Finds where user holds Founder Badge) */}
+        {/* Page 1 — Discoveries (artists you found on Decibel that someone else added) */}
         <View key="1" style={{ flex: 1 }}>
-          <CollectionGrid
-            items={founders}
-            type="find"
-            onEndReached={onFetchMore}
-            isLoadingMore={isFetchingMore}
-          />
-        </View>
-
-        {/* Page 2 — Discoveries */}
-        <View key="2" style={{ flex: 1 }}>
           <CollectionGrid
             items={discoveries}
             type="discovery"
@@ -360,9 +348,9 @@ export function PassportPager({
           />
         </View>
 
-        {/* Page 3 — Badges */}
+        {/* Page 2 — Badges */}
         <ScrollView
-          key="3"
+          key="2"
           contentContainerStyle={{ paddingTop: 8, paddingBottom: 120 }}
           showsVerticalScrollIndicator={false}
         >

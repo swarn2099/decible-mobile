@@ -182,17 +182,10 @@ export default function UserProfileScreen() {
   const gradientColors = getGradientForName(displayName);
 
   const collections = profile.collections;
-  // Finds: all artists the user has found, including those where user is the Founder
-  const finds = collections.filter(
-    (c) => c.collection_type === "find" || c.is_founder === true
-  );
-  // Founders: subset of Finds where user holds the Founder Badge
-  const founders = collections.filter((c) => c.is_founder === true);
-  const discoveries = collections.filter(
-    (c) =>
-      c.collection_type === "discovery" ||
-      (!c.collection_type && !c.verified && !c.is_founder && c.capture_method === "online")
-  );
+  // Finds: artists this user added to Decibel (they were the founder)
+  const finds = collections.filter((c) => c.is_founder === true);
+  // Discoveries: artists they found on Decibel that someone else added
+  const discoveries = collections.filter((c) => !c.is_founder);
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
@@ -310,7 +303,7 @@ export default function UserProfileScreen() {
                 }
               />
               <StatCell value={String(finds.length)} label="Finds" />
-              <StatCell value={String(founders.length)} label="Founders" />
+              <StatCell value={String(discoveries.length)} label="Discoveries" />
             </View>
           </View>
 
@@ -365,7 +358,6 @@ export default function UserProfileScreen() {
         {/* 4-tab pager with glass cards — same as passport */}
         <PassportPager
           finds={finds}
-          founders={founders}
           discoveries={discoveries}
           badges={[]}
           activeTabIndex={activeTabIndex}
