@@ -48,14 +48,17 @@ type FounderShareParams = {
   artistName: string;
   artistPhoto: string | null;
   fanSlug: string;
+  listenerCount?: string; // e.g. "42K"
+  foundDate?: string;     // e.g. "Mar 16, 2026"
 };
 
 type PassportShareV2Params = {
   name: string;
-  artistsFound: number;
-  showsAttended: number;
-  venues: number;
+  finds: number;
+  founders: number;
+  influence: number;
   topPhotos: string[];
+  avatarUrl?: string;
 };
 
 // ---------- Helper: download image to cache ----------
@@ -183,6 +186,8 @@ export function useFounderShareCard() {
         fanSlug: params.fanSlug,
       });
       if (params.artistPhoto) qs.set("artistPhoto", params.artistPhoto);
+      if (params.listenerCount) qs.set("listenerCount", params.listenerCount);
+      if (params.foundDate) qs.set("foundDate", params.foundDate);
 
       const url = `${FOUNDER_CARD_BASE}?${qs.toString()}`;
       const uri = await downloadShareCard(
@@ -212,13 +217,14 @@ export function usePassportShareCardV2() {
     try {
       const qs = new URLSearchParams({
         name: params.name,
-        artistsFound: String(params.artistsFound),
-        showsAttended: String(params.showsAttended),
-        venues: String(params.venues),
+        finds: String(params.finds),
+        founders: String(params.founders),
+        influence: String(params.influence),
       });
       if (params.topPhotos.length > 0) {
         qs.set("topPhotos", params.topPhotos.join(","));
       }
+      if (params.avatarUrl) qs.set("avatarUrl", params.avatarUrl);
 
       const url = `${PASSPORT_CARD_V2_BASE}?${qs.toString()}`;
       const uri = await downloadShareCard(

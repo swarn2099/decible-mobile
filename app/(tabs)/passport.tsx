@@ -114,18 +114,20 @@ export default function PassportScreen() {
     setShareSheetVisible(true);
 
     try {
-      const topPhotos = allCollections
+      // Top photos from founders first, then other finds
+      const topPhotos = founders
         .map((c) => c.performer?.photo_url ?? null)
         .filter((url): url is string => !!url)
         .filter((url, idx, arr) => arr.indexOf(url) === idx)
-        .slice(0, 4);
+        .slice(0, 3);
 
       const uri = await passportShare.generate({
         name: displayName,
-        artistsFound: finds.length,
-        showsAttended: 0,
-        venues: stats.uniqueVenues,
+        finds: finds.length,
+        founders: founders.length,
+        influence: 0, // will be populated from leaderboard API in future phase
         topPhotos,
+        avatarUrl: fanProfile?.avatar_url ?? undefined,
       });
       setShareImageUri(uri);
     } catch {

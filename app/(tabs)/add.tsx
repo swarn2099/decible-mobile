@@ -25,6 +25,13 @@ import { ConfirmationModal } from "@/components/collection/ConfirmationModal";
 import { ShareSheet } from "@/components/passport/ShareSheet";
 import type { TierName } from "@/hooks/useCollection";
 
+function formatListenerCount(count: number | null | undefined): string | undefined {
+  if (!count || count <= 0) return undefined;
+  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M`;
+  if (count >= 1000) return `${Math.round(count / 1000)}K`;
+  return String(count);
+}
+
 type CelebrationState = {
   visible: boolean;
   type: "founded" | "discover" | "collect";
@@ -141,11 +148,21 @@ function AddArtistView() {
           // Fire-and-forget: pre-generate share card for founded
           if (result.is_founder) {
             setShareCardUri(null);
+            const rawListeners =
+              artist.monthly_listeners ?? artist.follower_count ?? null;
+            const listenerCount = formatListenerCount(rawListeners);
+            const foundDate = new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            });
             founderShareCard
               .generate({
                 artistName: result.performer.name,
                 artistPhoto: artist.photo_url,
                 fanSlug,
+                listenerCount,
+                foundDate,
               })
               .then((uri) => setShareCardUri(uri))
               .catch(() => setShareCardUri(null));
