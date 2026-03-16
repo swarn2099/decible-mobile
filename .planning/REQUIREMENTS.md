@@ -66,9 +66,9 @@
 
 - [x] **ARTIST-01**: In-app artist profile with founder attribution, collector count, embedded player
 - [x] **ARTIST-02**: Collector list with founder highlighted
-- [ ] **ARTIST-03**: Link-in-bio web page renders at decibel.live/[artistslug] with SSR
-- [ ] **ARTIST-04**: OG meta tags generate correct social previews
-- [ ] **ARTIST-05**: "Collect on Decibel" button deep-links to app or App Store
+- [x] **ARTIST-03**: Link-in-bio web page renders at decibel.live/[artistslug] with SSR
+- [x] **ARTIST-04**: OG meta tags generate correct social previews
+- [x] **ARTIST-05**: "Collect on Decibel" button deep-links to app or App Store
 - [x] **ARTIST-06**: User passport web page renders at decibel.live/@username
 
 ### Artist Dashboard & Monetization
@@ -156,9 +156,9 @@ None — v6.0 is comprehensive.
 | SHARE-03 | Phase 17 | Complete |
 | ARTIST-01 | Phase 18 | Complete |
 | ARTIST-02 | Phase 18 | Complete |
-| ARTIST-03 | Phase 18 | Pending |
-| ARTIST-04 | Phase 18 | Pending |
-| ARTIST-05 | Phase 18 | Pending |
+| ARTIST-03 | Phase 18 | Complete |
+| ARTIST-04 | Phase 18 | Complete |
+| ARTIST-05 | Phase 18 | Complete |
 | ARTIST-06 | Phase 18 | Complete |
 | DASH-01 | Phase 19 | Pending |
 | DASH-02 | Phase 19 | Pending |
