@@ -22,6 +22,7 @@ import { useThemeColors } from "@/constants/colors";
 import { apiCall } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import type { BadgeWithStatus } from "@/types/badges";
+import type { CollectionStamp } from "@/types/passport";
 
 type FanProfile = {
   id: string;
@@ -78,22 +79,29 @@ export default function PassportScreen() {
     isLoading: collectionsLoading,
     isError: collectionsError,
     refetch: refetchCollections,
-  } = usePassportCollections();
-  const {
-    stamps,
-    finds,
-    discoveries,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = usePassportCollectionsSplit();
+  } = usePassportCollections();
+  // Flat list of all collections (deduped by prestige in the hook)
+  const flatCollections: CollectionStamp[] = usePassportCollections().data?.pages.flat() ?? [];
+
+  // Finds: all artists the user has found, including those where user is the Founder
+  const finds = flatCollections.filter(
+    (c) => c.collection_type === "find" || c.is_founder === true
+  );
+  // Founders: subset of Finds where user holds the Founder Badge
+  const founders = flatCollections.filter((c) => c.is_founder === true);
+  // Discoveries: from the split hook (doesn't overlap with founders)
+  const { discoveries } = usePassportCollectionsSplit();
+
   const { data: badges } = useFanBadges();
   const { data: socialCounts } = useSocialCounts();
 
   const passportShare = usePassportShareCardV2();
   const user = useAuthStore((s) => s.user);
   const fanSlug = user?.email?.split("@")[0] ?? "user";
-  const allCollections = [...stamps, ...finds, ...discoveries];
+  const allCollections = [...finds, ...discoveries];
 
   const handleSharePassport = useCallback(async () => {
     if (!stats) return;
@@ -115,7 +123,7 @@ export default function PassportScreen() {
       const uri = await passportShare.generate({
         name: displayName,
         artistsFound: finds.length,
-        showsAttended: stamps.length,
+        showsAttended: 0,
         venues: stats.uniqueVenues,
         topPhotos,
       });
@@ -125,12 +133,11 @@ export default function PassportScreen() {
     } finally {
       setIsGeneratingCard(false);
     }
-  }, [stats, fanProfile, fanSlug, allCollections, finds, stamps, passportShare]);
+  }, [stats, fanProfile, fanSlug, allCollections, finds, passportShare]);
 
   const handleViewMore = useCallback(
-    (type: "stamp" | "find" | "discovery") => {
+    (type: "find" | "discovery") => {
       const routeMap = {
-        stamp: "/collection/stamps",
         find: "/collection/finds",
         discovery: "/collection/discoveries",
       };
@@ -188,7 +195,7 @@ export default function PassportScreen() {
             followersCount={socialCounts?.followers_count ?? 0}
             followingCount={socialCounts?.following_count ?? 0}
             findsCount={finds.length}
-            stampsCount={stamps.length}
+            foundersCount={founders.length}
             fanId={fanProfile?.id ?? ""}
             onSharePress={handleSharePassport}
             isSharing={passportShare.isLoading || isGeneratingCard}
@@ -197,8 +204,8 @@ export default function PassportScreen() {
 
         {/* Tab pager */}
         <PassportPager
-          stamps={stamps}
           finds={finds}
+          founders={founders}
           discoveries={discoveries}
           badges={badges ?? []}
           activeTabIndex={activeTabIndex}

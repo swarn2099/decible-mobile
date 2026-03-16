@@ -21,7 +21,7 @@ import { RARITY_COLORS } from "@/constants/badges";
 import type { CollectionStamp } from "@/types/passport";
 import type { BadgeRarity, BadgeWithStatus } from "@/types/badges";
 
-const TAB_LABELS = ["Stamps", "Finds", "Discoveries", "Badges"] as const;
+const TAB_LABELS = ["Finds", "Founders", "Discoveries", "Badges"] as const;
 
 // ─── Rarity glow config ────────────────────────────────────────────────
 function getGlowConfig(rarity: BadgeRarity) {
@@ -210,11 +210,11 @@ function BadgeGrid({
 
 // ─── Passport Pager ────────────────────────────────────────────────────
 interface PassportPagerProps {
-  stamps: CollectionStamp[];
   finds: CollectionStamp[];
+  founders: CollectionStamp[];
   discoveries: CollectionStamp[];
   badges: BadgeWithStatus[];
-  onViewMore: (type: "stamp" | "find" | "discovery") => void;
+  onViewMore: (type: "find" | "discovery") => void;
   onBadgeTap: (badge: BadgeWithStatus) => void;
   activeTabIndex: SharedValue<number>;
   onTabChange: (index: number) => void;
@@ -224,8 +224,8 @@ interface PassportPagerProps {
 }
 
 export function PassportPager({
-  stamps,
   finds,
+  founders,
   discoveries,
   badges,
   onBadgeTap,
@@ -328,20 +328,20 @@ export function PassportPager({
         onPageSelected={handlePageSelected}
         onPageScroll={handlePageScroll}
       >
-        {/* Page 0 — Stamps */}
+        {/* Page 0 — Finds (all found artists, including founders) */}
         <View key="0" style={{ flex: 1 }}>
           <CollectionGrid
-            items={stamps}
-            type="stamp"
+            items={finds}
+            type="find"
             onEndReached={onFetchMore}
             isLoadingMore={isFetchingMore}
           />
         </View>
 
-        {/* Page 1 — Finds */}
+        {/* Page 1 — Founders (subset of Finds where user holds Founder Badge) */}
         <View key="1" style={{ flex: 1 }}>
           <CollectionGrid
-            items={finds}
+            items={founders}
             type="find"
             onEndReached={onFetchMore}
             isLoadingMore={isFetchingMore}

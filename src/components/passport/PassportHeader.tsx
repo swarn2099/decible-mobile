@@ -78,7 +78,7 @@ type Props = {
   followersCount: number;
   followingCount: number;
   findsCount: number;
-  stampsCount: number;
+  foundersCount: number;
   fanId: string;
   onSharePress?: () => void;
   isSharing?: boolean;
@@ -91,7 +91,7 @@ export function PassportHeader({
   followersCount,
   followingCount,
   findsCount,
-  stampsCount,
+  foundersCount,
   fanId,
   onSharePress,
   isSharing,
@@ -167,7 +167,7 @@ export function PassportHeader({
           )}
         </View>
 
-        {/* Stats — 4 columns: Followers / Following / Stamps / Finds */}
+        {/* Stats — 4 columns: Followers / Following / Finds / Founders */}
         <View
           style={{
             flex: 1,
@@ -198,13 +198,13 @@ export function PassportHeader({
             }
           />
           <StatCell
-            value={String(stampsCount)}
-            label="Stamps"
+            value={String(findsCount)}
+            label="Finds"
             colors={colors}
           />
           <StatCell
-            value={String(findsCount)}
-            label="Finds"
+            value={String(foundersCount)}
+            label="Founders"
             colors={colors}
           />
         </View>

@@ -141,9 +141,8 @@ export default function UserProfileScreen() {
   }, [id, currentFollowing, followMutation, unfollowMutation, queryClient]);
 
   const handleViewMore = useCallback(
-    (type: "stamp" | "find" | "discovery") => {
+    (type: "find" | "discovery") => {
       const routeMap = {
-        stamp: "/collection/stamps",
         find: "/collection/finds",
         discovery: "/collection/discoveries",
       };
@@ -183,12 +182,12 @@ export default function UserProfileScreen() {
   const gradientColors = getGradientForName(displayName);
 
   const collections = profile.collections;
-  const stamps = collections.filter(
-    (c) => c.collection_type === "stamp" || (c.verified === true && !c.collection_type)
-  );
+  // Finds: all artists the user has found, including those where user is the Founder
   const finds = collections.filter(
-    (c) => c.collection_type === "find" || (c.is_founder === true && !c.collection_type)
+    (c) => c.collection_type === "find" || c.is_founder === true
   );
+  // Founders: subset of Finds where user holds the Founder Badge
+  const founders = collections.filter((c) => c.is_founder === true);
   const discoveries = collections.filter(
     (c) =>
       c.collection_type === "discovery" ||
@@ -311,7 +310,7 @@ export default function UserProfileScreen() {
                 }
               />
               <StatCell value={String(finds.length)} label="Finds" />
-              <StatCell value={String(stamps.length)} label="Stamps" />
+              <StatCell value={String(founders.length)} label="Founders" />
             </View>
           </View>
 
@@ -365,8 +364,8 @@ export default function UserProfileScreen() {
 
         {/* 4-tab pager with glass cards — same as passport */}
         <PassportPager
-          stamps={stamps}
           finds={finds}
+          founders={founders}
           discoveries={discoveries}
           badges={[]}
           activeTabIndex={activeTabIndex}
