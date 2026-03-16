@@ -90,7 +90,7 @@ export function ActivityFeedCard({ item, onCollect, isCollected = false }: Activ
       }}
     >
       {/* Fan avatar — taps to fan profile */}
-      <Pressable onPress={() => router.push(`/passport?fan_id=${item.fan_id}`)}>
+      <Pressable onPress={() => router.push(`/profile/${item.fan_id}`)}>
         <AvatarCircle uri={item.fan_avatar} name={item.fan_name} size={32} />
       </Pressable>
 
@@ -99,7 +99,7 @@ export function ActivityFeedCard({ item, onCollect, isCollected = false }: Activ
         <Text style={{ color: colors.textPrimary }} className="font-poppins text-sm" numberOfLines={2}>
           <Text
             className="font-poppins-semibold"
-            onPress={() => router.push(`/passport?fan_id=${item.fan_id}`)}
+            onPress={() => router.push(`/profile/${item.fan_id}`)}
           >
             {item.fan_name}
           </Text>

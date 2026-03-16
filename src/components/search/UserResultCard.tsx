@@ -86,7 +86,7 @@ export function UserResultCard({ user, onPress }: Props) {
           style={{ color: colors.textSecondary, fontSize: 12 }}
           className="font-poppins"
         >
-          {user.stamp_count} stamp{user.stamp_count !== 1 ? "s" : ""}
+          {user.find_count} find{user.find_count !== 1 ? "s" : ""}
         </Text>
       </View>
 

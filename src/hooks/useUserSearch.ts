@@ -6,7 +6,7 @@ export type UserSearchResult = {
   id: string;
   display_name: string;
   avatar_url: string | null;
-  stamp_count: number;
+  find_count: number;
   is_following: boolean;
 };
 

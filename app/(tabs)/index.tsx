@@ -62,6 +62,7 @@ export default function HomeScreen() {
   const { mutate: discoverMutate } = useDiscoverArtist();
   const { collectedIds } = useMyCollectedIds();
   const [refreshing, setRefreshing] = useState(false);
+  const [localCollected, setLocalCollected] = useState<Set<string>>(new Set());
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -86,6 +87,8 @@ export default function HomeScreen() {
 
   const handleCollect = useCallback(
     (performerId: string) => {
+      // Optimistic: immediately show as collected
+      setLocalCollected((prev) => new Set(prev).add(performerId));
       discoverMutate(
         { performerId },
         {
@@ -93,6 +96,14 @@ export default function HomeScreen() {
             queryClient.invalidateQueries({ queryKey: ["activity-feed"] });
             queryClient.invalidateQueries({ queryKey: ["user-stats"] });
             queryClient.invalidateQueries({ queryKey: ["myCollectedIds"] });
+          },
+          onError: () => {
+            // Rollback optimistic update
+            setLocalCollected((prev) => {
+              const next = new Set(prev);
+              next.delete(performerId);
+              return next;
+            });
           },
         }
       );
@@ -180,6 +191,14 @@ export default function HomeScreen() {
         isLoading={userStats.isLoading}
       />
 
+      {/* Trending Artists Row — above the feed */}
+      <View style={{ marginBottom: 8 }}>
+        <TrendingArtistsRow
+          artists={trendingArtists.artists}
+          isLoading={trendingArtists.isLoading}
+        />
+      </View>
+
       {/* Feed section header */}
       <View style={{ marginBottom: 16, paddingHorizontal: 20 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -223,13 +242,6 @@ export default function HomeScreen() {
           <ActivityIndicator color={colors.pink} />
         </View>
       )}
-      {/* Trending Artists Row at bottom of feed */}
-      <View style={{ marginTop: 8 }}>
-        <TrendingArtistsRow
-          artists={trendingArtists.artists}
-          isLoading={trendingArtists.isLoading}
-        />
-      </View>
       {/* Bottom padding for floating tab bar */}
       <View style={{ height: 100 }} />
     </>
@@ -257,7 +269,7 @@ export default function HomeScreen() {
               <ActivityFeedCard
                 item={item}
                 onCollect={handleCollect}
-                isCollected={collectedIds.has(item.performer_id)}
+                isCollected={collectedIds.has(item.performer_id) || localCollected.has(item.performer_id)}
               />
             )}
           </View>

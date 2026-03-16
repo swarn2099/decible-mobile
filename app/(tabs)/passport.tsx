@@ -184,8 +184,8 @@ export default function PassportScreen() {
         style={{ flex: 1, backgroundColor: "transparent" }}
         edges={["top"]}
       >
-        {/* Static header */}
-        <View>
+        {/* Static header — marginBottom prevents tab bar overlap */}
+        <View style={{ marginBottom: 4 }}>
           <PassportHeader
             displayName={fanProfile?.name ?? null}
             avatarUrl={fanProfile?.avatar_url ?? null}
