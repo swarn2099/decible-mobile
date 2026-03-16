@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-16T00:58:27.960Z"
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-03-16T01:00:35.566Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 31
-  completed_plans: 30
+  completed_plans: 31
   percent: 0
 ---
 
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 14-bug-fixes-cleanup P03 | 5 | 2 tasks | 4 files |
 | Phase 14-bug-fixes-cleanup P01 | 15m | 2 tasks | 5 files |
+| Phase 14-bug-fixes-cleanup P02 | 8m | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 14-bug-fixes-cleanup]: Share.share() must be triggered after modal dismiss on iOS — 300ms setTimeout workaround
 - [Phase 14-bug-fixes-cleanup]: Finds tab includes ALL found artists (including founders) using flat collection filter; founders are a strict subset
 - [Phase 14-bug-fixes-cleanup]: Stamp UI hidden in v6.0 (data preserved in DB, no deletions)
+- [Phase 14-bug-fixes-cleanup]: contentType field on ParsedArtistUrl to distinguish artist/track/album/song without breaking existing callers
+- [Phase 14-bug-fixes-cleanup]: getSpotifyTrack/getSpotifyAlbum added to resolve Spotify content URLs to artist IDs
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T00:58:27.954Z
-Stopped at: Completed 14-01-PLAN.md
+Last session: 2026-03-16T01:00:35.560Z
+Stopped at: Completed 14-02-PLAN.md
 Resume file: None
