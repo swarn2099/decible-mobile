@@ -1,141 +1,190 @@
-# Requirements: Decibel Mobile
+# Requirements: Decibel v6.0
 
-**Defined:** 2026-03-13
-**Core Value:** Discover underground artists before anyone else (Finds) and prove you were at the show (Stamps) — a live music passport.
+**Defined:** 2026-03-16
+**Core Value:** Fans compete to discover underground artists (Founder badge = social currency). Artists get fan intelligence and direct reach worth $29/month.
 
-## v3.5 Requirements
+## v6.0 Requirements
 
-Requirements for milestone v3.5 — Polish & Identity.
+### Bug Fixes
 
-### Login
+- [ ] **BUG-01**: Apple Music URLs parse correctly for artists, songs, and albums across regional variants
+- [ ] **BUG-02**: Stat counts match between search results and profile pages
+- [ ] **BUG-03**: Share modal works correctly for passport and individual artist cards
+- [ ] **BUG-04**: Listen links open correct platform (Spotify/Apple Music/SoundCloud)
 
-- [x] **LOGIN-01**: Login screen respects device light/dark mode (#0B0B0F dark, #FFFFFF light)
-- [x] **LOGIN-02**: Animated gradient orbs float behind content (pink/purple/blue, lower opacity in light mode)
-- [x] **LOGIN-03**: Tracked-out "D E C I B E L" wordmark + "Your Live Music Passport" tagline in upper third
-- [x] **LOGIN-04**: Themed email input with mail icon, focus state with pink border glow
-- [x] **LOGIN-05**: Brand gradient (pink→purple) "Send Magic Link" button with press animation + haptic
-- [x] **LOGIN-06**: Loading state (spinner in button) and success state (checkmark + "Check your email")
-- [x] **LOGIN-07**: Content stagger-fades in on mount (wordmark → input → button)
-- [x] **LOGIN-08**: Keyboard avoidance works smoothly on iOS and Android
+### UI Cleanup
 
-### Passport Layout
+- [ ] **CLEAN-01**: "I'm at a Show" flow removed from + tab UI
+- [ ] **CLEAN-02**: Stamps tab removed from passport
+- [ ] **CLEAN-03**: Passport tabs are: Finds | Founders | Discoveries | Badges
+- [ ] **CLEAN-04**: Founders tab shows only artists where user holds Founder Badge
+- [ ] **CLEAN-05**: Header stats show: Followers | Following | Finds | Founders
+- [ ] **CLEAN-06**: Map button removed from Home screen
+- [ ] **CLEAN-07**: All stamp data preserved in database (hidden from UI only)
 
-- [x] **PLAYOUT-01**: Compact header (~180px): avatar (60x60, no ring) + inline stats (Followers/Following/Stamps/Finds)
-- [x] **PLAYOUT-02**: Followers and Following counts are tappable (open list screens)
-- [x] **PLAYOUT-03**: Username + "Member since" below avatar row, no settings gear icon
-- [x] **PLAYOUT-04**: Share Passport (gradient) + Edit Profile (surface fill) action buttons
-- [x] **PLAYOUT-05**: Sticky tab bar pins to top when scrolled past header
-- [x] **PLAYOUT-06**: Swipe left/right switches between tabs (gesture navigation)
-- [x] **PLAYOUT-07**: Active tab has pink underline indicator, inactive tabs muted
-- [x] **PLAYOUT-08**: Passport respects device light/dark mode (themed backgrounds, surfaces, text)
+### Song Link Support
 
-### Grid & Cards
+- [ ] **SONG-01**: Song/album URLs accepted from Spotify, Apple Music, and SoundCloud
+- [ ] **SONG-02**: Artist extracted correctly from song/album metadata
+- [ ] **SONG-03**: "Found via [Track Name]" displays on confirmation card for song links
 
-- [x] **GRID-01**: 3-column grid with square cells (1:1 aspect ratio), ~1px uniform gaps
-- [x] **GRID-02**: Artist image fills each cell completely (cover/crop)
-- [x] **GRID-03**: Bottom gradient overlay with artist name + context text + date per cell
-- [x] **GRID-04**: Stamp cells show artist + venue + date; Find cells show artist + platform icon + date; Discovery cells show artist + "via @user" + date
-- [x] **GRID-05**: Founder badge (gold star) in top-right corner of cell when applicable
-- [x] **GRID-06**: Haptic feedback + press-down scale animation on cell tap
-- [x] **GRID-07**: Empty states per tab with icon, message, and CTA
-- [x] **GRID-08**: Grid scrolls all entries newest-to-oldest, paginated at 50+ with infinite scroll
+### Passport Redesign
 
-### Badges
+- [ ] **PASS-01**: Login screen redesigned with animated orbs, branded input/button, animations
+- [ ] **PASS-02**: Passport matches Instagram profile layout pattern (compact header, inline stats)
+- [ ] **PASS-03**: 3-column grid with correct overlays per tab type (Finds/Founders/Discoveries)
+- [ ] **PASS-04**: Sticky tab bar with 4 tabs and swipe gestures
+- [ ] **PASS-05**: Light/dark mode correct on both login and passport
+- [ ] **PASS-06**: No settings gear, no badge teaser, no colored avatar ring
 
-- [x] **BADGE-01**: Badges accessible via 4th tab in sticky tab bar (Stamps | Finds | Discoveries | Badges)
-- [x] **BADGE-02**: All badge elements removed from passport header and main scroll
-- [x] **BADGE-03**: Earned badges display full color with glow/shadow
-- [x] **BADGE-04**: Locked badges display grayscale at 0.3 opacity (not beige circles)
-- [x] **BADGE-05**: Tap earned badge shows detail card (how earned, date); tap locked shows requirements
+### Home & Feed
 
-## v3.0 Requirements (Completed)
+- [ ] **HOME-01**: Stats bar shows Finds, Founders, Influence Score
+- [ ] **HOME-02**: Activity feed loads Find, Founder, and Collect cards from followed users
+- [ ] **HOME-03**: Fallback "Trending on Decibel" when feed is empty
+- [ ] **HOME-04**: Trending Artists horizontal row displays and is tappable
+- [ ] **HOME-05**: Jukebox button replaces map button, loads embedded players for recent finds
+- [ ] **HOME-06**: Max 3 WebViews active at once in Jukebox
+- [ ] **HOME-07**: One-tap Collect from feed cards and Jukebox cards creates Discovery
+- [ ] **HOME-08**: Notification sent to finder when someone collects from their find
 
-### Bug Fixes (Phase 6)
+### Leaderboard
 
-- [x] **BUG-01**: Discover button functions correctly
-- [x] **BUG-02**: Listen links open correct platform URL
-- [x] **BUG-03**: Share modal opens and functions correctly
-- [x] **BUG-04**: Leaderboard API returns data
+- [ ] **LEAD-01**: Three ranking views: Most Founders, Highest Influence, Trending
+- [ ] **LEAD-02**: Time filters (All Time, This Month, This Week)
+- [ ] **LEAD-03**: User position shown at bottom if not in visible rankings
+- [ ] **LEAD-04**: Top 3 have distinct visual styling
+- [ ] **LEAD-05**: Tapping a leaderboard row navigates to that user's passport
 
-### Glassy Passport (Phase 7)
+### Share Cards
 
-- [x] **GPASS-01** through **GPASS-14**: All complete
+- [ ] **SHARE-01**: Founder Share Card generates on founding with correct data (1080x1920)
+- [ ] **SHARE-02**: Passport Summary Card generates on demand (1080x1920)
+- [ ] **SHARE-03**: Share sheet opens with card image, Instagram Stories as target
 
-### Jukebox (Phase 8)
+### Artist Profile & Link-in-Bio
 
-- [x] **JBX-01** through **JBX-14**: All complete
+- [ ] **ARTIST-01**: In-app artist profile with founder attribution, collector count, embedded player
+- [ ] **ARTIST-02**: Collector list with founder highlighted
+- [ ] **ARTIST-03**: Link-in-bio web page renders at decibel.live/[artistslug] with SSR
+- [ ] **ARTIST-04**: OG meta tags generate correct social previews
+- [ ] **ARTIST-05**: "Collect on Decibel" button deep-links to app or App Store
+- [ ] **ARTIST-06**: User passport web page renders at decibel.live/@username
 
-### "I'm at a Show" (Phase 9)
+### Artist Dashboard & Monetization
 
-- [x] **SHOW-01** through **SHOW-25**: All complete (except SHOW-12 Layer 4 social scraping — deferred)
+- [ ] **DASH-01**: Artist claiming flow works end-to-end (signup → search → verify → dashboard)
+- [ ] **DASH-02**: Dashboard Overview with collector count, growth chart, recent activity
+- [ ] **DASH-03**: Fan Intelligence with full collector list, city breakdown, "fans also collect"
+- [ ] **DASH-04**: Push notification compose and send with 1/week rate limit
+- [ ] **DASH-05**: Notifications arrive on fan devices via Expo Push
+- [ ] **DASH-06**: Artist messages appear in fan Home feed
+- [ ] **DASH-07**: Smart Flyer: create show listings, push to collectors within radius
+- [ ] **DASH-08**: Link-in-bio settings (add/remove/reorder platform links)
+- [ ] **DASH-09**: Stripe Checkout for $29/month subscription
+- [ ] **DASH-10**: 14-day free trial, no credit card required
+- [ ] **DASH-11**: Locked features gated after trial expires
+- [ ] **DASH-12**: Verified badge on artist profiles after claiming
+
+### Outreach & Growth
+
+- [ ] **OUT-01**: Daily cron identifies artists with 10+ collectors not yet contacted
+- [ ] **OUT-02**: Outreach messages generated with correct personalization
+- [ ] **OUT-03**: Email sending works via VM
+- [ ] **OUT-04**: Instagram DM queue created for manual sending
+- [ ] **OUT-05**: Milestone notifications at 25, 50, 100 collector thresholds
+- [ ] **OUT-06**: Artist milestone share cards generated as images
+- [ ] **OUT-07**: No duplicate outreach (one contact per threshold)
 
 ## Future Requirements
 
-### Social
-- **SOC-01**: "Who's Out Tonight" live friend map
-- **SOC-02**: Weekly recap notification
-
-### Content
-- **CON-01**: Volume rating system (1-10 fader)
-- **CON-02**: Residency pattern detection from crowdsource data
-- **CON-03**: Native audio player replacing WebViews
-
-### DJ Platform
-- **DJ-01**: Performer profiles with QR, fan collection, stats (Free)
-- **DJ-02**: Pro tier ($29/mo)
-- **DJ-03**: Agency tier ($79/mo)
+None — v6.0 is comprehensive.
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Social login (Google/Apple) | Auth system is magic-link only currently |
-| Gradient orbs on passport screen | PRD explicitly excludes — passport is clean themed bg |
-| Settings gear icon on passport | Replaced by Edit Profile button |
-| Badge teaser row in passport header | Badges live in 4th tab only |
-| Edit Profile screen implementation | Just the button — full edit flow is a future milestone |
-| Text search for external artist catalogs | Replaced by link paste |
+| Fantasy Music League | Requires daily Spotify scraper cron, defer to future |
+| Volume Rating System | Mixing console fader UI, future |
+| "Who's Out Tonight" live map | Future |
+| Weekly recap notifications | Future |
+| Fan premium subscription ($2.99/month) | Nice-to-have, not the business |
+| Instagram auto-posting | Future |
+| Text search for external artists | Replaced by link paste |
 | Deezer API | Eliminated entirely |
+| Automated artist verification | Manual for MVP, automate month 2-3 |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LOGIN-01 | Phase 10 | Complete |
-| LOGIN-02 | Phase 10 | Complete |
-| LOGIN-03 | Phase 10 | Complete |
-| LOGIN-04 | Phase 10 | Complete |
-| LOGIN-05 | Phase 10 | Complete |
-| LOGIN-06 | Phase 10 | Complete |
-| LOGIN-07 | Phase 10 | Complete |
-| LOGIN-08 | Phase 10 | Complete |
-| PLAYOUT-01 | Phase 11 | Complete |
-| PLAYOUT-02 | Phase 11 | Complete |
-| PLAYOUT-03 | Phase 11 | Complete |
-| PLAYOUT-04 | Phase 11 | Complete |
-| PLAYOUT-05 | Phase 11 | Complete |
-| PLAYOUT-06 | Phase 11 | Complete |
-| PLAYOUT-07 | Phase 11 | Complete |
-| PLAYOUT-08 | Phase 11 | Complete |
-| GRID-01 | Phase 12 | Complete |
-| GRID-02 | Phase 12 | Complete |
-| GRID-03 | Phase 12 | Complete |
-| GRID-04 | Phase 12 | Complete |
-| GRID-05 | Phase 12 | Complete |
-| GRID-06 | Phase 12 | Complete |
-| GRID-07 | Phase 12 | Complete |
-| GRID-08 | Phase 12 | Complete |
-| BADGE-01 | Phase 13 | Complete |
-| BADGE-02 | Phase 13 | Complete |
-| BADGE-03 | Phase 13 | Complete |
-| BADGE-04 | Phase 13 | Complete |
-| BADGE-05 | Phase 13 | Complete |
+| BUG-01 | Phase 14 | Pending |
+| BUG-02 | Phase 14 | Pending |
+| BUG-03 | Phase 14 | Pending |
+| BUG-04 | Phase 14 | Pending |
+| CLEAN-01 | Phase 14 | Pending |
+| CLEAN-02 | Phase 14 | Pending |
+| CLEAN-03 | Phase 14 | Pending |
+| CLEAN-04 | Phase 14 | Pending |
+| CLEAN-05 | Phase 14 | Pending |
+| CLEAN-06 | Phase 14 | Pending |
+| CLEAN-07 | Phase 14 | Pending |
+| SONG-01 | Phase 14 | Pending |
+| SONG-02 | Phase 14 | Pending |
+| SONG-03 | Phase 14 | Pending |
+| PASS-01 | Phase 15 | Pending |
+| PASS-02 | Phase 15 | Pending |
+| PASS-03 | Phase 15 | Pending |
+| PASS-04 | Phase 15 | Pending |
+| PASS-05 | Phase 15 | Pending |
+| PASS-06 | Phase 15 | Pending |
+| HOME-01 | Phase 16 | Pending |
+| HOME-02 | Phase 16 | Pending |
+| HOME-03 | Phase 16 | Pending |
+| HOME-04 | Phase 16 | Pending |
+| HOME-05 | Phase 16 | Pending |
+| HOME-06 | Phase 16 | Pending |
+| HOME-07 | Phase 16 | Pending |
+| HOME-08 | Phase 16 | Pending |
+| LEAD-01 | Phase 17 | Pending |
+| LEAD-02 | Phase 17 | Pending |
+| LEAD-03 | Phase 17 | Pending |
+| LEAD-04 | Phase 17 | Pending |
+| LEAD-05 | Phase 17 | Pending |
+| SHARE-01 | Phase 17 | Pending |
+| SHARE-02 | Phase 17 | Pending |
+| SHARE-03 | Phase 17 | Pending |
+| ARTIST-01 | Phase 18 | Pending |
+| ARTIST-02 | Phase 18 | Pending |
+| ARTIST-03 | Phase 18 | Pending |
+| ARTIST-04 | Phase 18 | Pending |
+| ARTIST-05 | Phase 18 | Pending |
+| ARTIST-06 | Phase 18 | Pending |
+| DASH-01 | Phase 19 | Pending |
+| DASH-02 | Phase 19 | Pending |
+| DASH-03 | Phase 19 | Pending |
+| DASH-04 | Phase 19 | Pending |
+| DASH-05 | Phase 19 | Pending |
+| DASH-06 | Phase 19 | Pending |
+| DASH-07 | Phase 19 | Pending |
+| DASH-08 | Phase 19 | Pending |
+| DASH-09 | Phase 19 | Pending |
+| DASH-10 | Phase 19 | Pending |
+| DASH-11 | Phase 19 | Pending |
+| DASH-12 | Phase 19 | Pending |
+| OUT-01 | Phase 20 | Pending |
+| OUT-02 | Phase 20 | Pending |
+| OUT-03 | Phase 20 | Pending |
+| OUT-04 | Phase 20 | Pending |
+| OUT-05 | Phase 20 | Pending |
+| OUT-06 | Phase 20 | Pending |
+| OUT-07 | Phase 20 | Pending |
 
 **Coverage:**
-- v3.5 requirements: 29 total (LOGIN: 8, PLAYOUT: 8, GRID: 8, BADGE: 5)
-- Mapped to phases: 29
+- v6.0 requirements: 51 total
+- Mapped to phases: 51
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-03-13*
-*Last updated: 2026-03-13 after roadmap creation*
+*Requirements defined: 2026-03-16*
+*Last updated: 2026-03-16 after initial definition*
