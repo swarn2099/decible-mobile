@@ -14,7 +14,6 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Linking from "expo-linking";
-import { WebView } from "react-native-webview";
 import {
   ChevronLeft,
   Users,
@@ -122,6 +121,44 @@ function getSpotifyEmbedUrl(spotifyUrl: string): string | null {
     return `https://open.spotify.com/embed${path}?utm_source=generator&theme=0`;
   } catch {
     return null;
+  }
+}
+
+function SpotifyEmbed({ url }: { url: string }) {
+  const colors = useThemeColors();
+  try {
+    const { WebView } = require("react-native-webview");
+    return (
+      <View style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", height: 152 }}>
+        <WebView
+          source={{ uri: url }}
+          style={{ backgroundColor: "transparent" }}
+          scrollEnabled={false}
+          allowsInlineMediaPlayback
+        />
+      </View>
+    );
+  } catch {
+    // Fallback if WebView not available
+    return (
+      <Pressable
+        onPress={() => Linking.openURL(url.replace("/embed", ""))}
+        style={{
+          backgroundColor: colors.card,
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 20,
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <Music2 size={20} color="#1DB954" />
+        <Text style={{ fontSize: 15, fontFamily: "Poppins_500Medium", color: colors.text }}>
+          Listen on Spotify
+        </Text>
+      </Pressable>
+    );
   }
 }
 
@@ -354,16 +391,7 @@ export default function ArtistProfileScreen() {
           </Pressable>
 
           {/* Spotify Embed Player */}
-          {spotifyEmbedUrl && (
-            <View style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", height: 152 }}>
-              <WebView
-                source={{ uri: spotifyEmbedUrl }}
-                style={{ backgroundColor: "transparent" }}
-                scrollEnabled={false}
-                allowsInlineMediaPlayback
-              />
-            </View>
-          )}
+          {spotifyEmbedUrl && <SpotifyEmbed url={spotifyEmbedUrl} />}
 
           {/* Other Listen Links */}
           {otherLinks.length > 0 && (
