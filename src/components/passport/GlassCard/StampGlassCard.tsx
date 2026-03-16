@@ -31,14 +31,6 @@ function getGradientForName(name: string): [string, string] {
   return GRADIENT_PAIRS[Math.abs(hash) % GRADIENT_PAIRS.length];
 }
 
-function hashCode(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return hash;
-}
-
 function formatDate(dateStr: string | null): string {
   if (!dateStr) return "";
   const d = new Date(dateStr);
@@ -63,11 +55,9 @@ export function StampGlassCard({ item, onPress, simplified = false }: Props) {
 
   const cardWidth = (screenWidth - 48) / 2;
   const cardHeight = cardWidth * 1.4;
-  const rotation = ((hashCode(item.id) % 5) - 2);
-
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ rotate: `${rotation}deg` }, { scale: scale.value }],
+    transform: [{ scale: scale.value }],
   }));
 
   const gradientColors = getGradientForName(item.performer.name);
