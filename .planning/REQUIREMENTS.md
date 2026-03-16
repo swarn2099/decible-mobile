@@ -84,7 +84,7 @@
 - [x] **DASH-09**: Stripe Checkout for $29/month subscription
 - [ ] **DASH-10**: 14-day free trial, no credit card required
 - [ ] **DASH-11**: Locked features gated after trial expires
-- [ ] **DASH-12**: Verified badge on artist profiles after claiming
+- [x] **DASH-12**: Verified badge on artist profiles after claiming
 
 ### Outreach & Growth
 
@@ -171,7 +171,7 @@ None — v6.0 is comprehensive.
 | DASH-09 | Phase 19 | Complete |
 | DASH-10 | Phase 19 | Pending |
 | DASH-11 | Phase 19 | Pending |
-| DASH-12 | Phase 19 | Pending |
+| DASH-12 | Phase 19 | Complete |
 | OUT-01 | Phase 20 | Pending |
 | OUT-02 | Phase 20 | Pending |
 | OUT-03 | Phase 20 | Pending |
