@@ -144,26 +144,20 @@ export type HomeFeedEvent = {
 
 // ---------- Leaderboard types ----------
 
-export type FanLeaderboardEntry = {
+export type LeaderboardView = "founders" | "influence" | "trending";
+export type LeaderboardEntry = {
   rank: number;
   fanId: string;
   name: string;
-  count: number;
-  topTier: string;
+  avatarUrl: string | null;
+  metric: number;
 };
-
-export type PerformerLeaderboardEntry = {
-  rank: number;
-  performerId: string;
-  name: string;
-  slug: string;
-  photoUrl: string | null;
-  fanCount: number;
-  genres: string[];
+export type LeaderboardResponse = {
+  entries: LeaderboardEntry[];
+  userPosition: LeaderboardEntry | null;
 };
 
 export type TimePeriod = "weekly" | "monthly" | "allTime";
-export type LeaderboardTab = "fans" | "performers";
 
 // ---------- Activity Feed types ----------
 

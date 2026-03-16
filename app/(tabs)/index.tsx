@@ -7,7 +7,7 @@ import Svg, {
 } from "react-native-svg";
 import { DecibelRefreshControl } from "@/components/ui/PullToRefresh";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Search, ListMusic, Compass, TrendingUp } from "lucide-react-native";
+import { Search, ListMusic, Compass, TrendingUp, Trophy } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { useActivityFeed } from "@/hooks/useActivityFeed";
 import { useUserStats } from "@/hooks/useUserStats";
@@ -130,6 +130,22 @@ export default function HomeScreen() {
             }}
           >
             <ListMusic size={20} color={colors.textSecondary} />
+          </Pressable>
+          <Pressable
+            onPress={() => router.push("/leaderboard")}
+            hitSlop={12}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              backgroundColor: colors.card,
+              borderWidth: 1,
+              borderColor: colors.cardBorder,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Trophy size={20} color={colors.textSecondary} />
           </Pressable>
         </View>
 

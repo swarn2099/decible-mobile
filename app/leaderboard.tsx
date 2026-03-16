@@ -5,35 +5,125 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
-import {
-  useLeaderboard,
-  getTierColor,
-  getTierLabel,
-} from "@/hooks/useLeaderboard";
+import { useLeaderboard } from "@/hooks/useLeaderboard";
 import { LeaderboardSkeleton } from "@/components/ui/SkeletonLoader";
-import type {
-  FanLeaderboardEntry,
-  PerformerLeaderboardEntry,
-  LeaderboardTab,
-  TimePeriod,
-} from "@/types/index";
+import type { LeaderboardView, LeaderboardEntry, TimePeriod } from "@/types/index";
+
+const VIEWS: { value: LeaderboardView; label: string }[] = [
+  { value: "founders", label: "Most Founders" },
+  { value: "influence", label: "Highest Influence" },
+  { value: "trending", label: "Trending" },
+];
+
+const PERIODS: { value: TimePeriod; label: string }[] = [
+  { value: "allTime", label: "All Time" },
+  { value: "monthly", label: "This Month" },
+  { value: "weekly", label: "This Week" },
+];
+
+const GOLD = "#FFD700";
+const SILVER = "#C0C0C0";
+const BRONZE = "#CD7F32";
+
+function metricLabel(view: LeaderboardView): string {
+  if (view === "founders") return "founders";
+  if (view === "influence") return "influence";
+  return "this week";
+}
+
+function PodiumAvatar({
+  entry,
+  size,
+  accentColor,
+  onPress,
+}: {
+  entry: LeaderboardEntry;
+  size: number;
+  accentColor: string;
+  onPress: () => void;
+}) {
+  const colors = useThemeColors();
+  return (
+    <Pressable onPress={onPress} style={{ alignItems: "center" }}>
+      <View
+        style={{
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          borderWidth: 2.5,
+          borderColor: accentColor,
+          overflow: "hidden",
+          backgroundColor: colors.card,
+        }}
+      >
+        {entry.avatarUrl ? (
+          <Image
+            source={{ uri: entry.avatarUrl }}
+            style={{ width: size, height: size }}
+            contentFit="cover"
+          />
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: size * 0.38,
+                fontFamily: "Poppins_700Bold",
+                color: accentColor,
+              }}
+            >
+              {(entry.name ?? "?").charAt(0).toUpperCase()}
+            </Text>
+          </View>
+        )}
+      </View>
+      <Text
+        style={{
+          marginTop: 6,
+          fontSize: 12,
+          fontFamily: "Poppins_600SemiBold",
+          color: accentColor,
+          textAlign: "center",
+          maxWidth: size + 16,
+        }}
+        numberOfLines={1}
+      >
+        {entry.name}
+      </Text>
+      <Text
+        style={{
+          fontSize: 11,
+          fontFamily: "Poppins_500Medium",
+          color: accentColor,
+          opacity: 0.85,
+        }}
+      >
+        {entry.metric}
+      </Text>
+    </Pressable>
+  );
+}
 
 export default function LeaderboardScreen() {
   const router = useRouter();
   const colors = useThemeColors();
-  const [tab, setTab] = useState<LeaderboardTab>("fans");
+  const [view, setView] = useState<LeaderboardView>("founders");
   const [period, setPeriod] = useState<TimePeriod>("allTime");
 
-  const { data, isLoading, isError, refetch, currentFanId } = useLeaderboard({
-    tab,
-    period,
-  });
+  const { entries, userPosition, isLoading, isError, refetch, currentFanId } =
+    useLeaderboard({ view, period });
 
   const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.bg },
@@ -71,8 +161,8 @@ export default function LeaderboardScreen() {
     },
     tabPillActive: { backgroundColor: colors.pink },
     tabPillInactive: { backgroundColor: colors.card },
-    tabPillText: { fontSize: 14, fontFamily: "Poppins_600SemiBold" },
-    tabPillTextActive: { color: colors.white },
+    tabPillText: { fontSize: 11, fontFamily: "Poppins_600SemiBold" },
+    tabPillTextActive: { color: "#FFFFFF" },
     tabPillTextInactive: { color: colors.textSecondary },
     periodRow: {
       flexDirection: "row",
@@ -89,8 +179,17 @@ export default function LeaderboardScreen() {
     periodPillActive: { backgroundColor: colors.pink },
     periodPillInactive: { backgroundColor: colors.card },
     periodPillText: { fontSize: 12, fontFamily: "Poppins_500Medium" },
-    periodPillTextActive: { color: colors.white },
+    periodPillTextActive: { color: "#FFFFFF" },
     periodPillTextInactive: { color: colors.textSecondary },
+    podiumSection: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      paddingHorizontal: 16,
+      paddingTop: 8,
+      paddingBottom: 24,
+      gap: 24,
+    },
     row: {
       flexDirection: "row",
       alignItems: "center",
@@ -108,7 +207,7 @@ export default function LeaderboardScreen() {
     },
     rankText: {
       width: 32,
-      fontSize: 20,
+      fontSize: 18,
       fontFamily: "Poppins_700Bold",
       color: colors.textSecondary,
       textAlign: "center",
@@ -127,6 +226,8 @@ export default function LeaderboardScreen() {
       borderRadius: 20,
       marginRight: 12,
       backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
       justifyContent: "center",
       alignItems: "center",
     },
@@ -141,39 +242,10 @@ export default function LeaderboardScreen() {
       fontFamily: "Poppins_500Medium",
       color: colors.text,
     },
-    entryMeta: {
-      fontSize: 12,
-      fontFamily: "Poppins_400Regular",
-      color: colors.textSecondary,
-      marginTop: 2,
-    },
-    tierPill: {
-      paddingHorizontal: 8,
-      paddingVertical: 3,
-      borderRadius: 100,
-      marginLeft: 8,
-    },
-    tierText: {
-      fontSize: 10,
+    metricText: {
+      fontSize: 15,
       fontFamily: "Poppins_600SemiBold",
-      color: colors.white,
-    },
-    genreRow: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: 4,
-      marginTop: 4,
-    },
-    genrePill: {
-      paddingHorizontal: 6,
-      paddingVertical: 2,
-      borderRadius: 100,
-      backgroundColor: `${colors.textSecondary}22`,
-    },
-    genreText: {
-      fontSize: 10,
-      fontFamily: "Poppins_400Regular",
-      color: colors.textSecondary,
+      color: colors.pink,
     },
     centered: { flex: 1, justifyContent: "center", alignItems: "center" },
     errorText: {
@@ -191,54 +263,59 @@ export default function LeaderboardScreen() {
     retryText: {
       fontSize: 14,
       fontFamily: "Poppins_600SemiBold",
-      color: colors.white,
+      color: "#FFFFFF",
     },
     emptyText: {
       fontSize: 15,
       fontFamily: "Poppins_500Medium",
       color: colors.textSecondary,
     },
+    stickyUserBar: {
+      position: "absolute",
+      bottom: 100,
+      left: 16,
+      right: 16,
+      backgroundColor: colors.card,
+      borderRadius: 14,
+      borderLeftWidth: 3,
+      borderLeftColor: colors.pink,
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.18,
+      shadowRadius: 8,
+      elevation: 6,
+    },
   });
 
-  const renderFanRow = ({ item }: { item: FanLeaderboardEntry }) => {
-    const isMe = item.fanId === currentFanId;
-    const tierColor = getTierColor(item.topTier);
-    return (
-      <View style={[styles.row, isMe && styles.rowHighlighted]}>
-        <Text style={styles.rankText}>{item.rank}</Text>
-        <View style={styles.avatarPlaceholder}>
-          <Text style={styles.avatarInitial}>
-            {(item.name ?? "?").charAt(0).toUpperCase()}
-          </Text>
-        </View>
-        <View style={styles.entryInfo}>
-          <Text style={styles.entryName} numberOfLines={1}>
-            {item.name}
-          </Text>
-          <Text style={styles.entryMeta}>{item.count} finds</Text>
-        </View>
-        <View style={[styles.tierPill, { backgroundColor: tierColor }]}>
-          <Text style={styles.tierText}>{getTierLabel(item.topTier)}</Text>
-        </View>
-      </View>
-    );
-  };
+  const top3 = entries.slice(0, 3);
+  const rest = entries.slice(3);
+  const label = metricLabel(view);
 
-  const renderPerformerRow = ({
+  const renderRow = ({
     item,
+    isUserBar,
   }: {
-    item: PerformerLeaderboardEntry;
+    item: LeaderboardEntry;
+    isUserBar?: boolean;
   }) => {
+    const isMe = item.fanId === currentFanId;
     return (
       <Pressable
-        style={styles.row}
-        onPress={() => router.push(`/artist/${item.slug}`)}
+        style={[
+          styles.row,
+          (isMe || isUserBar) && styles.rowHighlighted,
+        ]}
+        onPress={() => router.push(`/profile/${item.fanId}`)}
         android_ripple={{ color: colors.cardBorder }}
       >
         <Text style={styles.rankText}>{item.rank}</Text>
-        {item.photoUrl ? (
+        {item.avatarUrl ? (
           <Image
-            source={{ uri: item.photoUrl }}
+            source={{ uri: item.avatarUrl }}
             style={styles.avatar}
             contentFit="cover"
           />
@@ -253,24 +330,56 @@ export default function LeaderboardScreen() {
           <Text style={styles.entryName} numberOfLines={1}>
             {item.name}
           </Text>
-          <Text style={styles.entryMeta}>
-            {item.fanCount} {item.fanCount === 1 ? "fan" : "fans"}
-          </Text>
-          {item.genres && item.genres.length > 0 && (
-            <View style={styles.genreRow}>
-              {item.genres.slice(0, 2).map((genre) => (
-                <View key={genre} style={styles.genrePill}>
-                  <Text style={styles.genreText}>{genre}</Text>
-                </View>
-              ))}
-            </View>
-          )}
         </View>
+        <Text style={styles.metricText}>
+          {item.metric} {label}
+        </Text>
       </Pressable>
     );
   };
 
-  const isFanTab = tab === "fans";
+  const PodiumSection =
+    top3.length > 0 ? (
+      <View style={styles.podiumSection}>
+        {/* Rank 2 (left, silver) */}
+        {top3[1] ? (
+          <View style={{ marginBottom: 0 }}>
+            <PodiumAvatar
+              entry={top3[1]}
+              size={52}
+              accentColor={SILVER}
+              onPress={() => router.push(`/profile/${top3[1].fanId}`)}
+            />
+          </View>
+        ) : (
+          <View style={{ width: 52 }} />
+        )}
+        {/* Rank 1 (center, gold, tallest) */}
+        {top3[0] ? (
+          <View style={{ marginBottom: 8 }}>
+            <PodiumAvatar
+              entry={top3[0]}
+              size={64}
+              accentColor={GOLD}
+              onPress={() => router.push(`/profile/${top3[0].fanId}`)}
+            />
+          </View>
+        ) : null}
+        {/* Rank 3 (right, bronze) */}
+        {top3[2] ? (
+          <View style={{ marginBottom: 0 }}>
+            <PodiumAvatar
+              entry={top3[2]}
+              size={52}
+              accentColor={BRONZE}
+              onPress={() => router.push(`/profile/${top3[2].fanId}`)}
+            />
+          </View>
+        ) : (
+          <View style={{ width: 52 }} />
+        )}
+      </View>
+    ) : null;
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -287,63 +396,59 @@ export default function LeaderboardScreen() {
         <View style={styles.headerSpacer} />
       </View>
 
-      {/* Tab switcher */}
+      {/* View tabs */}
       <View style={styles.tabRow}>
-        {(["fans", "performers"] as LeaderboardTab[]).map((t) => (
+        {VIEWS.map((v) => (
           <Pressable
-            key={t}
+            key={v.value}
             style={[
               styles.tabPill,
-              tab === t ? styles.tabPillActive : styles.tabPillInactive,
+              view === v.value ? styles.tabPillActive : styles.tabPillInactive,
             ]}
-            onPress={() => setTab(t)}
+            onPress={() => setView(v.value)}
           >
             <Text
               style={[
                 styles.tabPillText,
-                tab === t
+                view === v.value
                   ? styles.tabPillTextActive
                   : styles.tabPillTextInactive,
               ]}
             >
-              {t === "fans" ? "Fans" : "Performers"}
+              {v.label}
             </Text>
           </Pressable>
         ))}
       </View>
 
-      {/* Period switcher */}
-      <View style={styles.periodRow}>
-        {(
-          [
-            { value: "weekly" as TimePeriod, label: "Weekly" },
-            { value: "monthly" as TimePeriod, label: "Monthly" },
-            { value: "allTime" as TimePeriod, label: "All Time" },
-          ] as { value: TimePeriod; label: string }[]
-        ).map(({ value, label }) => (
-          <Pressable
-            key={value}
-            style={[
-              styles.periodPill,
-              period === value
-                ? styles.periodPillActive
-                : styles.periodPillInactive,
-            ]}
-            onPress={() => setPeriod(value)}
-          >
-            <Text
+      {/* Period pills (hidden for trending) */}
+      {view !== "trending" && (
+        <View style={styles.periodRow}>
+          {PERIODS.map(({ value, label: pLabel }) => (
+            <Pressable
+              key={value}
               style={[
-                styles.periodPillText,
+                styles.periodPill,
                 period === value
-                  ? styles.periodPillTextActive
-                  : styles.periodPillTextInactive,
+                  ? styles.periodPillActive
+                  : styles.periodPillInactive,
               ]}
+              onPress={() => setPeriod(value)}
             >
-              {label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+              <Text
+                style={[
+                  styles.periodPillText,
+                  period === value
+                    ? styles.periodPillTextActive
+                    : styles.periodPillTextInactive,
+                ]}
+              >
+                {pLabel}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
 
       {/* Content */}
       {isLoading ? (
@@ -355,30 +460,52 @@ export default function LeaderboardScreen() {
             <Text style={styles.retryText}>Retry</Text>
           </Pressable>
         </View>
-      ) : !data || data.length === 0 ? (
+      ) : entries.length === 0 ? (
         <View style={styles.centered}>
           <Text style={styles.emptyText}>No entries yet</Text>
         </View>
       ) : (
         <FlatList
-          data={data}
-          keyExtractor={(item) =>
-            isFanTab
-              ? (item as FanLeaderboardEntry).fanId
-              : (item as PerformerLeaderboardEntry).performerId
-          }
-          renderItem={
-            isFanTab
-              ? ({ item }) =>
-                  renderFanRow({ item: item as FanLeaderboardEntry })
-              : ({ item }) =>
-                  renderPerformerRow({
-                    item: item as PerformerLeaderboardEntry,
-                  })
-          }
+          data={rest}
+          keyExtractor={(item) => item.fanId}
+          renderItem={({ item }) => renderRow({ item })}
+          ListHeaderComponent={PodiumSection}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingTop: 4, paddingBottom: 100 }}
+          contentContainerStyle={{
+            paddingTop: 4,
+            paddingBottom: userPosition ? 180 : 100,
+          }}
         />
+      )}
+
+      {/* Sticky user position bar */}
+      {userPosition && (
+        <View style={styles.stickyUserBar}>
+          <Text style={[styles.rankText, { color: colors.pink }]}>
+            {userPosition.rank}
+          </Text>
+          {userPosition.avatarUrl ? (
+            <Image
+              source={{ uri: userPosition.avatarUrl }}
+              style={styles.avatar}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <Text style={styles.avatarInitial}>
+                {(userPosition.name ?? "?").charAt(0).toUpperCase()}
+              </Text>
+            </View>
+          )}
+          <View style={styles.entryInfo}>
+            <Text style={styles.entryName} numberOfLines={1}>
+              {userPosition.name}
+            </Text>
+          </View>
+          <Text style={styles.metricText}>
+            {userPosition.metric} {label}
+          </Text>
+        </View>
       )}
     </SafeAreaView>
   );
