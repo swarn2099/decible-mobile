@@ -88,11 +88,11 @@
 
 ### Outreach & Growth
 
-- [ ] **OUT-01**: Daily cron identifies artists with 10+ collectors not yet contacted
-- [ ] **OUT-02**: Outreach messages generated with correct personalization
-- [ ] **OUT-03**: Email sending works via VM
-- [ ] **OUT-04**: Instagram DM queue created for manual sending
-- [ ] **OUT-05**: Milestone notifications at 25, 50, 100 collector thresholds
+- [x] **OUT-01**: Daily cron identifies artists with 10+ collectors not yet contacted
+- [x] **OUT-02**: Outreach messages generated with correct personalization
+- [x] **OUT-03**: Email sending works via VM
+- [x] **OUT-04**: Instagram DM queue created for manual sending
+- [x] **OUT-05**: Milestone notifications at 25, 50, 100 collector thresholds
 - [x] **OUT-06**: Artist milestone share cards generated as images
 - [x] **OUT-07**: No duplicate outreach (one contact per threshold)
 
@@ -172,11 +172,11 @@ None — v6.0 is comprehensive.
 | DASH-10 | Phase 19 | Complete |
 | DASH-11 | Phase 19 | Complete |
 | DASH-12 | Phase 19 | Complete |
-| OUT-01 | Phase 20 | Pending |
-| OUT-02 | Phase 20 | Pending |
-| OUT-03 | Phase 20 | Pending |
-| OUT-04 | Phase 20 | Pending |
-| OUT-05 | Phase 20 | Pending |
+| OUT-01 | Phase 20 | Complete |
+| OUT-02 | Phase 20 | Complete |
+| OUT-03 | Phase 20 | Complete |
+| OUT-04 | Phase 20 | Complete |
+| OUT-05 | Phase 20 | Complete |
 | OUT-06 | Phase 20 | Complete |
 | OUT-07 | Phase 20 | Complete |
 
