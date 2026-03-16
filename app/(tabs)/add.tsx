@@ -10,7 +10,7 @@ import {
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Music, MapPin, X } from "lucide-react-native";
+import { Music, X } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { useRouter } from "expo-router";
 import { extractUrlFromSharedText } from "@/lib/urlParser";
@@ -21,12 +21,9 @@ import { useDiscoverArtist } from "@/hooks/useDiscoverArtist";
 import { useFounderShareCard } from "@/hooks/useShareCard";
 import { useAuthStore } from "@/stores/authStore";
 import { ArtistPreviewCard } from "@/components/add/ArtistPreviewCard";
-import { CheckInWizard } from "@/components/checkin/CheckInWizard";
 import { ConfirmationModal } from "@/components/collection/ConfirmationModal";
 import { ShareSheet } from "@/components/passport/ShareSheet";
 import type { TierName } from "@/hooks/useCollection";
-
-type AddMode = "artist" | "show";
 
 type CelebrationState = {
   visible: boolean;
@@ -374,7 +371,6 @@ function AddArtistView() {
 
 export default function AddScreen() {
   const colors = useThemeColors();
-  const [mode, setMode] = useState<AddMode>("artist");
 
   return (
     <SafeAreaView
@@ -392,79 +388,10 @@ export default function AddScreen() {
             paddingBottom: 20,
           }}
         >
-          {mode === "artist" ? "Add an Artist" : "I'm at a Show"}
+          Add an Artist
         </Text>
 
-        {/* Toggle */}
-        <View
-          style={[
-            styles.toggle,
-            {
-              backgroundColor: colors.card,
-              borderColor: colors.cardBorder,
-            },
-          ]}
-        >
-          <TouchableOpacity
-            onPress={() => setMode("artist")}
-            activeOpacity={0.7}
-            style={[
-              styles.toggleButton,
-              mode === "artist" && {
-                backgroundColor: colors.pink,
-              },
-            ]}
-          >
-            <Music
-              size={16}
-              color={mode === "artist" ? "#FFFFFF" : colors.textSecondary}
-            />
-            <Text
-              style={[
-                styles.toggleText,
-                {
-                  color:
-                    mode === "artist" ? "#FFFFFF" : colors.textSecondary,
-                },
-              ]}
-            >
-              Add an Artist
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setMode("show")}
-            activeOpacity={0.7}
-            style={[
-              styles.toggleButton,
-              mode === "show" && {
-                backgroundColor: colors.pink,
-              },
-            ]}
-          >
-            <MapPin
-              size={16}
-              color={mode === "show" ? "#FFFFFF" : colors.textSecondary}
-            />
-            <Text
-              style={[
-                styles.toggleText,
-                {
-                  color: mode === "show" ? "#FFFFFF" : colors.textSecondary,
-                },
-              ]}
-            >
-              I'm at a Show
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content */}
-        {mode === "artist" ? (
-          <AddArtistView />
-        ) : (
-          <CheckInWizard onBack={() => setMode("artist")} />
-        )}
+        <AddArtistView />
       </View>
 
       {/* Bottom padding for tab bar */}
@@ -474,26 +401,6 @@ export default function AddScreen() {
 }
 
 const styles = StyleSheet.create({
-  toggle: {
-    flexDirection: "row",
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 4,
-    marginBottom: 24,
-  },
-  toggleButton: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 12,
-    borderRadius: 10,
-  },
-  toggleText: {
-    fontSize: 14,
-    fontFamily: "Poppins_600SemiBold",
-  },
   pasteArea: {
     borderWidth: 2,
     borderStyle: "dashed",
