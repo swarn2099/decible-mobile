@@ -252,10 +252,12 @@ Plans:
   4. + tab shows only "Add an Artist"; no check-in UI, no map button anywhere in the app
   5. Passport tabs show Finds | Founders | Discoveries | Badges; header stats show Followers | Following | Finds | Founders
   6. User pastes a Spotify song URL and sees "Found via [Track Name]" on the confirmation card before confirming
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 14-01: TBD
+- [ ] 14-01-PLAN.md — UI cleanup: remove show mode from + tab, restructure passport tabs (Finds|Founders|Discoveries|Badges), update header stats
+- [ ] 14-02-PLAN.md — Song/album URL support: extend URL parser + backend for track/album URLs across all platforms, Apple Music regional fix, "Found via" UI
+- [ ] 14-03-PLAN.md — Bug fixes: stat count mismatch, share modal, listen links on artist profile
 
 #### Phase 15: Passport Redesign
 **Goal**: The passport is a polished identity screen with the correct tab structure, overlays, and no visual clutter from prior iterations
@@ -368,7 +370,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 | 11. Passport Layout & Structure | v3.5 | 1/1 | Complete | 2026-03-14 |
 | 12. Passport Grid & Cards | v3.5 | 1/1 | Complete | 2026-03-14 |
 | 13. Badges Section | v3.5 | 1/1 | Complete | 2026-03-14 |
-| 14. Bug Fixes & Cleanup | v6.0 | 0/TBD | Not started | - |
+| 14. Bug Fixes & Cleanup | v6.0 | 0/3 | In progress | - |
 | 15. Passport Redesign | v6.0 | 0/TBD | Not started | - |
 | 16. Home Screen & Feed | v6.0 | 0/TBD | Not started | - |
 | 17. Leaderboard & Share Cards | v6.0 | 0/TBD | Not started | - |
