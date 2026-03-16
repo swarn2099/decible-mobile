@@ -32,8 +32,8 @@
 
 - [ ] **PASS-01**: Login screen redesigned with animated orbs, branded input/button, animations
 - [ ] **PASS-02**: Passport matches Instagram profile layout pattern (compact header, inline stats)
-- [ ] **PASS-03**: 3-column grid with correct overlays per tab type (Finds/Founders/Discoveries)
-- [ ] **PASS-04**: Sticky tab bar with 4 tabs and swipe gestures
+- [x] **PASS-03**: 3-column grid with correct overlays per tab type (Finds/Founders/Discoveries)
+- [x] **PASS-04**: Sticky tab bar with 4 tabs and swipe gestures
 - [ ] **PASS-05**: Light/dark mode correct on both login and passport
 - [ ] **PASS-06**: No settings gear, no badge teaser, no colored avatar ring
 
@@ -134,8 +134,8 @@ None — v6.0 is comprehensive.
 | SONG-03 | Phase 14 | Complete |
 | PASS-01 | Phase 15 | Pending |
 | PASS-02 | Phase 15 | Pending |
-| PASS-03 | Phase 15 | Pending |
-| PASS-04 | Phase 15 | Pending |
+| PASS-03 | Phase 15 | Complete |
+| PASS-04 | Phase 15 | Complete |
 | PASS-05 | Phase 15 | Pending |
 | PASS-06 | Phase 15 | Pending |
 | HOME-01 | Phase 16 | Pending |
