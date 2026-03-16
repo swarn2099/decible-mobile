@@ -315,10 +315,12 @@ Plans:
   3. Artist's public page at decibel.live/[artistslug] loads with correct SSR content and OG meta tags that render previews correctly in iMessage and Twitter
   4. "Collect on Decibel" button on the public page deep-links to the app or redirects to the App Store if the app is not installed
   5. User's passport web page at decibel.live/@username is publicly accessible and correctly renders their finds and founders
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
-- [ ] 18-01: TBD
+- [ ] 18-01-PLAN.md — Mobile: enhance artist profile with embedded player, tappable founder attribution, collector count social proof
+- [ ] 18-02-PLAN.md — Web: add Spotify/Apple Music links to artist page, "Collect on Decibel" CTA, verify OG tags
+- [ ] 18-03-PLAN.md — Web: public user passport page at /@username with SSR and OG meta
 
 #### Phase 19: Artist Dashboard & Monetization
 **Goal**: Artists can claim their profile, access fan intelligence, push notify their collectors, and pay $29/month for Decibel Pro — turning the fan data into a revenue stream
@@ -377,6 +379,6 @@ Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 | 15. Passport Redesign | 2/2 | Complete    | 2026-03-16 | - |
 | 16. Home Screen & Feed | 2/2 | Complete    | 2026-03-16 | - |
 | 17. Leaderboard & Share Cards | 2/2 | Complete    | 2026-03-16 | - |
-| 18. Artist Profile & Link-in-Bio | v6.0 | 0/TBD | Not started | - |
+| 18. Artist Profile & Link-in-Bio | v6.0 | 0/3 | Not started | - |
 | 19. Artist Dashboard & Monetization | v6.0 | 0/TBD | Not started | - |
 | 20. Outreach & Growth Engine | v6.0 | 0/TBD | Not started | - |
