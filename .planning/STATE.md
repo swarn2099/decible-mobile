@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 14-03-PLAN.md
-last_updated: "2026-03-16T00:57:53.985Z"
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-03-16T00:58:27.960Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
   completed_phases: 12
   total_plans: 31
-  completed_plans: 29
+  completed_plans: 30
   percent: 0
 ---
 
@@ -49,6 +49,7 @@ Progress: [░░░░░░░░░░] 0%
 
 *Updated after each plan completion*
 | Phase 14-bug-fixes-cleanup P03 | 5 | 2 tasks | 4 files |
+| Phase 14-bug-fixes-cleanup P01 | 15m | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -62,6 +63,8 @@ Progress: [░░░░░░░░░░] 0%
 - v6.0: Manual artist verification for MVP, automate month 2-3
 - [Phase 14-bug-fixes-cleanup]: fan_count from collections(count) join not performers.follower_count (stale platform count)
 - [Phase 14-bug-fixes-cleanup]: Share.share() must be triggered after modal dismiss on iOS — 300ms setTimeout workaround
+- [Phase 14-bug-fixes-cleanup]: Finds tab includes ALL found artists (including founders) using flat collection filter; founders are a strict subset
+- [Phase 14-bug-fixes-cleanup]: Stamp UI hidden in v6.0 (data preserved in DB, no deletions)
 
 ### Pending Todos
 
@@ -73,6 +76,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T00:57:53.979Z
-Stopped at: Completed 14-03-PLAN.md
+Last session: 2026-03-16T00:58:27.954Z
+Stopped at: Completed 14-01-PLAN.md
 Resume file: None

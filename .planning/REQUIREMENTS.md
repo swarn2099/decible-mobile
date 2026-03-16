@@ -14,13 +14,13 @@
 
 ### UI Cleanup
 
-- [ ] **CLEAN-01**: "I'm at a Show" flow removed from + tab UI
-- [ ] **CLEAN-02**: Stamps tab removed from passport
-- [ ] **CLEAN-03**: Passport tabs are: Finds | Founders | Discoveries | Badges
-- [ ] **CLEAN-04**: Founders tab shows only artists where user holds Founder Badge
-- [ ] **CLEAN-05**: Header stats show: Followers | Following | Finds | Founders
-- [ ] **CLEAN-06**: Map button removed from Home screen
-- [ ] **CLEAN-07**: All stamp data preserved in database (hidden from UI only)
+- [x] **CLEAN-01**: "I'm at a Show" flow removed from + tab UI
+- [x] **CLEAN-02**: Stamps tab removed from passport
+- [x] **CLEAN-03**: Passport tabs are: Finds | Founders | Discoveries | Badges
+- [x] **CLEAN-04**: Founders tab shows only artists where user holds Founder Badge
+- [x] **CLEAN-05**: Header stats show: Followers | Following | Finds | Founders
+- [x] **CLEAN-06**: Map button removed from Home screen
+- [x] **CLEAN-07**: All stamp data preserved in database (hidden from UI only)
 
 ### Song Link Support
 
@@ -122,13 +122,13 @@ None — v6.0 is comprehensive.
 | BUG-02 | Phase 14 | Complete |
 | BUG-03 | Phase 14 | Complete |
 | BUG-04 | Phase 14 | Complete |
-| CLEAN-01 | Phase 14 | Pending |
-| CLEAN-02 | Phase 14 | Pending |
-| CLEAN-03 | Phase 14 | Pending |
-| CLEAN-04 | Phase 14 | Pending |
-| CLEAN-05 | Phase 14 | Pending |
-| CLEAN-06 | Phase 14 | Pending |
-| CLEAN-07 | Phase 14 | Pending |
+| CLEAN-01 | Phase 14 | Complete |
+| CLEAN-02 | Phase 14 | Complete |
+| CLEAN-03 | Phase 14 | Complete |
+| CLEAN-04 | Phase 14 | Complete |
+| CLEAN-05 | Phase 14 | Complete |
+| CLEAN-06 | Phase 14 | Complete |
+| CLEAN-07 | Phase 14 | Complete |
 | SONG-01 | Phase 14 | Pending |
 | SONG-02 | Phase 14 | Pending |
 | SONG-03 | Phase 14 | Pending |
