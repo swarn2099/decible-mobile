@@ -74,8 +74,8 @@
 ### Artist Dashboard & Monetization
 
 - [x] **DASH-01**: Artist claiming flow works end-to-end (signup → search → verify → dashboard)
-- [ ] **DASH-02**: Dashboard Overview with collector count, growth chart, recent activity
-- [ ] **DASH-03**: Fan Intelligence with full collector list, city breakdown, "fans also collect"
+- [x] **DASH-02**: Dashboard Overview with collector count, growth chart, recent activity
+- [x] **DASH-03**: Fan Intelligence with full collector list, city breakdown, "fans also collect"
 - [x] **DASH-04**: Push notification compose and send with 1/week rate limit
 - [ ] **DASH-05**: Notifications arrive on fan devices via Expo Push
 - [ ] **DASH-06**: Artist messages appear in fan Home feed
@@ -161,8 +161,8 @@ None — v6.0 is comprehensive.
 | ARTIST-05 | Phase 18 | Complete |
 | ARTIST-06 | Phase 18 | Complete |
 | DASH-01 | Phase 19 | Complete |
-| DASH-02 | Phase 19 | Pending |
-| DASH-03 | Phase 19 | Pending |
+| DASH-02 | Phase 19 | Complete |
+| DASH-03 | Phase 19 | Complete |
 | DASH-04 | Phase 19 | Complete |
 | DASH-05 | Phase 19 | Pending |
 | DASH-06 | Phase 19 | Pending |
