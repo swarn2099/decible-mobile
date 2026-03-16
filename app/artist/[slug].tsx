@@ -37,7 +37,6 @@ import { SharePrompt } from "@/components/collection/SharePrompt";
 import { ArtistProfileSkeleton } from "@/components/ui/SkeletonLoader";
 import { ErrorState } from "@/components/ui/ErrorState";
 import type {
-  CollectResult,
   DiscoverResult,
   TierName,
 } from "@/hooks/useCollection";
@@ -111,57 +110,6 @@ function BackButton({ onPress }: { onPress: () => void }) {
   );
 }
 
-// Build a Spotify embed URL from a Spotify artist URL
-function getSpotifyEmbedUrl(spotifyUrl: string): string | null {
-  try {
-    const url = new URL(spotifyUrl);
-    if (!url.hostname.includes("spotify")) return null;
-    // /artist/ID → /embed/artist/ID
-    const path = url.pathname;
-    return `https://open.spotify.com/embed${path}?utm_source=generator&theme=0`;
-  } catch {
-    return null;
-  }
-}
-
-function SpotifyEmbed({ url }: { url: string }) {
-  const colors = useThemeColors();
-  try {
-    const { WebView } = require("react-native-webview");
-    return (
-      <View style={{ marginBottom: 20, borderRadius: 12, overflow: "hidden", height: 152 }}>
-        <WebView
-          source={{ uri: url }}
-          style={{ backgroundColor: "transparent" }}
-          scrollEnabled={false}
-          allowsInlineMediaPlayback
-        />
-      </View>
-    );
-  } catch {
-    // Fallback if WebView not available
-    return (
-      <Pressable
-        onPress={() => Linking.openURL(url.replace("/embed", ""))}
-        style={{
-          backgroundColor: colors.card,
-          borderRadius: 12,
-          padding: 16,
-          marginBottom: 20,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-        }}
-      >
-        <Music2 size={20} color="#1DB954" />
-        <Text style={{ fontSize: 15, fontFamily: "Poppins_500Medium", color: colors.text }}>
-          Listen on Spotify
-        </Text>
-      </Pressable>
-    );
-  }
-}
-
 export default function ArtistProfileScreen() {
   const colors = useThemeColors();
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -186,19 +134,15 @@ export default function ArtistProfileScreen() {
     return myStatus === "founded";
   }, [founder, user, myStatus]);
 
-  const spotifyEmbedUrl = useMemo(() => {
-    if (!artist?.spotify_url) return null;
-    return getSpotifyEmbedUrl(artist.spotify_url);
-  }, [artist?.spotify_url]);
-
-  // Non-Spotify listen links
-  const otherLinks = useMemo(() => {
+  // All listen links including Spotify
+  const listenLinks = useMemo(() => {
     if (!artist) return [];
     const links: { url: string; label: string }[] = [];
     const candidates = [
+      artist.spotify_url,
+      artist.apple_music_url,
       artist.soundcloud_url,
       artist.mixcloud_url,
-      artist.apple_music_url,
     ].filter(Boolean) as string[];
 
     for (const rawUrl of candidates) {
@@ -208,14 +152,15 @@ export default function ArtistProfileScreen() {
         const host = new URL(url).hostname.toLowerCase();
         if (host.includes("deezer")) continue;
         let label = "Listen";
-        if (host.includes("soundcloud")) label = "SoundCloud";
-        else if (host.includes("mixcloud")) label = "Mixcloud";
+        if (host.includes("spotify")) label = "Spotify";
         else if (host.includes("apple")) label = "Apple Music";
+        else if (host.includes("soundcloud")) label = "SoundCloud";
+        else if (host.includes("mixcloud")) label = "Mixcloud";
         links.push({ url, label });
       } catch { /* skip invalid */ }
     }
     return links;
-  }, [artist]);
+  }, [artist]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (
@@ -390,13 +335,10 @@ export default function ArtistProfileScreen() {
             )}
           </Pressable>
 
-          {/* Spotify Embed Player */}
-          {spotifyEmbedUrl && <SpotifyEmbed url={spotifyEmbedUrl} />}
-
-          {/* Other Listen Links */}
-          {otherLinks.length > 0 && (
+          {/* Listen Links */}
+          {listenLinks.length > 0 && (
             <View style={{ marginBottom: 20 }}>
-              {otherLinks.map((link) => (
+              {listenLinks.map((link) => (
                 <Pressable
                   key={link.url}
                   onPress={() => Linking.openURL(link.url).catch(() => Alert.alert("Could not open link"))}
