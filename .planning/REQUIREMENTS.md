@@ -7,7 +7,7 @@
 
 ### Bug Fixes
 
-- [ ] **BUG-01**: Apple Music URLs parse correctly for artists, songs, and albums across regional variants
+- [x] **BUG-01**: Apple Music URLs parse correctly for artists, songs, and albums across regional variants
 - [x] **BUG-02**: Stat counts match between search results and profile pages
 - [x] **BUG-03**: Share modal works correctly for passport and individual artist cards
 - [x] **BUG-04**: Listen links open correct platform (Spotify/Apple Music/SoundCloud)
@@ -24,9 +24,9 @@
 
 ### Song Link Support
 
-- [ ] **SONG-01**: Song/album URLs accepted from Spotify, Apple Music, and SoundCloud
-- [ ] **SONG-02**: Artist extracted correctly from song/album metadata
-- [ ] **SONG-03**: "Found via [Track Name]" displays on confirmation card for song links
+- [x] **SONG-01**: Song/album URLs accepted from Spotify, Apple Music, and SoundCloud
+- [x] **SONG-02**: Artist extracted correctly from song/album metadata
+- [x] **SONG-03**: "Found via [Track Name]" displays on confirmation card for song links
 
 ### Passport Redesign
 
@@ -118,7 +118,7 @@ None — v6.0 is comprehensive.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 14 | Pending |
+| BUG-01 | Phase 14 | Complete |
 | BUG-02 | Phase 14 | Complete |
 | BUG-03 | Phase 14 | Complete |
 | BUG-04 | Phase 14 | Complete |
@@ -129,9 +129,9 @@ None — v6.0 is comprehensive.
 | CLEAN-05 | Phase 14 | Complete |
 | CLEAN-06 | Phase 14 | Complete |
 | CLEAN-07 | Phase 14 | Complete |
-| SONG-01 | Phase 14 | Pending |
-| SONG-02 | Phase 14 | Pending |
-| SONG-03 | Phase 14 | Pending |
+| SONG-01 | Phase 14 | Complete |
+| SONG-02 | Phase 14 | Complete |
+| SONG-03 | Phase 14 | Complete |
 | PASS-01 | Phase 15 | Pending |
 | PASS-02 | Phase 15 | Pending |
 | PASS-03 | Phase 15 | Pending |
