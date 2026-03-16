@@ -1,8 +1,6 @@
-import { useRef } from "react";
 import { View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { Share2, UserPen } from "lucide-react-native";
 import { useRouter } from "expo-router";
 import Animated, {
   useSharedValue,
@@ -112,19 +110,21 @@ export function PassportHeader({
   const shareScale = useSharedValue(1);
   const shareAnimStyle = useAnimatedStyle(() => ({
     transform: [{ scale: shareScale.value }],
+    flex: 1,
   }));
 
   // Press animation for Edit button
   const editScale = useSharedValue(1);
   const editAnimStyle = useAnimatedStyle(() => ({
     transform: [{ scale: editScale.value }],
+    flex: 1,
   }));
 
   return (
     <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 }}>
       {/* Row 1: Avatar (left) + Stats (right) */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
-        {/* Avatar — 80x80, plain circle */}
+        {/* Avatar — 80x80, plain circle with cardBorder ring */}
         <View
           style={{
             width: 80,
@@ -210,96 +210,111 @@ export function PassportHeader({
         </View>
       </View>
 
-      {/* Row 2: Username + Member since (left) + icon buttons (right) */}
-      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
-        <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: "Poppins_600SemiBold",
-              color: colors.text,
-            }}
-            numberOfLines={1}
-          >
-            {name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              fontFamily: "Poppins_400Regular",
-              color: colors.textSecondary,
-              marginTop: 2,
-            }}
-          >
-            Member since {memberLabel}
-          </Text>
-        </View>
+      {/* Row 2: Username + Member since */}
+      <View style={{ marginTop: 10 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            fontFamily: "Poppins_600SemiBold",
+            color: colors.text,
+          }}
+          numberOfLines={1}
+        >
+          {name}
+        </Text>
+        <Text
+          style={{
+            fontSize: 13,
+            fontFamily: "Poppins_400Regular",
+            color: colors.textSecondary,
+            marginTop: 2,
+          }}
+        >
+          Member since {memberLabel}
+        </Text>
+      </View>
 
-        {/* Icon buttons */}
-        <View style={{ flexDirection: "row", gap: 8 }}>
-          {/* Share — gradient circle */}
-          <Animated.View style={shareAnimStyle}>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                onSharePress?.();
-              }}
-              onPressIn={() => {
-                shareScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-              }}
-              onPressOut={() => {
-                shareScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
-              }}
-              disabled={isSharing}
-            >
-              <LinearGradient
-                colors={["#FF4D6A", "#9B6DFF"]}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Share2 size={16} color="#FFFFFF" />
-              </LinearGradient>
-            </Pressable>
-          </Animated.View>
-
-          {/* Edit — surface circle */}
-          <Animated.View style={editAnimStyle}>
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                router.push("/settings" as any);
-              }}
-              onPressIn={() => {
-                editScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-              }}
-              onPressOut={() => {
-                editScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+      {/* Row 3: Side-by-side text buttons — Share Passport + Edit Profile */}
+      <View style={{ flexDirection: "row", gap: 8, marginTop: 12 }}>
+        {/* Share Passport — gradient fill */}
+        <Animated.View style={shareAnimStyle}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              onSharePress?.();
+            }}
+            onPressIn={() => {
+              shareScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+            }}
+            onPressOut={() => {
+              shareScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+            }}
+            disabled={isSharing}
+            style={{ flex: 1 }}
+          >
+            <LinearGradient
+              colors={["#FF4D6A", "#9B6DFF"]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={{
+                height: 34,
+                borderRadius: 8,
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: isSharing ? 0.6 : 1,
               }}
             >
-              <View
+              <Text
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  backgroundColor: colors.card,
-                  borderWidth: 1,
-                  borderColor: colors.cardBorder,
-                  alignItems: "center",
-                  justifyContent: "center",
+                  fontFamily: "Poppins_600SemiBold",
+                  fontSize: 13,
+                  color: "#FFFFFF",
                 }}
               >
-                <UserPen size={16} color={colors.text} />
-              </View>
-            </Pressable>
-          </Animated.View>
-        </View>
+                Share Passport
+              </Text>
+            </LinearGradient>
+          </Pressable>
+        </Animated.View>
+
+        {/* Edit Profile — surface fill */}
+        <Animated.View style={editAnimStyle}>
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/settings" as any);
+            }}
+            onPressIn={() => {
+              editScale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
+            }}
+            onPressOut={() => {
+              editScale.value = withSpring(1.0, { damping: 15, stiffness: 300 });
+            }}
+            style={{ flex: 1 }}
+          >
+            <View
+              style={{
+                height: 34,
+                borderRadius: 8,
+                backgroundColor: colors.card,
+                borderWidth: 1,
+                borderColor: colors.cardBorder,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Poppins_600SemiBold",
+                  fontSize: 13,
+                  color: colors.text,
+                }}
+              >
+                Edit Profile
+              </Text>
+            </View>
+          </Pressable>
+        </Animated.View>
       </View>
     </View>
   );
