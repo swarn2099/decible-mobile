@@ -302,7 +302,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md — API: 3-view leaderboard (Most Founders, Highest Influence, Trending) + user position; Mobile: redesigned leaderboard screen with top-3 podium, sticky user bar, trophy icon on Home
+- [ ] 17-02-PLAN.md — API: premium founder + passport share card redesign for v6.0 stats; Mobile: updated hooks + share sheet wiring for Instagram Stories
 
 #### Phase 18: Artist Profile & Link-in-Bio
 **Goal**: Every artist on Decibel has an in-app profile and a public web page — giving artists a reason to care about their Decibel presence and fans a shareable URL
@@ -375,7 +376,7 @@ Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 | 14. Bug Fixes & Cleanup | 3/3 | Complete    | 2026-03-16 | - |
 | 15. Passport Redesign | 2/2 | Complete    | 2026-03-16 | - |
 | 16. Home Screen & Feed | 2/2 | Complete    | 2026-03-16 | - |
-| 17. Leaderboard & Share Cards | v6.0 | 0/TBD | Not started | - |
+| 17. Leaderboard & Share Cards | v6.0 | 0/2 | Not started | - |
 | 18. Artist Profile & Link-in-Bio | v6.0 | 0/TBD | Not started | - |
 | 19. Artist Dashboard & Monetization | v6.0 | 0/TBD | Not started | - |
 | 20. Outreach & Growth Engine | v6.0 | 0/TBD | Not started | - |
