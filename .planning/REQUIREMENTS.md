@@ -73,15 +73,15 @@
 
 ### Artist Dashboard & Monetization
 
-- [ ] **DASH-01**: Artist claiming flow works end-to-end (signup → search → verify → dashboard)
+- [x] **DASH-01**: Artist claiming flow works end-to-end (signup → search → verify → dashboard)
 - [ ] **DASH-02**: Dashboard Overview with collector count, growth chart, recent activity
 - [ ] **DASH-03**: Fan Intelligence with full collector list, city breakdown, "fans also collect"
-- [ ] **DASH-04**: Push notification compose and send with 1/week rate limit
+- [x] **DASH-04**: Push notification compose and send with 1/week rate limit
 - [ ] **DASH-05**: Notifications arrive on fan devices via Expo Push
 - [ ] **DASH-06**: Artist messages appear in fan Home feed
-- [ ] **DASH-07**: Smart Flyer: create show listings, push to collectors within radius
-- [ ] **DASH-08**: Link-in-bio settings (add/remove/reorder platform links)
-- [ ] **DASH-09**: Stripe Checkout for $29/month subscription
+- [x] **DASH-07**: Smart Flyer: create show listings, push to collectors within radius
+- [x] **DASH-08**: Link-in-bio settings (add/remove/reorder platform links)
+- [x] **DASH-09**: Stripe Checkout for $29/month subscription
 - [ ] **DASH-10**: 14-day free trial, no credit card required
 - [ ] **DASH-11**: Locked features gated after trial expires
 - [ ] **DASH-12**: Verified badge on artist profiles after claiming
@@ -160,15 +160,15 @@ None — v6.0 is comprehensive.
 | ARTIST-04 | Phase 18 | Complete |
 | ARTIST-05 | Phase 18 | Complete |
 | ARTIST-06 | Phase 18 | Complete |
-| DASH-01 | Phase 19 | Pending |
+| DASH-01 | Phase 19 | Complete |
 | DASH-02 | Phase 19 | Pending |
 | DASH-03 | Phase 19 | Pending |
-| DASH-04 | Phase 19 | Pending |
+| DASH-04 | Phase 19 | Complete |
 | DASH-05 | Phase 19 | Pending |
 | DASH-06 | Phase 19 | Pending |
-| DASH-07 | Phase 19 | Pending |
-| DASH-08 | Phase 19 | Pending |
-| DASH-09 | Phase 19 | Pending |
+| DASH-07 | Phase 19 | Complete |
+| DASH-08 | Phase 19 | Complete |
+| DASH-09 | Phase 19 | Complete |
 | DASH-10 | Phase 19 | Pending |
 | DASH-11 | Phase 19 | Pending |
 | DASH-12 | Phase 19 | Pending |

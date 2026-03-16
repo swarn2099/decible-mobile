@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 18-02-PLAN.md
-last_updated: "2026-03-16T02:56:34.470Z"
+stopped_at: Completed 19-01-PLAN.md
+last_updated: "2026-03-16T03:23:06.639Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
   completed_phases: 17
-  total_plans: 40
-  completed_plans: 40
+  total_plans: 47
+  completed_plans: 41
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 18-artist-profile-link-in-bio P01 | 20min | 2 tasks | 1 files |
 | Phase 18-artist-profile-link-in-bio P03 | 8min | 1 tasks | 1 files |
 | Phase 18-artist-profile-link-in-bio P02 | 8min | 1 tasks | 1 files |
+| Phase 19-artist-dashboard-monetization P01 | 12m | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 18-artist-profile-link-in-bio]: Public passport pages use createSupabaseAdmin() for unauthenticated access; ilike() for case-insensitive fan name lookup; route guard rejects non-@ paths to prevent routing conflicts
 - [Phase 18-artist-profile-link-in-bio]: App Store URL used for Collect on Decibel CTA — universal links require Apple AASA file (separate infra task, deferred)
 - [Phase 18-artist-profile-link-in-bio]: Listen links ordered Spotify > Apple Music > SoundCloud > Mixcloud > RA > Instagram (primary platforms first)
+- [Phase 19-artist-dashboard-monetization]: Migration endpoint uses Supabase Management API (SUPABASE_ACCESS_TOKEN) as primary DDL path; pg client is fallback when SUPABASE_DB_PASSWORD is set
+- [Phase 19-artist-dashboard-monetization]: Phase 19 tables: artist_claims (UNIQUE performer_id for exclusive ownership), artist_messages, artist_shows, artist_subscriptions (UNIQUE artist_id), artist_links
 
 ### Pending Todos
 
@@ -103,6 +106,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T02:51:52.834Z
-Stopped at: Completed 18-02-PLAN.md
+Last session: 2026-03-16T03:23:06.631Z
+Stopped at: Completed 19-01-PLAN.md
 Resume file: None
