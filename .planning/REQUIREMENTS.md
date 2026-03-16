@@ -50,11 +50,11 @@
 
 ### Leaderboard
 
-- [ ] **LEAD-01**: Three ranking views: Most Founders, Highest Influence, Trending
-- [ ] **LEAD-02**: Time filters (All Time, This Month, This Week)
-- [ ] **LEAD-03**: User position shown at bottom if not in visible rankings
-- [ ] **LEAD-04**: Top 3 have distinct visual styling
-- [ ] **LEAD-05**: Tapping a leaderboard row navigates to that user's passport
+- [x] **LEAD-01**: Three ranking views: Most Founders, Highest Influence, Trending
+- [x] **LEAD-02**: Time filters (All Time, This Month, This Week)
+- [x] **LEAD-03**: User position shown at bottom if not in visible rankings
+- [x] **LEAD-04**: Top 3 have distinct visual styling
+- [x] **LEAD-05**: Tapping a leaderboard row navigates to that user's passport
 
 ### Share Cards
 
@@ -146,11 +146,11 @@ None — v6.0 is comprehensive.
 | HOME-06 | Phase 16 | Complete |
 | HOME-07 | Phase 16 | Complete |
 | HOME-08 | Phase 16 | Complete |
-| LEAD-01 | Phase 17 | Pending |
-| LEAD-02 | Phase 17 | Pending |
-| LEAD-03 | Phase 17 | Pending |
-| LEAD-04 | Phase 17 | Pending |
-| LEAD-05 | Phase 17 | Pending |
+| LEAD-01 | Phase 17 | Complete |
+| LEAD-02 | Phase 17 | Complete |
+| LEAD-03 | Phase 17 | Complete |
+| LEAD-04 | Phase 17 | Complete |
+| LEAD-05 | Phase 17 | Complete |
 | SHARE-01 | Phase 17 | Pending |
 | SHARE-02 | Phase 17 | Pending |
 | SHARE-03 | Phase 17 | Pending |

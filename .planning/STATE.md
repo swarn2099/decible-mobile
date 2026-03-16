@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 16-02-PLAN.md
-last_updated: "2026-03-16T01:47:22.168Z"
+stopped_at: Completed 17-01-PLAN.md
+last_updated: "2026-03-16T02:12:07.046Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
   completed_phases: 15
-  total_plans: 35
-  completed_plans: 35
+  total_plans: 37
+  completed_plans: 36
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 15-passport-redesign P01 | 3m | 2 tasks | 1 files |
 | Phase 16-home-screen-feed P01 | 2min | 2 tasks | 3 files |
 | Phase 16-home-screen-feed P02 | 5min | 2 tasks | 7 files |
+| Phase 17-leaderboard-share-cards P01 | 4min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 16-home-screen-feed]: Activity feed fallback triggers on both 'user follows nobody' AND 'followed users have no activity'; is_fallback boolean signals UI which label to show
 - [Phase 16-home-screen-feed]: TrendingArtistsRow placed in FlatList ListFooterComponent (below feed)
 - [Phase 16-home-screen-feed]: Collect button on feed cards uses existing useDiscoverArtist mutation, no new endpoint needed
+- [Phase 17-leaderboard-share-cards]: Influence score = sum of other fans collecting performers that the user founded (cross-fan attribution)
+- [Phase 17-leaderboard-share-cards]: Trending view always uses current calendar week (Monday to now), ignores period param; period pills hidden when trending tab active
 
 ### Pending Todos
 
@@ -89,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T01:44:11.661Z
-Stopped at: Completed 16-02-PLAN.md
+Last session: 2026-03-16T02:12:07.039Z
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None
