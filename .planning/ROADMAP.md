@@ -4,7 +4,8 @@
 
 - ✅ **v1.0 Foundation** - Phases 1-5 (shipped 2026-03-11)
 - ✅ **v3.0 The Living Passport** - Phases 6-9 (shipped 2026-03-13)
-- 🚧 **v3.5 Polish & Identity** - Phases 10-13 (in progress)
+- ✅ **v3.5 Polish & Identity** - Phases 10-13 (shipped 2026-03-14)
+- 🚧 **v6.0 The Artist Growth Platform** - Phases 14-20 (in progress)
 
 ## Phases
 
@@ -164,13 +165,10 @@ Plans:
 
 </details>
 
----
+<details>
+<summary>✅ v3.5 Polish & Identity (Phases 10-13) - SHIPPED 2026-03-14</summary>
 
-### v3.5 Polish & Identity (In Progress)
-
-**Milestone Goal:** Redesign the login flow and passport screen to establish brand tone and maximize information density — animated login, Instagram-style compact layout, 3-column grid, and badges as a dedicated tab.
-
-#### Phase 10: Login Flow Redesign
+### Phase 10: Login Flow Redesign
 **Goal**: The login screen makes a strong first impression with branded animations and a frictionless magic-link flow
 **Depends on**: Phase 9
 **Requirements**: LOGIN-01, LOGIN-02, LOGIN-03, LOGIN-04, LOGIN-05, LOGIN-06, LOGIN-07, LOGIN-08
@@ -184,7 +182,7 @@ Plans:
 Plans:
 - [x] 10-01-PLAN.md — Theme-aware login with Reanimated orbs, stagger animations, keyboard avoidance
 
-#### Phase 11: Passport Layout & Structure
+### Phase 11: Passport Layout & Structure
 **Goal**: The Passport header and tab bar are rebuilt in an Instagram-style compact layout that pins to the top and supports swipe navigation
 **Depends on**: Phase 10
 **Requirements**: PLAYOUT-01, PLAYOUT-02, PLAYOUT-03, PLAYOUT-04, PLAYOUT-05, PLAYOUT-06, PLAYOUT-07, PLAYOUT-08
@@ -199,7 +197,7 @@ Plans:
 Plans:
 - [x] 11-01-PLAN.md — Instagram-style header + 4-tab sticky pager + themed bg (no orbs)
 
-#### Phase 12: Passport Grid & Cards
+### Phase 12: Passport Grid & Cards
 **Goal**: Each passport tab renders a dense, uniform 3-column image grid where every cell tells the story of a collection entry at a glance
 **Depends on**: Phase 11
 **Requirements**: GRID-01, GRID-02, GRID-03, GRID-04, GRID-05, GRID-06, GRID-07, GRID-08
@@ -212,9 +210,9 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 12-01-PLAN.md — BlurView frost grid cells + 3-line text + CTA empty states + infinite scroll wiring
+- [x] 12-01-PLAN.md — BlurView frost grid cells + 3-line text + CTA empty states + infinite scroll wiring
 
-#### Phase 13: Badges Section
+### Phase 13: Badges Section
 **Goal**: Badges are surfaced as a dedicated 4th tab in the passport with clear earned vs locked visual states — removed entirely from the header and scroll
 **Depends on**: Phase 12
 **Requirements**: BADGE-01, BADGE-02, BADGE-03, BADGE-04, BADGE-05
@@ -226,12 +224,134 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 13-01-PLAN.md — Rarity-scaled glow on earned badges, grayscale locked badges, detail card polish
+- [x] 13-01-PLAN.md — Rarity-scaled glow on earned badges, grayscale locked badges, detail card polish
+
+</details>
+
+---
+
+### 🚧 v6.0 The Artist Growth Platform (In Progress)
+
+**Milestone Goal:** Transform Decibel from a fan-only collection app into a two-sided artist growth platform. Fan app improvements ship first (Phases 14-17), then artist-facing web dashboard and monetization (Phases 18-20). Target: $5-10K MRR by September 2026.
+
+**Repos:**
+- Phases 14-17: primarily `decibel-mobile` (React Native fan app)
+- Phases 16-17: also `decibel` (Next.js API routes)
+- Phases 18-20: primarily `decibel` (Next.js web app + dashboard)
+
+---
+
+#### Phase 14: Bug Fixes & Cleanup
+**Goal**: The fan app is stable and clean — dead UI removed, known bugs fixed, and song links supported so adding artists has less friction
+**Depends on**: Phase 13
+**Requirements**: BUG-01, BUG-02, BUG-03, BUG-04, CLEAN-01, CLEAN-02, CLEAN-03, CLEAN-04, CLEAN-05, CLEAN-06, CLEAN-07, SONG-01, SONG-02, SONG-03
+**Success Criteria** (what must be TRUE):
+  1. User can paste any Apple Music URL (artist, song, album — including regional variants) and the correct artist is identified and validated
+  2. Stat counts on search result cards match the counts shown on the artist's profile page
+  3. Share modal and listen links work correctly — share sheet opens, listen link opens the right platform
+  4. + tab shows only "Add an Artist"; no check-in UI, no map button anywhere in the app
+  5. Passport tabs show Finds | Founders | Discoveries | Badges; header stats show Followers | Following | Finds | Founders
+  6. User pastes a Spotify song URL and sees "Found via [Track Name]" on the confirmation card before confirming
+**Plans**: TBD
+
+Plans:
+- [ ] 14-01: TBD
+
+#### Phase 15: Passport Redesign
+**Goal**: The passport is a polished identity screen with the correct tab structure, overlays, and no visual clutter from prior iterations
+**Depends on**: Phase 14
+**Requirements**: PASS-01, PASS-02, PASS-03, PASS-04, PASS-05, PASS-06
+**Success Criteria** (what must be TRUE):
+  1. Login screen has animated orbs, branded Poppins input/button, and looks correct in both dark and light mode
+  2. Passport matches Instagram-style compact header with inline stats (no settings gear, no badge teaser, no colored avatar ring)
+  3. 3-column grid shows correct overlays per tab — Finds, Founders (gold star), Discoveries — with swipe gestures between all four tabs
+  4. Sticky tab bar pins during scroll and swipe transitions are smooth with a pink active underline
+**Plans**: TBD
+
+Plans:
+- [ ] 15-01: TBD
+
+#### Phase 16: Home Screen & Feed
+**Goal**: The Home screen surfaces the user's social music discovery feed, personal stats, trending artists, and a Jukebox — replacing the map-centric layout
+**Depends on**: Phase 15
+**Requirements**: HOME-01, HOME-02, HOME-03, HOME-04, HOME-05, HOME-06, HOME-07, HOME-08
+**Success Criteria** (what must be TRUE):
+  1. Home screen stats bar shows Finds, Founders, and Influence Score for the logged-in user
+  2. Activity feed shows Find, Founder, and Collect cards from followed users; empty feed falls back to "Trending on Decibel"
+  3. Trending Artists row displays and is tappable, navigating to the artist profile
+  4. Jukebox button opens the Jukebox screen with embedded players; max 3 WebViews active at once
+  5. One-tap Collect from a feed card or Jukebox card creates a Discovery in the user's passport and notifies the original finder
+**Plans**: TBD
+
+Plans:
+- [ ] 16-01: TBD
+
+#### Phase 17: Leaderboard & Share Cards
+**Goal**: Users can compete on ranked leaderboards and share generated cards that prove their collector status — completing the fan app for public launch
+**Depends on**: Phase 16
+**Requirements**: LEAD-01, LEAD-02, LEAD-03, LEAD-04, LEAD-05, SHARE-01, SHARE-02, SHARE-03
+**Success Criteria** (what must be TRUE):
+  1. Leaderboard shows three ranking views (Most Founders, Highest Influence, Trending) with time filters (All Time, This Month, This Week)
+  2. Top 3 entries have distinct styling; user's own position is visible at the bottom if outside the visible list
+  3. Tapping a leaderboard entry navigates to that user's passport
+  4. Founder Share Card (1080x1920) generates on founding; Passport Summary Card generates on demand; both open in the native share sheet targeting Instagram Stories
+**Plans**: TBD
+
+Plans:
+- [ ] 17-01: TBD
+
+#### Phase 18: Artist Profile & Link-in-Bio
+**Goal**: Every artist on Decibel has an in-app profile and a public web page — giving artists a reason to care about their Decibel presence and fans a shareable URL
+**Depends on**: Phase 17
+**Requirements**: ARTIST-01, ARTIST-02, ARTIST-03, ARTIST-04, ARTIST-05, ARTIST-06
+**Success Criteria** (what must be TRUE):
+  1. In-app artist profile shows founder attribution, collector count, and an embedded player for the artist's streaming links
+  2. Collector list screen shows founder highlighted (gold) at the top, followed by all other collectors
+  3. Artist's public page at decibel.live/[artistslug] loads with correct SSR content and OG meta tags that render previews correctly in iMessage and Twitter
+  4. "Collect on Decibel" button on the public page deep-links to the app or redirects to the App Store if the app is not installed
+  5. User's passport web page at decibel.live/@username is publicly accessible and correctly renders their finds and founders
+**Plans**: TBD
+
+Plans:
+- [ ] 18-01: TBD
+
+#### Phase 19: Artist Dashboard & Monetization
+**Goal**: Artists can claim their profile, access fan intelligence, push notify their collectors, and pay $29/month for Decibel Pro — turning the fan data into a revenue stream
+**Depends on**: Phase 18
+**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08, DASH-09, DASH-10, DASH-11, DASH-12
+**Success Criteria** (what must be TRUE):
+  1. Artist can sign up, search for their artist profile, verify ownership, and reach their dashboard without any manual intervention from the Decibel team
+  2. Dashboard Overview shows collector count, growth chart over time, and recent collection activity
+  3. Fan Intelligence screen shows full collector list with city breakdown and "fans also collect" cross-reference
+  4. Artist can compose and send a push notification that arrives on fan devices within 60 seconds; rate limit is enforced at 1 message per week
+  5. Artist messages appear in the fan's Home feed alongside organic activity
+  6. Smart Flyer lets artist create a show listing and push it to collectors within a specified radius
+  7. Stripe Checkout handles the $29/month subscription; 14-day free trial requires no credit card; locked features are inaccessible after trial expires; verified badge appears on the artist's in-app profile after claiming
+**Plans**: TBD
+
+Plans:
+- [ ] 19-01: TBD
+
+#### Phase 20: Outreach & Growth Engine
+**Goal**: Decibel automatically identifies artists who have earned attention, sends personalized outreach, and notifies them of collector milestones — driving artist signups without manual effort
+**Depends on**: Phase 19
+**Requirements**: OUT-01, OUT-02, OUT-03, OUT-04, OUT-05, OUT-06, OUT-07
+**Success Criteria** (what must be TRUE):
+  1. Daily cron job on the VM identifies artists with 10+ collectors who have not yet been contacted; outreach emails are sent with correct artist name, collector count, and dashboard link
+  2. Instagram DM queue is generated for manual sending with pre-written, personalized messages
+  3. Artists receive milestone notifications (from Decibel) at 25, 50, and 100 collector thresholds; no artist receives duplicate outreach at the same threshold
+  4. Milestone share card images generate correctly with the right artist name and collector count
+**Plans**: TBD
+
+Plans:
+- [ ] 20-01: TBD
+
+---
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 10 -> 11 -> 12 -> 13
+Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -247,4 +367,11 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13
 | 10. Login Flow Redesign | v3.5 | 1/1 | Complete | 2026-03-13 |
 | 11. Passport Layout & Structure | v3.5 | 1/1 | Complete | 2026-03-14 |
 | 12. Passport Grid & Cards | v3.5 | 1/1 | Complete | 2026-03-14 |
-| 13. Badges Section | 1/1 | Complete    | 2026-03-14 | - |
+| 13. Badges Section | v3.5 | 1/1 | Complete | 2026-03-14 |
+| 14. Bug Fixes & Cleanup | v6.0 | 0/TBD | Not started | - |
+| 15. Passport Redesign | v6.0 | 0/TBD | Not started | - |
+| 16. Home Screen & Feed | v6.0 | 0/TBD | Not started | - |
+| 17. Leaderboard & Share Cards | v6.0 | 0/TBD | Not started | - |
+| 18. Artist Profile & Link-in-Bio | v6.0 | 0/TBD | Not started | - |
+| 19. Artist Dashboard & Monetization | v6.0 | 0/TBD | Not started | - |
+| 20. Outreach & Growth Engine | v6.0 | 0/TBD | Not started | - |
