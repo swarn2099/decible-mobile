@@ -273,6 +273,8 @@ export function PassportPager({
         style={{
           backgroundColor: colors.bg,
           position: "relative",
+          borderBottomWidth: 1,
+          borderBottomColor: colors.cardBorder,
         }}
       >
         <View style={{ flexDirection: "row" }}>
