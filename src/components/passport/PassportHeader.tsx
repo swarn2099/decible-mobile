@@ -121,7 +121,7 @@ export function PassportHeader({
   }));
 
   return (
-    <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 16 }}>
+    <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: 20 }}>
       {/* Row 1: Avatar (left) + Stats (right) */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
         {/* Avatar — 80x80, plain circle with cardBorder ring */}
@@ -235,7 +235,7 @@ export function PassportHeader({
       </View>
 
       {/* Row 3: Side-by-side text buttons — Share Passport + Edit Profile */}
-      <View style={{ flexDirection: "row", gap: 8, marginTop: 12 }}>
+      <View style={{ flexDirection: "row", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {/* Share Passport — gradient fill */}
         <Animated.View style={shareAnimStyle}>
           <Pressable
