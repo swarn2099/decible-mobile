@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 20-01-PLAN.md
-last_updated: "2026-03-16T04:48:20.132Z"
+stopped_at: Completed 20-02-PLAN.md
+last_updated: "2026-03-16T04:55:06.580Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
-  completed_phases: 18
+  completed_phases: 19
   total_plans: 49
-  completed_plans: 48
+  completed_plans: 49
   percent: 0
 ---
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 19-artist-dashboard-monetization P05 | 10m | 2 tasks | 3 files |
 | Phase 19-artist-dashboard-monetization P07 | 12m | 2 tasks | 5 files |
 | Phase 20-outreach-growth-engine P01 | 12m | 2 tasks | 3 files |
+| Phase 20-outreach-growth-engine P02 | 4m | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 19-artist-dashboard-monetization]: Stripe env vars required for production billing; build succeeds without them, graceful 503 at runtime
 - [Phase 20-outreach-growth-engine]: artist_outreach dedup uses conditional UNIQUE indexes (one initial per artist, one per milestone threshold)
 - [Phase 20-outreach-growth-engine]: Milestone share card is ARTIST-focused (collector count to share), distinct from fan-focused passport/share-card/milestone
+- [Phase 20-outreach-growth-engine]: performers table has no email column — outreach channels are instagram_dm or manual; email.ts preserved for future use when artist emails become available
+- [Phase 20-outreach-growth-engine]: decibel-outreach project at /home/swarn/decibel-outreach — standalone Node.js TS project with two PM2 cron processes (decibel-outreach at 10 AM UTC, decibel-milestones at 11 AM UTC)
 
 ### Pending Todos
 
@@ -126,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T04:48:20.123Z
-Stopped at: Completed 20-01-PLAN.md
+Last session: 2026-03-16T04:55:06.571Z
+Stopped at: Completed 20-02-PLAN.md
 Resume file: None
