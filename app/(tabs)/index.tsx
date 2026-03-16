@@ -18,6 +18,7 @@ import {
   ActivityFeedCard,
   ActivityFeedEmpty,
 } from "@/components/home/ActivityFeedCard";
+import { ArtistMessageCard } from "@/components/feed/ArtistMessageCard";
 import { StatsBar } from "@/components/home/StatsBar";
 import { TrendingArtistsRow } from "@/components/home/TrendingArtistsRow";
 import { useCallback, useMemo, useState } from "react";
@@ -244,11 +245,21 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ paddingHorizontal: 20, marginBottom: 12 }}>
-            <ActivityFeedCard
-              item={item}
-              onCollect={handleCollect}
-              isCollected={collectedIds.has(item.performer_id)}
-            />
+            {item.type === "artist_message" ? (
+              <ArtistMessageCard
+                artistName={item.performer_name}
+                artistPhoto={item.performer_image}
+                artistSlug={item.artist_slug ?? item.performer_slug}
+                message={item.artist_message ?? ""}
+                createdAt={item.timestamp}
+              />
+            ) : (
+              <ActivityFeedCard
+                item={item}
+                onCollect={handleCollect}
+                isCollected={collectedIds.has(item.performer_id)}
+              />
+            )}
           </View>
         )}
         ListHeaderComponent={ListHeader}

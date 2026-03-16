@@ -176,4 +176,8 @@ export type ActivityFeedItem = {
   performer_genres: string[] | null;
   venue_name: string | null;
   timestamp: string;
+  // Optional fields for artist_message type items
+  type?: "artist_message";
+  artist_message?: string;
+  artist_slug?: string;
 };
