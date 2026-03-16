@@ -334,10 +334,16 @@ Plans:
   5. Artist messages appear in the fan's Home feed alongside organic activity
   6. Smart Flyer lets artist create a show listing and push it to collectors within a specified radius
   7. Stripe Checkout handles the $29/month subscription; 14-day free trial requires no credit card; locked features are inaccessible after trial expires; verified badge appears on the artist's in-app profile after claiming
-**Plans**: 2 plans
+**Plans**: 7 plans
 
 Plans:
-- [ ] 19-01: TBD
+- [ ] 19-01-PLAN.md — Schema: create 6 new Supabase tables + TypeScript types for dashboard entities
+- [ ] 19-02-PLAN.md — Claiming: artist search, claim submission, verified badge on profiles
+- [ ] 19-03-PLAN.md — Dashboard: overview (collector count, growth chart, recent activity) + fan intelligence (collector list, city breakdown, fans-also-collect)
+- [ ] 19-04-PLAN.md — Push notifications: compose + send from dashboard, rate limit, artist message cards in mobile feed
+- [ ] 19-05-PLAN.md — Smart Flyer: show listings CRUD + radius-based push notifications to collectors
+- [ ] 19-06-PLAN.md — Link-in-bio settings: manage platform links from dashboard, reflected on public artist page
+- [ ] 19-07-PLAN.md — Stripe billing: $29/month checkout, webhook handler, 14-day trial, feature gating
 
 #### Phase 20: Outreach & Growth Engine
 **Goal**: Decibel automatically identifies artists who have earned attention, sends personalized outreach, and notifies them of collector milestones — driving artist signups without manual effort
@@ -380,5 +386,5 @@ Phases execute in numeric order: 14 → 15 → 16 → 17 → 18 → 19 → 20
 | 16. Home Screen & Feed | 2/2 | Complete    | 2026-03-16 | - |
 | 17. Leaderboard & Share Cards | 2/2 | Complete    | 2026-03-16 | - |
 | 18. Artist Profile & Link-in-Bio | 3/3 | Complete    | 2026-03-16 | - |
-| 19. Artist Dashboard & Monetization | v6.0 | 0/TBD | Not started | - |
+| 19. Artist Dashboard & Monetization | v6.0 | 0/7 | Not started | - |
 | 20. Outreach & Growth Engine | v6.0 | 0/TBD | Not started | - |
