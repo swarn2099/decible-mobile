@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v6.0
 milestone_name: The Artist Growth Platform
 status: planning
-stopped_at: Completed 19-05-PLAN.md
-last_updated: "2026-03-16T03:58:12.010Z"
+stopped_at: Completed 19-07-PLAN.md
+last_updated: "2026-03-16T04:10:25.098Z"
 last_activity: 2026-03-16 — Roadmap created for v6.0, 51 requirements mapped across 7 phases
 progress:
   total_phases: 20
-  completed_phases: 17
+  completed_phases: 18
   total_plans: 47
-  completed_plans: 46
+  completed_plans: 47
   percent: 0
 ---
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 19-artist-dashboard-monetization P04 | 6m | 2 tasks | 6 files |
 | Phase 19-artist-dashboard-monetization P06 | 10m | 2 tasks | 4 files |
 | Phase 19-artist-dashboard-monetization P05 | 10m | 2 tasks | 3 files |
+| Phase 19-artist-dashboard-monetization P07 | 12m | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -109,6 +110,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 19-artist-dashboard-monetization]: Custom links override auto-detected performer column links on public page; fallback preserves backward compat for unclaimed artists
 - [Phase 19-artist-dashboard-monetization]: City-level radius filtering uses fans.city ILIKE venue_city for MVP; fallback to all collectors when city yields 0 matches; GPS precision deferred
 - [Phase 19-artist-dashboard-monetization]: Show notify endpoint inserts artist_messages record (show_announcement) so show promotions appear in Messages feed history
+- [Phase 19-artist-dashboard-monetization]: Stripe v20 breaking change: current_period_end moved to subscription items — read from sub.items.data[0]
+- [Phase 19-artist-dashboard-monetization]: Stripe env vars required for production billing; build succeeds without them, graceful 503 at runtime
 
 ### Pending Todos
 
@@ -120,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T03:58:12.004Z
-Stopped at: Completed 19-05-PLAN.md
+Last session: 2026-03-16T04:10:25.091Z
+Stopped at: Completed 19-07-PLAN.md
 Resume file: None

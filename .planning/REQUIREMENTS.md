@@ -77,13 +77,13 @@
 - [x] **DASH-02**: Dashboard Overview with collector count, growth chart, recent activity
 - [x] **DASH-03**: Fan Intelligence with full collector list, city breakdown, "fans also collect"
 - [x] **DASH-04**: Push notification compose and send with 1/week rate limit
-- [ ] **DASH-05**: Notifications arrive on fan devices via Expo Push
-- [ ] **DASH-06**: Artist messages appear in fan Home feed
+- [x] **DASH-05**: Notifications arrive on fan devices via Expo Push
+- [x] **DASH-06**: Artist messages appear in fan Home feed
 - [x] **DASH-07**: Smart Flyer: create show listings, push to collectors within radius
 - [x] **DASH-08**: Link-in-bio settings (add/remove/reorder platform links)
 - [x] **DASH-09**: Stripe Checkout for $29/month subscription
-- [ ] **DASH-10**: 14-day free trial, no credit card required
-- [ ] **DASH-11**: Locked features gated after trial expires
+- [x] **DASH-10**: 14-day free trial, no credit card required
+- [x] **DASH-11**: Locked features gated after trial expires
 - [x] **DASH-12**: Verified badge on artist profiles after claiming
 
 ### Outreach & Growth
@@ -164,13 +164,13 @@ None — v6.0 is comprehensive.
 | DASH-02 | Phase 19 | Complete |
 | DASH-03 | Phase 19 | Complete |
 | DASH-04 | Phase 19 | Complete |
-| DASH-05 | Phase 19 | Pending |
-| DASH-06 | Phase 19 | Pending |
+| DASH-05 | Phase 19 | Complete |
+| DASH-06 | Phase 19 | Complete |
 | DASH-07 | Phase 19 | Complete |
 | DASH-08 | Phase 19 | Complete |
 | DASH-09 | Phase 19 | Complete |
-| DASH-10 | Phase 19 | Pending |
-| DASH-11 | Phase 19 | Pending |
+| DASH-10 | Phase 19 | Complete |
+| DASH-11 | Phase 19 | Complete |
 | DASH-12 | Phase 19 | Complete |
 | OUT-01 | Phase 20 | Pending |
 | OUT-02 | Phase 20 | Pending |
