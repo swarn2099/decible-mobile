@@ -69,7 +69,7 @@
 - [ ] **ARTIST-03**: Link-in-bio web page renders at decibel.live/[artistslug] with SSR
 - [ ] **ARTIST-04**: OG meta tags generate correct social previews
 - [ ] **ARTIST-05**: "Collect on Decibel" button deep-links to app or App Store
-- [ ] **ARTIST-06**: User passport web page renders at decibel.live/@username
+- [x] **ARTIST-06**: User passport web page renders at decibel.live/@username
 
 ### Artist Dashboard & Monetization
 
@@ -159,7 +159,7 @@ None — v6.0 is comprehensive.
 | ARTIST-03 | Phase 18 | Pending |
 | ARTIST-04 | Phase 18 | Pending |
 | ARTIST-05 | Phase 18 | Pending |
-| ARTIST-06 | Phase 18 | Pending |
+| ARTIST-06 | Phase 18 | Complete |
 | DASH-01 | Phase 19 | Pending |
 | DASH-02 | Phase 19 | Pending |
 | DASH-03 | Phase 19 | Pending |
