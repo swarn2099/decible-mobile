@@ -64,8 +64,8 @@
 
 ### Artist Profile & Link-in-Bio
 
-- [ ] **ARTIST-01**: In-app artist profile with founder attribution, collector count, embedded player
-- [ ] **ARTIST-02**: Collector list with founder highlighted
+- [x] **ARTIST-01**: In-app artist profile with founder attribution, collector count, embedded player
+- [x] **ARTIST-02**: Collector list with founder highlighted
 - [ ] **ARTIST-03**: Link-in-bio web page renders at decibel.live/[artistslug] with SSR
 - [ ] **ARTIST-04**: OG meta tags generate correct social previews
 - [ ] **ARTIST-05**: "Collect on Decibel" button deep-links to app or App Store
@@ -154,8 +154,8 @@ None — v6.0 is comprehensive.
 | SHARE-01 | Phase 17 | Complete |
 | SHARE-02 | Phase 17 | Complete |
 | SHARE-03 | Phase 17 | Complete |
-| ARTIST-01 | Phase 18 | Pending |
-| ARTIST-02 | Phase 18 | Pending |
+| ARTIST-01 | Phase 18 | Complete |
+| ARTIST-02 | Phase 18 | Complete |
 | ARTIST-03 | Phase 18 | Pending |
 | ARTIST-04 | Phase 18 | Pending |
 | ARTIST-05 | Phase 18 | Pending |
