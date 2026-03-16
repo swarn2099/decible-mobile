@@ -7,15 +7,22 @@ import Svg, {
 } from "react-native-svg";
 import { DecibelRefreshControl } from "@/components/ui/PullToRefresh";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Search, ListMusic, Compass, Trophy } from "lucide-react-native";
+import { Search, ListMusic, Compass, TrendingUp } from "lucide-react-native";
 import { useThemeColors } from "@/constants/colors";
 import { useActivityFeed } from "@/hooks/useActivityFeed";
+import { useUserStats } from "@/hooks/useUserStats";
+import { useTrendingArtists } from "@/hooks/useTrendingArtists";
+import { useDiscoverArtist } from "@/hooks/useDiscoverArtist";
+import { useMyCollectedIds } from "@/hooks/useMyCollectedIds";
 import {
   ActivityFeedCard,
   ActivityFeedEmpty,
 } from "@/components/home/ActivityFeedCard";
+import { StatsBar } from "@/components/home/StatsBar";
+import { TrendingArtistsRow } from "@/components/home/TrendingArtistsRow";
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
 import type { ActivityFeedItem } from "@/types";
 
 function GradientTitle() {
@@ -47,14 +54,23 @@ function GradientTitle() {
 export default function HomeScreen() {
   const colors = useThemeColors();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const activityFeed = useActivityFeed();
+  const userStats = useUserStats();
+  const trendingArtists = useTrendingArtists();
+  const { mutate: discoverMutate } = useDiscoverArtist();
+  const { collectedIds } = useMyCollectedIds();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await activityFeed.refetch();
+    await Promise.all([
+      activityFeed.refetch(),
+      queryClient.invalidateQueries({ queryKey: ["user-stats"] }),
+      queryClient.invalidateQueries({ queryKey: ["trending-artists"] }),
+    ]);
     setRefreshing(false);
-  }, [activityFeed]);
+  }, [activityFeed, queryClient]);
 
   const feedItems = useMemo(
     () => activityFeed.data?.pages.flatMap((p) => p.items) ?? [],
@@ -67,9 +83,27 @@ export default function HomeScreen() {
     }
   }, [activityFeed]);
 
+  const handleCollect = useCallback(
+    (performerId: string) => {
+      discoverMutate(
+        { performerId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["activity-feed"] });
+            queryClient.invalidateQueries({ queryKey: ["user-stats"] });
+            queryClient.invalidateQueries({ queryKey: ["myCollectedIds"] });
+          },
+        }
+      );
+    },
+    [discoverMutate, queryClient]
+  );
+
+  const isFallback = activityFeed.isFallback;
+
   const ListHeader = (
     <>
-      {/* Top bar: Map | DECIBEL | Search */}
+      {/* Top bar: Jukebox | DECIBEL | Search */}
       <View
         style={{
           flexDirection: "row",
@@ -97,22 +131,6 @@ export default function HomeScreen() {
           >
             <ListMusic size={20} color={colors.textSecondary} />
           </Pressable>
-          <Pressable
-            onPress={() => router.push("/leaderboard")}
-            hitSlop={12}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 20,
-              backgroundColor: colors.card,
-              borderWidth: 1,
-              borderColor: colors.cardBorder,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Trophy size={20} color={colors.textSecondary} />
-          </Pressable>
         </View>
 
         <GradientTitle />
@@ -137,11 +155,23 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Discovery Feed Header */}
+      {/* Stats Bar */}
+      <StatsBar
+        finds={userStats.finds}
+        founders={userStats.founders}
+        influence={userStats.influence}
+        isLoading={userStats.isLoading}
+      />
+
+      {/* Feed section header */}
       <View style={{ marginBottom: 16, paddingHorizontal: 20 }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ marginRight: 8 }}>
-            <Compass size={14} color={colors.purple} />
+            {isFallback ? (
+              <TrendingUp size={14} color={colors.pink} />
+            ) : (
+              <Compass size={14} color={colors.purple} />
+            )}
           </View>
           <Text
             style={{
@@ -152,7 +182,7 @@ export default function HomeScreen() {
               letterSpacing: 1.5,
             }}
           >
-            Discovery Feed
+            {isFallback ? "Trending on Decibel" : "Discovery Feed"}
           </Text>
         </View>
         <Text
@@ -163,9 +193,28 @@ export default function HomeScreen() {
             marginTop: 2,
           }}
         >
-          See what fans are discovering
+          {isFallback ? "Top finds across the platform" : "See what fans are discovering"}
         </Text>
       </View>
+    </>
+  );
+
+  const ListFooter = (
+    <>
+      {activityFeed.isFetchingNextPage && (
+        <View style={{ paddingVertical: 16, alignItems: "center" }}>
+          <ActivityIndicator color={colors.pink} />
+        </View>
+      )}
+      {/* Trending Artists Row at bottom of feed */}
+      <View style={{ marginTop: 8 }}>
+        <TrendingArtistsRow
+          artists={trendingArtists.artists}
+          isLoading={trendingArtists.isLoading}
+        />
+      </View>
+      {/* Bottom padding for floating tab bar */}
+      <View style={{ height: 100 }} />
     </>
   );
 
@@ -179,7 +228,11 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={{ paddingHorizontal: 20, marginBottom: 12 }}>
-            <ActivityFeedCard item={item} />
+            <ActivityFeedCard
+              item={item}
+              onCollect={handleCollect}
+              isCollected={collectedIds.has(item.performer_id)}
+            />
           </View>
         )}
         ListHeaderComponent={ListHeader}
@@ -194,16 +247,7 @@ export default function HomeScreen() {
             </View>
           )
         }
-        ListFooterComponent={
-          <>
-            {activityFeed.isFetchingNextPage && (
-              <View style={{ paddingVertical: 16, alignItems: "center" }}>
-                <ActivityIndicator color={colors.pink} />
-              </View>
-            )}
-            <View style={{ height: 20 }} />
-          </>
-        }
+        ListFooterComponent={ListFooter}
         onEndReached={handleLoadMoreFeed}
         onEndReachedThreshold={0.3}
         refreshControl={

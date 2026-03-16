@@ -66,7 +66,13 @@ function AvatarCircle({
   );
 }
 
-export function ActivityFeedCard({ item }: { item: ActivityFeedItem }) {
+type ActivityFeedCardProps = {
+  item: ActivityFeedItem;
+  onCollect?: (performerId: string) => void;
+  isCollected?: boolean;
+};
+
+export function ActivityFeedCard({ item, onCollect, isCollected = false }: ActivityFeedCardProps) {
   const colors = useThemeColors();
   const router = useRouter();
   const config = ACTION_CONFIG[item.action];
@@ -143,15 +149,53 @@ export function ActivityFeedCard({ item }: { item: ActivityFeedItem }) {
         </View>
       </View>
 
-      {/* Artist thumbnail — taps to artist profile */}
-      <Pressable onPress={() => router.push(`/artist/${item.performer_slug}`)}>
-        <AvatarCircle
-          uri={item.performer_image}
-          name={item.performer_name}
-          size={40}
-          borderColor={actionColor}
-        />
-      </Pressable>
+      {/* Right side: artist thumbnail + collect button */}
+      <View style={{ alignItems: "center", gap: 6 }}>
+        {/* Artist thumbnail — taps to artist profile */}
+        <Pressable onPress={() => router.push(`/artist/${item.performer_slug}`)}>
+          <AvatarCircle
+            uri={item.performer_image}
+            name={item.performer_name}
+            size={40}
+            borderColor={actionColor}
+          />
+        </Pressable>
+
+        {/* Collect / In Passport button */}
+        {onCollect && (
+          isCollected ? (
+            <Text
+              style={{
+                color: colors.textTertiary,
+                fontSize: 11,
+                fontFamily: "Poppins_500Medium",
+              }}
+            >
+              In Passport
+            </Text>
+          ) : (
+            <Pressable
+              onPress={() => onCollect(item.performer_id)}
+              style={{
+                backgroundColor: colors.pink,
+                borderRadius: 12,
+                paddingHorizontal: 12,
+                paddingVertical: 4,
+              }}
+            >
+              <Text
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: 11,
+                  fontFamily: "Poppins_600SemiBold",
+                }}
+              >
+                Collect
+              </Text>
+            </Pressable>
+          )
+        )}
+      </View>
     </View>
   );
 }

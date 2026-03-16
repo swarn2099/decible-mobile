@@ -7,10 +7,11 @@ const PAGE_SIZE = 20;
 type ActivityFeedResponse = {
   items: ActivityFeedItem[];
   has_more: boolean;
+  is_fallback: boolean;
 };
 
 export function useActivityFeed() {
-  return useInfiniteQuery<ActivityFeedResponse>({
+  const query = useInfiniteQuery<ActivityFeedResponse>({
     queryKey: ["activity-feed"],
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
@@ -25,4 +26,8 @@ export function useActivityFeed() {
     staleTime: 2 * 60 * 1000, // 2 minutes — social feed should feel fresh
     gcTime: 1000 * 60 * 60 * 24,
   });
+
+  const isFallback = query.data?.pages[0]?.is_fallback ?? false;
+
+  return { ...query, isFallback };
 }
